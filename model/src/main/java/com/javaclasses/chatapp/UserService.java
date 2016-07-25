@@ -1,7 +1,7 @@
 package com.javaclasses.chatapp;
 
 /**
- * Public API for UserService
+ * Public API of UserService
  */
 public interface UserService {
 
