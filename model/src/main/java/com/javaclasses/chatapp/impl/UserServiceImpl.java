@@ -3,6 +3,7 @@ package com.javaclasses.chatapp.impl;
 
 import com.javaclasses.chatapp.*;
 import com.javaclasses.chatapp.dto.UserDTO;
+import com.javaclasses.chatapp.Token;
 import com.javaclasses.chatapp.entities.User;
 import com.javaclasses.chatapp.storage.TokenRepositoryImpl;
 import com.javaclasses.chatapp.storage.Repository;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -22,12 +24,12 @@ public class UserServiceImpl implements UserService {
 
     private static UserServiceImpl userService = new UserServiceImpl();
     private static Repository<UserId, User> userRepository;
-    private static Repository<Token, User> tokenUserRepository;
+    private static Repository<UUID, Token> tokenRepository;
     private AtomicLong count = new AtomicLong(0);
 
     private UserServiceImpl() {
         userRepository = UserRepositoryImpl.getInstance();
-        tokenUserRepository = TokenRepositoryImpl.getInstance();
+        tokenRepository = TokenRepositoryImpl.getInstance();
     }
 
     public static UserServiceImpl getInstance() {
@@ -101,9 +103,9 @@ public class UserServiceImpl implements UserService {
             throw new AuthenticationException("Specified combination of username and password was not found");
         }
 
-        Token newToken = new Token(System.currentTimeMillis());
+        Token newToken = new Token(UUID.randomUUID(), userToLogin.getId());
 
-        tokenUserRepository.add(newToken, userToLogin);
+        tokenRepository.add(newToken.getToken(), newToken);
 
          if(log.isInfoEnabled()){
             log.info("Logged in user {}", username);
@@ -122,7 +124,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findLoggedInUserByToken(Token token) {
 
-        User user = tokenUserRepository.getItem(token);
-        return new UserDTO(user.getId(), user.getUsername());
+        Token userToken = tokenRepository.getItem(token.getToken());
+
+        return findRegisteredUserById(userToken.getUserId());
     }
 }

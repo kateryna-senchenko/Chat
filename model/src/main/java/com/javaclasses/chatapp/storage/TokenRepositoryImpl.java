@@ -1,19 +1,20 @@
 package com.javaclasses.chatapp.storage;
 
 import com.javaclasses.chatapp.Token;
-import com.javaclasses.chatapp.entities.User;
+
+import java.util.UUID;
 
 /**
  * Implementation of the Repository interface for logged in user repository
  */
-public class TokenRepositoryImpl extends InMemoryRepository<Token, User> {
+public class TokenRepositoryImpl extends InMemoryRepository<UUID, Token> {
 
-    private static Repository<Token, User> loggedInUserRepository = new TokenRepositoryImpl();
+    private static Repository<UUID, Token> tokenRepository = new TokenRepositoryImpl();
 
     private TokenRepositoryImpl() {}
 
-    public static Repository<Token, User> getInstance() {
-        return loggedInUserRepository;
+    public static Repository<UUID, Token> getInstance() {
+        return tokenRepository;
     }
 }
 

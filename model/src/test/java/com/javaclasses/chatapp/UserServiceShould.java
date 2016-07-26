@@ -2,7 +2,6 @@ package com.javaclasses.chatapp;
 
 
 import com.javaclasses.chatapp.dto.UserDTO;
-import com.javaclasses.chatapp.entities.User;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import org.junit.Test;
 
