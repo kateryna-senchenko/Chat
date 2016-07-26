@@ -2,6 +2,8 @@ package com.javaclasses.chatapp.impl;
 
 
 import com.javaclasses.chatapp.*;
+import com.javaclasses.chatapp.storage.LoggedInUserRepository;
+import com.javaclasses.chatapp.storage.Repository;
 import com.javaclasses.chatapp.storage.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,24 +19,24 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static UserServiceImpl userService = new UserServiceImpl();
-    private static UserRepository userRepository;
-    private static UserRepository loggedInUserRepository;
+    private static Repository userRepository;
+    private static Repository loggedInUserRepository;
     private AtomicLong count = new AtomicLong(0);
 
     private UserServiceImpl() {
-        userRepository = new UserRepository();
-        loggedInUserRepository = new UserRepository();
+        userRepository = UserRepository.getInstance();
+        loggedInUserRepository = LoggedInUserRepository.getInstance();
     }
 
     public static UserServiceImpl getInstance() {
         return userService;
     }
 
-    public UserRepository getUserRepository() {
+    public Repository getUserRepository() {
         return userRepository;
     }
 
-    public UserRepository getLoggedInUserRepository() {
+    public Repository getLoggedInUserRepository() {
         return loggedInUserRepository;
     }
 
@@ -99,7 +101,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if(userToLogin == null){
+        if (userToLogin == null) {
             log.error("Failed to login user {}: either username or password is incorrect", username);
             throw new AuthenticationException("Specified combination of username and password was not found");
         }
