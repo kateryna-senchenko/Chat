@@ -1,0 +1,4 @@
+rootProject.name = 'chatapp'
+include 'model'
+include 'webapp'
+
