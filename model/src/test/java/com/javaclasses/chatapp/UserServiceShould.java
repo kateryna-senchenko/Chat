@@ -12,13 +12,17 @@ public class UserServiceShould {
     private final UserServiceImpl userService = UserServiceImpl.getInstance();
 
     @Test
-    public void registerUser() throws RegistrationException {
+    public void registerUser() {
 
         String username = "Alice";
         String password = "fromwonderland";
-        String confirmPassword = password;
 
-        UserId newUserId = userService.register(username, password, confirmPassword);
+        UserId newUserId = null;
+        try {
+            newUserId = userService.register(username, password, password);
+        } catch (RegistrationException e) {
+            fail("New user was not registered");
+        }
 
         User newUser = (User)userService.getUserRepository().getItem(newUserId);
 
@@ -27,16 +31,20 @@ public class UserServiceShould {
     }
 
     @Test
-    public void failRegisterUserWithDuplicateUsername() throws RegistrationException {
+    public void failRegisterUserWithDuplicateUsername()  {
 
         String username = "Scout";
         String password = "freeparrots";
-        String confirmPassword = password;
 
-        userService.register(username, password, confirmPassword);
 
         try {
-            userService.register(username, password, confirmPassword);
+            userService.register(username, password, password);
+        } catch (RegistrationException e) {
+            fail("New user was not registered");
+        }
+
+        try {
+            userService.register(username, password, password);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Specified username is not available", e.getMessage());
@@ -49,7 +57,7 @@ public class UserServiceShould {
 
         String username = "Jacob";
         String password = "watertoelephants";
-        String confirmPassword = "watertoelephant";
+        String confirmPassword = password + "123";
 
         try {
             userService.register(username, password, confirmPassword);
@@ -61,13 +69,17 @@ public class UserServiceShould {
     }
 
     @Test
-    public void trimUsername() throws RegistrationException {
+    public void trimUsername() {
 
         String username = " Jem ";
         String password = "somethinghappend";
-        String confirmPassword = password;
 
-        UserId newUserId = userService.register(username, password, confirmPassword);
+        UserId newUserId = null;
+        try {
+            newUserId = userService.register(username, password, password);
+        } catch (RegistrationException e) {
+            fail("New user was not registered");
+        }
 
         User newUser = (User)userService.getUserRepository().getItem(newUserId);
 
@@ -80,10 +92,9 @@ public class UserServiceShould {
 
         String username = "";
         String password = "here's looking at you kid";
-        String confirmPassword = password;
 
         try {
-            userService.register(username, password, confirmPassword);
+            userService.register(username, password, password);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Username should not be empty or contain white spaces", e.getMessage());
@@ -96,10 +107,9 @@ public class UserServiceShould {
 
         String username = "Doctor Zhivago";
         String password = "one coffee please";
-        String confirmPassword = password;
 
         try {
-            userService.register(username, password, confirmPassword);
+            userService.register(username, password, password);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Username should not be empty or contain white spaces", e.getMessage());
@@ -112,10 +122,9 @@ public class UserServiceShould {
 
         String username = "Kevin";
         String password = "";
-        String confirmPassword = password;
 
         try {
-            userService.register(username, password, confirmPassword);
+            userService.register(username, password, password);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Password should not be empty", e.getMessage());
@@ -124,15 +133,23 @@ public class UserServiceShould {
     }
 
     @Test
-    public void loginUser() throws RegistrationException, AuthenticationException {
+    public void loginUser()  {
 
         String username = "Mila";
         String password = "lostinnewyork";
-        String confirmPassword = password;
 
-        userService.register(username, password, confirmPassword);
+        try {
+            userService.register(username, password, password);
+        } catch (RegistrationException e) {
+            fail("New user was not registered");
+        }
 
-        Token token = userService.login(username, password);
+        Token token = null;
+        try {
+            token = userService.login(username, password);
+        } catch (AuthenticationException e) {
+            fail("Registered user was not logged in");
+        }
 
         User loggedInUser = (User)userService.getLoggedInUserRepository().getItem(token);
 
@@ -156,15 +173,18 @@ public class UserServiceShould {
     }
 
     @Test
-    public void failLoginUserWithWrongPassword() throws RegistrationException{
+    public void failLoginUserWithWrongPassword() {
 
         String username = "Ilsa";
         String password = "here's looking at you kid";
-        String confirmPassword = password;
 
-        userService.register(username, password, confirmPassword);
+        try {
+            userService.register(username, password, password);
+        } catch (RegistrationException e) {
+            fail("New user was not registered");
+        }
 
-        String wrongPassword = "here's looking at you, kid";
+        String wrongPassword = password + "123";
 
         try {
             userService.login(username, wrongPassword);

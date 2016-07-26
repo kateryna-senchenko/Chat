@@ -7,7 +7,7 @@ import java.util.*;
  */
 abstract class InMemoryRepository<TypeId, Type> implements Repository<TypeId, Type> {
 
-    private Map<TypeId, Type> entities = new HashMap();
+    private Map<TypeId, Type> entities = new HashMap<>();
 
 
     @Override

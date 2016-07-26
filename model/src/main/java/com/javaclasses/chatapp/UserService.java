@@ -23,4 +23,18 @@ public interface UserService {
      * @throws AuthenticationException if authentication fails
      */
     Token login(String username, String password) throws AuthenticationException;
+
+    /**
+     * Gets registered user by user id
+     * @param id - user id
+     * @return user instance
+     */
+    User findRegisteredUserById(UserId id);
+
+    /**
+     * Gets logged in user by token
+     * @param token - access token
+     * @return user instance
+     */
+    User findLoggedInUserByToken(Token token);
 }

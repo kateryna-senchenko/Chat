@@ -2,9 +2,9 @@ package com.javaclasses.chatapp.impl;
 
 
 import com.javaclasses.chatapp.*;
-import com.javaclasses.chatapp.storage.LoggedInUserRepository;
+import com.javaclasses.chatapp.storage.TokenRepositoryImpl;
 import com.javaclasses.chatapp.storage.Repository;
-import com.javaclasses.chatapp.storage.UserRepository;
+import com.javaclasses.chatapp.storage.UserRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,13 +19,13 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static UserServiceImpl userService = new UserServiceImpl();
-    private static Repository userRepository;
-    private static Repository loggedInUserRepository;
+    private static Repository<UserId, User> userRepository;
+    private static Repository<Token, User> tokenUserRepository;
     private AtomicLong count = new AtomicLong(0);
 
     private UserServiceImpl() {
-        userRepository = UserRepository.getInstance();
-        loggedInUserRepository = LoggedInUserRepository.getInstance();
+        userRepository = UserRepositoryImpl.getInstance();
+        tokenUserRepository = TokenRepositoryImpl.getInstance();
     }
 
     public static UserServiceImpl getInstance() {
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public Repository getLoggedInUserRepository() {
-        return loggedInUserRepository;
+        return tokenUserRepository;
     }
 
     @Override
@@ -108,12 +108,22 @@ public class UserServiceImpl implements UserService {
 
         Token newToken = new Token(System.currentTimeMillis());
 
-        loggedInUserRepository.add(newToken, userToLogin);
+        tokenUserRepository.add(newToken, userToLogin);
 
          if(log.isInfoEnabled()){
             log.info("Logged in user {}", username);
         }
 
         return newToken;
+    }
+
+    @Override
+    public User findRegisteredUserById(UserId id) {
+        return null;
+    }
+
+    @Override
+    public User findLoggedInUserByToken(Token token) {
+        return null;
     }
 }
