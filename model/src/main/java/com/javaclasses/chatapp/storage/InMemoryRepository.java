@@ -1,7 +1,6 @@
 package com.javaclasses.chatapp.storage;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Abstract class of in memory repository
@@ -19,5 +18,10 @@ abstract class InMemoryRepository<TypeId, Type> implements Repository<TypeId, Ty
     @Override
     public void add(TypeId id, Type item) {
         entities.put(id, item);
+    }
+
+    @Override
+    public Collection<Type> getAll() {
+        return entities.values();
     }
 }

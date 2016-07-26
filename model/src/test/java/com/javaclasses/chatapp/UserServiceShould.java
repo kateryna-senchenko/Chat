@@ -2,6 +2,7 @@ package com.javaclasses.chatapp;
 
 
 import com.javaclasses.chatapp.impl.UserServiceImpl;
+import com.javaclasses.chatapp.storage.Repository;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,29 +22,20 @@ public class UserServiceShould {
 
         UserId newUserId = userService.register(username, password, confirmPassword);
 
-        User newUser = (User) userService.getRepository().getItem(newUserId);
+        User newUser = (User)userService.getRepository().getItem(newUserId);
 
         assertEquals("New user was not registered", username, newUser.getUsername());
 
     }
 
-    @Before
-    public void registerDuplicateUser() throws RegistrationException{
-
-        String username = "Scout";
-        String password = "protectthemockingbirds";
-        String confirmPassword = "protectthemockingbirds";
-
-        userService.register(username, password, confirmPassword);
-
-    }
-
     @Test
-    public void failRegisterUserWithDuplicateUsername(){
+    public void failRegisterUserWithDuplicateUsername() throws RegistrationException {
 
         String username = "Scout";
         String password = "freeparrots";
         String confirmPassword = "freeparrots";
+
+        userService.register(username, password, confirmPassword);
 
         try {
             userService.register(username, password, confirmPassword);
