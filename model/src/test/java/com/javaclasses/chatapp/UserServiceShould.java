@@ -24,7 +24,7 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        User newUser = (User)userService.getUserRepository().getItem(newUserId);
+        User newUser = userService.findRegisteredUserById(newUserId);
 
         assertEquals("New user was not registered", username, newUser.getUsername());
 
@@ -81,7 +81,7 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        User newUser = (User)userService.getUserRepository().getItem(newUserId);
+        User newUser = userService.findRegisteredUserById(newUserId);
 
         assertEquals("New user was not registered", username.trim(), newUser.getUsername());
 
@@ -151,7 +151,7 @@ public class UserServiceShould {
             fail("Registered user was not logged in");
         }
 
-        User loggedInUser = (User)userService.getLoggedInUserRepository().getItem(token);
+        User loggedInUser = userService.findLoggedInUserByToken(token);
 
         assertEquals("User was not logged in", username, loggedInUser.getUsername());
 

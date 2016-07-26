@@ -32,13 +32,6 @@ public class UserServiceImpl implements UserService {
         return userService;
     }
 
-    public Repository getUserRepository() {
-        return userRepository;
-    }
-
-    public Repository getLoggedInUserRepository() {
-        return tokenUserRepository;
-    }
 
     @Override
     public UserId register(String username, String password, String confirmPassword) throws RegistrationException {
@@ -119,11 +112,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findRegisteredUserById(UserId id) {
-        return null;
+        return userRepository.getItem(id);
     }
 
     @Override
     public User findLoggedInUserByToken(Token token) {
-        return null;
+        return tokenUserRepository.getItem(token);
     }
 }
