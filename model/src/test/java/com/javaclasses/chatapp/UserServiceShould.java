@@ -2,8 +2,6 @@ package com.javaclasses.chatapp;
 
 
 import com.javaclasses.chatapp.impl.UserServiceImpl;
-import com.javaclasses.chatapp.storage.Repository;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -121,6 +119,58 @@ public class UserServiceShould {
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Password should not be empty", e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void loginUser() throws RegistrationException, AuthenticationException {
+
+        String username = "Mila";
+        String password = "lostinnewyork";
+        String confirmPassword = password;
+
+        userService.register(username, password, confirmPassword);
+
+        Token token = userService.login(username, password);
+
+        User loggedInUser = (User)userService.getRepository().getItem(token);
+
+        assertEquals("User was not logged in", username, loggedInUser.getUsername());
+
+    }
+
+    @Test
+    public void failLoginUnregisteredUser(){
+
+        String username = "Jacob";
+        String password = "watertoelephants";
+
+        try {
+            userService.login(username, password);
+            fail("Expected AuthenticationException was not thrown");
+        } catch (AuthenticationException e) {
+            assertEquals("Specified combination of username and password was not found", e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void failLoginUserWithWrongPassword() throws RegistrationException{
+
+        String username = "Ilsa";
+        String password = "here's looking at you kid";
+        String confirmPassword = password;
+
+        userService.register(username, password, confirmPassword);
+
+        String wrongPassword = "here's looking at you, kid";
+
+        try {
+            userService.login(username, wrongPassword);
+            fail("Expected AuthenticationException was not thrown");
+        } catch (AuthenticationException e) {
+            assertEquals("Specified combination of username and password was not found", e.getMessage());
         }
 
     }
