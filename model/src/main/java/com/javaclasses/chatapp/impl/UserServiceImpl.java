@@ -60,13 +60,13 @@ public class UserServiceImpl implements UserService {
 
         for (User user : allUsers) {
 
-            if (user.getUsername() == username) {
+            if (user.getUsername().equals(username)) {
                 log.error("Registration failed: username {} is already taken", username);
                 throw new RegistrationException("Specified username is not available");
             }
         }
 
-        if (password != confirmPassword) {
+        if (!(password.equals(confirmPassword))) {
             log.error("Failed to register user {}: passwords do not match", username);
             throw new RegistrationException("Passwords do not match");
         }
@@ -93,8 +93,8 @@ public class UserServiceImpl implements UserService {
 
         for (User user : allUsers) {
 
-            if (user.getUsername() == username) {
-                if (user.getPassword() == password) {
+            if (user.getUsername().equals(username)) {
+                if (user.getPassword().equals(password)) {
                     userToLogin = user;
                     break;
                 }
