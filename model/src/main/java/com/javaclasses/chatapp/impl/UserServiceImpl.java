@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class UserServiceImpl implements UserService {
 
-    //private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static UserServiceImpl userService = new UserServiceImpl();
     private static UserRepository userRepository;
@@ -44,12 +44,12 @@ public class UserServiceImpl implements UserService {
         username = username.trim();
 
         if (username.isEmpty() || username.contains(" ")) {
-            //log.error("Failed to register user {}: invalid username input", username);
+            log.error("Failed to register user {}: invalid username input", username);
             throw new RegistrationException("Username should not be empty or contain white spaces");
         }
 
         if (password.isEmpty()) {
-            //log.error("Failed to register user {}: invalid password input", username);
+            log.error("Failed to register user {}: invalid password input", username);
             throw new RegistrationException("Password should not be empty");
         }
 
@@ -59,13 +59,13 @@ public class UserServiceImpl implements UserService {
         for (User user : allUsers) {
 
             if (user.getUsername() == username) {
-                //log.error("Registration failed: username {} is already taken", username);
+                log.error("Registration failed: username {} is already taken", username);
                 throw new RegistrationException("Specified username is not available");
             }
         }
 
         if (password != confirmPassword) {
-            //log.error("Failed to register user {}: passwords do not match", username);
+            log.error("Failed to register user {}: passwords do not match", username);
             throw new RegistrationException("Passwords do not match");
         }
 
@@ -75,9 +75,9 @@ public class UserServiceImpl implements UserService {
 
         userRepository.add(newUserId, newUser);
 
-       /* if(log.isInfoEnabled()){
+        if(log.isInfoEnabled()){
             log.info("Registered user {}", username);
-        }*/
+        }
 
         return newUserId;
     }
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if(userToLogin == null){
-            //log.error("Failed to login user {}: either username or password is incorrect", username);
+            log.error("Failed to login user {}: either username or password is incorrect", username);
             throw new AuthenticationException("Specified combination of username and password was not found");
         }
 
@@ -108,9 +108,9 @@ public class UserServiceImpl implements UserService {
 
         loggedInUserRepository.add(newToken, userToLogin);
 
-        /* if(log.isInfoEnabled()){
+         if(log.isInfoEnabled()){
             log.info("Logged in user {}", username);
-        }*/
+        }
 
         return newToken;
     }
