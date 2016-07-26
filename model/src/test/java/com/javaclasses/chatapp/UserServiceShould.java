@@ -8,7 +8,9 @@ import com.javaclasses.chatapp.impl.UserServiceImpl;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -227,7 +229,7 @@ public class UserServiceShould {
     @Test
     public void beSafeInMultithreading() throws ExecutionException, InterruptedException {
 
-        final int count = 100;
+        final int count = 20;
         final ExecutorService executor = Executors.newFixedThreadPool(count);
         final CountDownLatch startLatch = new CountDownLatch(count);
         final List<Future<UserDTO>> results = new ArrayList<>();
@@ -245,9 +247,12 @@ public class UserServiceShould {
                 String password = "password";
 
                 RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
-                UserId id = userService.register(registrationDTO);
+                userService.register(registrationDTO);
 
-                return userService.findRegisteredUserById(id);
+                LoginDTO loginDTO = new LoginDTO(username, password);
+                Token token = userService.login(loginDTO);
+
+                return userService.findLoggedInUserByToken(token);
             }
         };
 
@@ -257,8 +262,13 @@ public class UserServiceShould {
             results.add(future);
         }
 
+        Set<UserId> userIds = new HashSet<>();
         for (Future<UserDTO> future : results){
-            future.get();
+            userIds.add(future.get().getId());
+        }
+
+        if(userIds.size() != count){
+            fail("Generated user ids are not unique");
         }
 
     }
