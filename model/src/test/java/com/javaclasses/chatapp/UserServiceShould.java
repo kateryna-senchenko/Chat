@@ -20,7 +20,7 @@ public class UserServiceShould {
 
         UserId newUserId = userService.register(username, password, confirmPassword);
 
-        User newUser = (User)userService.getRepository().getItem(newUserId);
+        User newUser = (User)userService.getUserRepository().getItem(newUserId);
 
         assertEquals("New user was not registered", username, newUser.getUsername());
 
@@ -69,7 +69,7 @@ public class UserServiceShould {
 
         UserId newUserId = userService.register(username, password, confirmPassword);
 
-        User newUser = (User)userService.getRepository().getItem(newUserId);
+        User newUser = (User)userService.getUserRepository().getItem(newUserId);
 
         assertEquals("New user was not registered", username.trim(), newUser.getUsername());
 
@@ -134,7 +134,7 @@ public class UserServiceShould {
 
         Token token = userService.login(username, password);
 
-        User loggedInUser = (User)userService.getRepository().getItem(token);
+        User loggedInUser = (User)userService.getLoggedInUserRepository().getItem(token);
 
         assertEquals("User was not logged in", username, loggedInUser.getUsername());
 

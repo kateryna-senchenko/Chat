@@ -5,12 +5,4 @@ package com.javaclasses.chatapp.storage;
  */
 public class UserRepository<UserId, User> extends InMemoryRepository<UserId, User> {
 
-    private static UserRepository userRepository = new UserRepository();
-
-    private UserRepository(){}
-
-    public static UserRepository getInstance( ) {
-        return userRepository;
-    }
-
 }
