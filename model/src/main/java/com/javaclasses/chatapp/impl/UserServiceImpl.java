@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserId register(String username, String password, String confirmPassword) throws RegistrationException {
 
-        username.trim();
+        username = username.trim();
 
         if(username.isEmpty() || username.contains(" ")){
             throw new RegistrationException("Username should not be empty or contain white spaces");
