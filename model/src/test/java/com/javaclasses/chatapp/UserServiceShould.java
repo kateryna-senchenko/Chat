@@ -7,6 +7,11 @@ import com.javaclasses.chatapp.dto.UserDTO;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -215,6 +220,45 @@ public class UserServiceShould {
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
             assertEquals("Specified combination of username and password was not found", e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void beSafeInMultithreading() throws ExecutionException, InterruptedException {
+
+        final int count = 100;
+        final ExecutorService executor = Executors.newFixedThreadPool(count);
+        final CountDownLatch startLatch = new CountDownLatch(count);
+        final List<Future<UserDTO>> results = new ArrayList<>();
+        AtomicInteger someDifferenceInUsername = new AtomicInteger(0);
+
+        Callable<UserDTO> callable = new Callable<UserDTO>() {
+
+            @Override
+            public UserDTO call() throws Exception {
+
+                startLatch.countDown();
+                startLatch.await();
+
+                String username = "username" + someDifferenceInUsername.getAndIncrement();
+                String password = "password";
+
+                RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+                UserId id = userService.register(registrationDTO);
+
+                return userService.findRegisteredUserById(id);
+            }
+        };
+
+        for(int i=0; i< count; i++){
+
+            Future<UserDTO> future = executor.submit(callable);
+            results.add(future);
+        }
+
+        for (Future<UserDTO> future : results){
+            future.get();
         }
 
     }
