@@ -1,7 +1,7 @@
 package com.javaclasses.chatapp.storage;
 
 import com.javaclasses.chatapp.Token;
-import com.javaclasses.chatapp.User;
+import com.javaclasses.chatapp.entities.User;
 
 /**
  * Implementation of the Repository interface for logged in user repository

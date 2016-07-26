@@ -1,6 +1,8 @@
 package com.javaclasses.chatapp;
 
 
+import com.javaclasses.chatapp.dto.UserDTO;
+import com.javaclasses.chatapp.entities.User;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import org.junit.Test;
 
@@ -9,7 +11,7 @@ import static org.junit.Assert.fail;
 
 public class UserServiceShould {
 
-    private final UserServiceImpl userService = UserServiceImpl.getInstance();
+    private final UserService userService = UserServiceImpl.getInstance();
 
     @Test
     public void registerUser() {
@@ -24,7 +26,7 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        User newUser = userService.findRegisteredUserById(newUserId);
+        UserDTO newUser = userService.findRegisteredUserById(newUserId);
 
         assertEquals("New user was not registered", username, newUser.getUsername());
 
@@ -81,7 +83,7 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        User newUser = userService.findRegisteredUserById(newUserId);
+        UserDTO newUser = userService.findRegisteredUserById(newUserId);
 
         assertEquals("New user was not registered", username.trim(), newUser.getUsername());
 
@@ -151,7 +153,7 @@ public class UserServiceShould {
             fail("Registered user was not logged in");
         }
 
-        User loggedInUser = userService.findLoggedInUserByToken(token);
+        UserDTO loggedInUser = userService.findLoggedInUserByToken(token);
 
         assertEquals("User was not logged in", username, loggedInUser.getUsername());
 

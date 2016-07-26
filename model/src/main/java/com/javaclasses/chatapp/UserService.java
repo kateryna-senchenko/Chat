@@ -1,5 +1,8 @@
 package com.javaclasses.chatapp;
 
+import com.javaclasses.chatapp.dto.UserDTO;
+
+
 /**
  * Public API of UserService
  */
@@ -25,16 +28,16 @@ public interface UserService {
     Token login(String username, String password) throws AuthenticationException;
 
     /**
-     * Gets registered user by user id
+     * Gets registered user dto by user id
      * @param id - user id
-     * @return user instance
+     * @return user dto instance
      */
-    User findRegisteredUserById(UserId id);
+    UserDTO findRegisteredUserById(UserId id);
 
     /**
-     * Gets logged in user by token
+     * Gets logged in user dto by token
      * @param token - access token
-     * @return user instance
+     * @return user dto instance
      */
-    User findLoggedInUserByToken(Token token);
+    UserDTO findLoggedInUserByToken(Token token);
 }

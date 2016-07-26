@@ -1,6 +1,6 @@
 package com.javaclasses.chatapp.storage;
 
-import com.javaclasses.chatapp.User;
+import com.javaclasses.chatapp.entities.User;
 import com.javaclasses.chatapp.UserId;
 
 /**

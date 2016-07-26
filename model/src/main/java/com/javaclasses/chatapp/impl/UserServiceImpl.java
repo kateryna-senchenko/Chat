@@ -2,6 +2,8 @@ package com.javaclasses.chatapp.impl;
 
 
 import com.javaclasses.chatapp.*;
+import com.javaclasses.chatapp.dto.UserDTO;
+import com.javaclasses.chatapp.entities.User;
 import com.javaclasses.chatapp.storage.TokenRepositoryImpl;
 import com.javaclasses.chatapp.storage.Repository;
 import com.javaclasses.chatapp.storage.UserRepositoryImpl;
@@ -111,12 +113,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findRegisteredUserById(UserId id) {
-        return userRepository.getItem(id);
+    public UserDTO findRegisteredUserById(UserId id) {
+
+        User user = userRepository.getItem(id);
+        return new UserDTO(user.getId(), user.getUsername());
     }
 
     @Override
-    public User findLoggedInUserByToken(Token token) {
-        return tokenUserRepository.getItem(token);
+    public UserDTO findLoggedInUserByToken(Token token) {
+
+        User user = tokenUserRepository.getItem(token);
+        return new UserDTO(user.getId(), user.getUsername());
     }
 }
