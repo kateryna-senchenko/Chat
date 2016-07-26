@@ -1,6 +1,8 @@
 package com.javaclasses.chatapp;
 
 
+import com.javaclasses.chatapp.dto.LoginDTO;
+import com.javaclasses.chatapp.dto.RegistrationDTO;
 import com.javaclasses.chatapp.dto.UserDTO;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import org.junit.Test;
@@ -18,9 +20,11 @@ public class UserServiceShould {
         String username = "Alice";
         String password = "fromwonderland";
 
+        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+
         UserId newUserId = null;
         try {
-            newUserId = userService.register(username, password, password);
+            newUserId = userService.register(registrationDTO);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
@@ -37,15 +41,16 @@ public class UserServiceShould {
         String username = "Scout";
         String password = "freeparrots";
 
+        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
 
         try {
-            userService.register(username, password, password);
+            userService.register(registrationDTO);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
         try {
-            userService.register(username, password, password);
+            userService.register(registrationDTO);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Specified username is not available", e.getMessage());
@@ -60,8 +65,10 @@ public class UserServiceShould {
         String password = "watertoelephants";
         String confirmPassword = password + "123";
 
+        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, confirmPassword);
+
         try {
-            userService.register(username, password, confirmPassword);
+            userService.register(registrationDTO);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Passwords do not match", e.getMessage());
@@ -75,9 +82,11 @@ public class UserServiceShould {
         String username = " Jem ";
         String password = "somethinghappend";
 
+        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+
         UserId newUserId = null;
         try {
-            newUserId = userService.register(username, password, password);
+            newUserId = userService.register(registrationDTO);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
@@ -94,8 +103,10 @@ public class UserServiceShould {
         String username = "";
         String password = "here's looking at you kid";
 
+        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+
         try {
-            userService.register(username, password, password);
+            userService.register(registrationDTO);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Username should not be empty or contain white spaces", e.getMessage());
@@ -109,8 +120,10 @@ public class UserServiceShould {
         String username = "Doctor Zhivago";
         String password = "one coffee please";
 
+        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+
         try {
-            userService.register(username, password, password);
+            userService.register(registrationDTO);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Username should not be empty or contain white spaces", e.getMessage());
@@ -124,8 +137,10 @@ public class UserServiceShould {
         String username = "Kevin";
         String password = "";
 
+        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+
         try {
-            userService.register(username, password, password);
+            userService.register(registrationDTO);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Password should not be empty", e.getMessage());
@@ -139,15 +154,18 @@ public class UserServiceShould {
         String username = "Mila";
         String password = "lostinnewyork";
 
+        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+
         try {
-            userService.register(username, password, password);
+            userService.register(registrationDTO);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
+        LoginDTO loginDTO = new LoginDTO(username, password);
         Token token = null;
         try {
-            token = userService.login(username, password);
+            token = userService.login(loginDTO);
         } catch (AuthenticationException e) {
             fail("Registered user was not logged in");
         }
@@ -164,8 +182,10 @@ public class UserServiceShould {
         String username = "Jacob";
         String password = "watertoelephants";
 
+        LoginDTO loginDTO = new LoginDTO(username, password);
+
         try {
-            userService.login(username, password);
+            userService.login(loginDTO);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
             assertEquals("Specified combination of username and password was not found", e.getMessage());
@@ -179,16 +199,19 @@ public class UserServiceShould {
         String username = "Ilsa";
         String password = "here's looking at you kid";
 
+        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+
         try {
-            userService.register(username, password, password);
+            userService.register(registrationDTO);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
         String wrongPassword = password + "123";
+        LoginDTO loginDTO = new LoginDTO(username, wrongPassword);
 
         try {
-            userService.login(username, wrongPassword);
+            userService.login(loginDTO);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
             assertEquals("Specified combination of username and password was not found", e.getMessage());

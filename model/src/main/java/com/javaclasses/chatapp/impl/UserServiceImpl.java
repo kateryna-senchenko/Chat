@@ -2,6 +2,8 @@ package com.javaclasses.chatapp.impl;
 
 
 import com.javaclasses.chatapp.*;
+import com.javaclasses.chatapp.dto.LoginDTO;
+import com.javaclasses.chatapp.dto.RegistrationDTO;
 import com.javaclasses.chatapp.dto.UserDTO;
 import com.javaclasses.chatapp.Token;
 import com.javaclasses.chatapp.entities.User;
@@ -38,16 +40,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserId register(String username, String password, String confirmPassword) throws RegistrationException {
+    public UserId register(RegistrationDTO registrationDTO) throws RegistrationException {
 
-        username = username.trim();
+        String username = registrationDTO.getUsername().trim();
 
         if (username.isEmpty() || username.contains(" ")) {
             log.error("Failed to register user {}: invalid username input", username);
             throw new RegistrationException("Username should not be empty or contain white spaces");
         }
 
-        if (password.isEmpty()) {
+        if (registrationDTO.getPassword().isEmpty()) {
             log.error("Failed to register user {}: invalid password input", username);
             throw new RegistrationException("Password should not be empty");
         }
@@ -63,14 +65,14 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (!(password.equals(confirmPassword))) {
+        if (!(registrationDTO.getPassword().equals(registrationDTO.getConfirmPassword()))) {
             log.error("Failed to register user {}: passwords do not match", username);
             throw new RegistrationException("Passwords do not match");
         }
 
         UserId newUserId = new UserId(count.getAndIncrement());
 
-        User newUser = new User(newUserId, username, password);
+        User newUser = new User(newUserId, username, registrationDTO.getPassword());
 
         userRepository.add(newUserId, newUser);
 
@@ -82,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Token login(String username, String password) throws AuthenticationException {
+    public Token login(LoginDTO loginDTO) throws AuthenticationException {
 
         Collection<User> allUsers = userRepository.getAll();
 
@@ -90,8 +92,8 @@ public class UserServiceImpl implements UserService {
 
         for (User user : allUsers) {
 
-            if (user.getUsername().equals(username)) {
-                if (user.getPassword().equals(password)) {
+            if (user.getUsername().equals(loginDTO.getUsername())) {
+                if (user.getPassword().equals(loginDTO.getPassword())) {
                     userToLogin = user;
                     break;
                 }
@@ -99,7 +101,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userToLogin == null) {
-            log.error("Failed to login user {}: either username or password is incorrect", username);
+            log.error("Failed to login user {}: either username or password is incorrect", loginDTO.getUsername());
             throw new AuthenticationException("Specified combination of username and password was not found");
         }
 
@@ -108,7 +110,7 @@ public class UserServiceImpl implements UserService {
         tokenRepository.add(newToken.getToken(), newToken);
 
          if(log.isInfoEnabled()){
-            log.info("Logged in user {}", username);
+            log.info("Logged in user {}", loginDTO.getUsername());
         }
 
         return newToken;
