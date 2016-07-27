@@ -27,6 +27,7 @@ public class DispatcherServlet extends HttpServlet {
 
         handlerRegistry.getHandler(uri + type).processRequest(request);
 
-        
+        response.setStatus(200);
+
     }
 }
