@@ -3,9 +3,31 @@ package com.javaclasses.chatapp;
 /**
  * Custom data type for user id
  */
-public class UserId extends EntityId {
+public class UserId  {
+
+    private final long id;
 
     public UserId(long id) {
-        super(id);
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserId userId = (UserId) o;
+
+        return id == userId.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 }

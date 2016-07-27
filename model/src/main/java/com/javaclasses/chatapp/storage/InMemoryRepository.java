@@ -1,13 +1,14 @@
 package com.javaclasses.chatapp.storage;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Abstract class of in memory repository
  */
 abstract class InMemoryRepository<TypeId, Type> implements Repository<TypeId, Type> {
 
-    private Map<TypeId, Type> entities = Collections.synchronizedMap(new HashMap<>());
+    private Map<TypeId, Type> entities = new ConcurrentHashMap<>();
 
     @Override
     public Type getItem(TypeId id) {

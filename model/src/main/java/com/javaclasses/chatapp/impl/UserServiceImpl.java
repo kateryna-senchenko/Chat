@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private static UserServiceImpl userService = new UserServiceImpl();
     private static Repository<UserId, User> userRepository;
     private static Repository<UUID, Token> tokenRepository;
+
     private AtomicLong count = new AtomicLong(0);
 
     private UserServiceImpl() {
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.add(newUserId, newUser);
 
-        if(log.isInfoEnabled()){
+        if (log.isInfoEnabled()) {
             log.info("Registered user {}", username);
         }
 
@@ -89,6 +90,7 @@ public class UserServiceImpl implements UserService {
         Collection<User> allUsers = userRepository.getAll();
 
         User userToLogin = null;
+
 
         for (User user : allUsers) {
 
@@ -109,7 +111,7 @@ public class UserServiceImpl implements UserService {
 
         tokenRepository.add(newToken.getToken(), newToken);
 
-         if(log.isInfoEnabled()){
+        if (log.isInfoEnabled()) {
             log.info("Logged in user {}", loginDTO.getUsername());
         }
 

@@ -229,7 +229,7 @@ public class UserServiceShould {
     @Test
     public void beSafeInMultithreading() throws ExecutionException, InterruptedException {
 
-        final int count = 20;
+        final int count = 100;
         final ExecutorService executor = Executors.newFixedThreadPool(count);
         final CountDownLatch startLatch = new CountDownLatch(count);
         final List<Future<UserDTO>> results = new ArrayList<>();
@@ -256,15 +256,15 @@ public class UserServiceShould {
             }
         };
 
-        for(int i=0; i< count; i++){
+        for(int i = 0; i < count; i++){
 
             Future<UserDTO> future = executor.submit(callable);
             results.add(future);
         }
 
-        Set<UserId> userIds = new HashSet<>();
+        Set<Long> userIds = new HashSet<>();
         for (Future<UserDTO> future : results){
-            userIds.add(future.get().getId());
+            userIds.add(future.get().getId().getId());
         }
 
         if(userIds.size() != count){

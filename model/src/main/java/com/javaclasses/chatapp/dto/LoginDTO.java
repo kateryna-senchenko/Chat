@@ -21,4 +21,20 @@ public class LoginDTO {
     public String getPassword() {
         return password;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LoginDTO loginDTO = (LoginDTO) o;
+
+        return username.equals(loginDTO.username);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return username.hashCode();
+    }
 }
