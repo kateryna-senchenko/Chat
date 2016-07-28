@@ -5,7 +5,7 @@ import com.javaclasses.chatapp.RegistrationException;
 import com.javaclasses.chatapp.TransferObject;
 import com.javaclasses.chatapp.UserId;
 import com.javaclasses.chatapp.UserService;
-import com.javaclasses.chatapp.dto.RegistrationDTO;
+import com.javaclasses.chatapp.dto.RegistrationDto;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +22,11 @@ public class RegistrationController implements Handler {
         final String password = request.getParameter("password");
         final String confirmPassword = request.getParameter("confirmPassword");
 
-        final RegistrationDTO registrationDTO = new RegistrationDTO(username, password, confirmPassword);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
 
         TransferObject transferObject;
         try {
-            UserId id = userService.register(registrationDTO);
+            UserId id = userService.register(registrationDto);
             transferObject = new TransferObject(userService.findRegisteredUserById(id).getUsername());
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (RegistrationException e) {

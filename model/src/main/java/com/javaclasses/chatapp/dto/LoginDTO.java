@@ -3,13 +3,13 @@ package com.javaclasses.chatapp.dto;
 /**
  * Login DTO
  */
-public class LoginDTO {
+public class LoginDto {
 
     private final String username;
     private final String password;
 
 
-    public LoginDTO(String username, String password) {
+    public LoginDto(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -27,9 +27,9 @@ public class LoginDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LoginDTO loginDTO = (LoginDTO) o;
+        LoginDto loginDto = (LoginDto) o;
 
-        return username.equals(loginDTO.username);
+        return username.equals(loginDto.username);
 
     }
 

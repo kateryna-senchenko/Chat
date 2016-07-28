@@ -1,6 +1,6 @@
 package com.javaclasses.chatapp.storage;
 
-import com.javaclasses.chatapp.Token;
+import com.javaclasses.chatapp.entities.Token;
 
 import java.util.UUID;
 

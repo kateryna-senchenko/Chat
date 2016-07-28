@@ -1,4 +1,4 @@
-package com.javaclasses.chatapp;
+package com.javaclasses.chatapp.entities;
 
 import com.javaclasses.chatapp.UserId;
 

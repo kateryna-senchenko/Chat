@@ -5,13 +5,13 @@ import com.javaclasses.chatapp.UserId;
 /**
  * User DTO
  */
-public class UserDTO {
+public class UserDto {
 
     private final UserId id;
 
     private String username;
 
-    public UserDTO(UserId id, String username) {
+    public UserDto(UserId id, String username) {
         this.id = id;
         this.username = username;
     }
@@ -33,9 +33,9 @@ public class UserDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserDTO userDTO = (UserDTO) o;
+        UserDto userDto = (UserDto) o;
 
-        return id.equals(userDTO.id);
+        return id.equals(userDto.id);
 
     }
 

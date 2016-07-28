@@ -2,10 +2,11 @@ package com.javaclasses.chatapp.impl;
 
 
 import com.javaclasses.chatapp.*;
-import com.javaclasses.chatapp.dto.LoginDTO;
-import com.javaclasses.chatapp.dto.RegistrationDTO;
-import com.javaclasses.chatapp.dto.UserDTO;
-import com.javaclasses.chatapp.Token;
+import com.javaclasses.chatapp.dto.LoginDto;
+import com.javaclasses.chatapp.dto.RegistrationDto;
+import com.javaclasses.chatapp.dto.TokenDto;
+import com.javaclasses.chatapp.dto.UserDto;
+import com.javaclasses.chatapp.entities.Token;
 import com.javaclasses.chatapp.entities.User;
 import com.javaclasses.chatapp.storage.TokenRepositoryImpl;
 import com.javaclasses.chatapp.storage.Repository;
@@ -41,16 +42,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserId register(RegistrationDTO registrationDTO) throws RegistrationException {
+    public UserId register(RegistrationDto registrationDto) throws RegistrationException {
 
-        String username = registrationDTO.getUsername().trim();
+        String username = registrationDto.getUsername().trim();
 
         if (username.isEmpty() || username.contains(" ")) {
             log.error("Failed to register user {}: invalid username input", username);
             throw new RegistrationException("Username should not be empty or contain white spaces");
         }
 
-        if (registrationDTO.getPassword().isEmpty()) {
+        if (registrationDto.getPassword().isEmpty()) {
             log.error("Failed to register user {}: invalid password input", username);
             throw new RegistrationException("Password should not be empty");
         }
@@ -66,14 +67,14 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (!(registrationDTO.getPassword().equals(registrationDTO.getConfirmPassword()))) {
+        if (!(registrationDto.getPassword().equals(registrationDto.getConfirmPassword()))) {
             log.error("Failed to register user {}: passwords do not match", username);
             throw new RegistrationException("Passwords do not match");
         }
 
         UserId newUserId = new UserId(count.getAndIncrement());
 
-        User newUser = new User(newUserId, username, registrationDTO.getPassword());
+        User newUser = new User(newUserId, username, registrationDto.getPassword());
 
         userRepository.add(newUserId, newUser);
 
@@ -85,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Token login(LoginDTO loginDTO) throws AuthenticationException {
+    public TokenDto login(LoginDto loginDto) throws AuthenticationException {
 
         Collection<User> allUsers = userRepository.getAll();
 
@@ -94,8 +95,8 @@ public class UserServiceImpl implements UserService {
 
         for (User user : allUsers) {
 
-            if (user.getUsername().equals(loginDTO.getUsername())) {
-                if (user.getPassword().equals(loginDTO.getPassword())) {
+            if (user.getUsername().equals(loginDto.getUsername())) {
+                if (user.getPassword().equals(loginDto.getPassword())) {
                     userToLogin = user;
                     break;
                 }
@@ -103,7 +104,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userToLogin == null) {
-            log.error("Failed to login user {}: either username or password is incorrect", loginDTO.getUsername());
+            log.error("Failed to login user {}: either username or password is incorrect", loginDto.getUsername());
             throw new AuthenticationException("Specified combination of username and password was not found");
         }
 
@@ -112,21 +113,21 @@ public class UserServiceImpl implements UserService {
         tokenRepository.add(newToken.getToken(), newToken);
 
         if (log.isInfoEnabled()) {
-            log.info("Logged in user {}", loginDTO.getUsername());
+            log.info("Logged in user {}", loginDto.getUsername());
         }
 
-        return newToken;
+        return new TokenDto(newToken.getToken(), newToken.getUserId());
     }
 
     @Override
-    public UserDTO findRegisteredUserById(UserId id) {
+    public UserDto findRegisteredUserById(UserId id) {
 
         User user = userRepository.getItem(id);
-        return new UserDTO(user.getId(), user.getUsername());
+        return new UserDto(user.getId(), user.getUsername());
     }
 
     @Override
-    public UserDTO findLoggedInUserByToken(Token token) {
+    public UserDto findLoggedInUserByToken(TokenDto token) {
 
         Token userToken = tokenRepository.getItem(token.getToken());
 

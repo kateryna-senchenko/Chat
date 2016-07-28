@@ -1,9 +1,11 @@
 package com.javaclasses.chatapp;
 
 
-import com.javaclasses.chatapp.dto.LoginDTO;
-import com.javaclasses.chatapp.dto.RegistrationDTO;
-import com.javaclasses.chatapp.dto.UserDTO;
+import com.javaclasses.chatapp.dto.LoginDto;
+import com.javaclasses.chatapp.dto.RegistrationDto;
+import com.javaclasses.chatapp.dto.TokenDto;
+import com.javaclasses.chatapp.dto.UserDto;
+import com.javaclasses.chatapp.entities.Token;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import org.junit.Test;
 
@@ -24,16 +26,16 @@ public class UserServiceShould {
         String username = "Alice";
         String password = "fromwonderland";
 
-        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         UserId newUserId = null;
         try {
-            newUserId = userService.register(registrationDTO);
+            newUserId = userService.register(registrationDto);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
-        UserDTO newUser = userService.findRegisteredUserById(newUserId);
+        UserDto newUser = userService.findRegisteredUserById(newUserId);
 
         assertEquals("New user was not registered", username, newUser.getUsername());
 
@@ -45,16 +47,16 @@ public class UserServiceShould {
         String username = "Scout";
         String password = "freeparrots";
 
-        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
-            userService.register(registrationDTO);
+            userService.register(registrationDto);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
         try {
-            userService.register(registrationDTO);
+            userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Specified username is not available", e.getMessage());
@@ -69,10 +71,10 @@ public class UserServiceShould {
         String password = "watertoelephants";
         String confirmPassword = password + "123";
 
-        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, confirmPassword);
+        RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
 
         try {
-            userService.register(registrationDTO);
+            userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Passwords do not match", e.getMessage());
@@ -86,16 +88,16 @@ public class UserServiceShould {
         String username = " Jem ";
         String password = "somethinghappend";
 
-        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         UserId newUserId = null;
         try {
-            newUserId = userService.register(registrationDTO);
+            newUserId = userService.register(registrationDto);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
-        UserDTO newUser = userService.findRegisteredUserById(newUserId);
+        UserDto newUser = userService.findRegisteredUserById(newUserId);
 
         assertEquals("New user was not registered", username.trim(), newUser.getUsername());
 
@@ -107,10 +109,10 @@ public class UserServiceShould {
         String username = "";
         String password = "here's looking at you kid";
 
-        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
-            userService.register(registrationDTO);
+            userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Username should not be empty or contain white spaces", e.getMessage());
@@ -124,10 +126,10 @@ public class UserServiceShould {
         String username = "Doctor Zhivago";
         String password = "one coffee please";
 
-        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
-            userService.register(registrationDTO);
+            userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Username should not be empty or contain white spaces", e.getMessage());
@@ -141,10 +143,10 @@ public class UserServiceShould {
         String username = "Kevin";
         String password = "";
 
-        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
-            userService.register(registrationDTO);
+            userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals("Password should not be empty", e.getMessage());
@@ -158,23 +160,23 @@ public class UserServiceShould {
         String username = "Mila";
         String password = "lostinnewyork";
 
-        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
-            userService.register(registrationDTO);
+            userService.register(registrationDto);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
-        LoginDTO loginDTO = new LoginDTO(username, password);
-        Token token = null;
+        LoginDto loginDto = new LoginDto(username, password);
+        TokenDto token = null;
         try {
-            token = userService.login(loginDTO);
+            token = userService.login(loginDto);
         } catch (AuthenticationException e) {
             fail("Registered user was not logged in");
         }
 
-        UserDTO loggedInUser = userService.findLoggedInUserByToken(token);
+        UserDto loggedInUser = userService.findLoggedInUserByToken(token);
 
         assertEquals("User was not logged in", username, loggedInUser.getUsername());
 
@@ -186,10 +188,10 @@ public class UserServiceShould {
         String username = "Jacob";
         String password = "watertoelephants";
 
-        LoginDTO loginDTO = new LoginDTO(username, password);
+        LoginDto loginDto = new LoginDto(username, password);
 
         try {
-            userService.login(loginDTO);
+            userService.login(loginDto);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
             assertEquals("Specified combination of username and password was not found", e.getMessage());
@@ -203,19 +205,19 @@ public class UserServiceShould {
         String username = "Ilsa";
         String password = "here's looking at you kid";
 
-        RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
+        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
-            userService.register(registrationDTO);
+            userService.register(registrationDto);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
         String wrongPassword = password + "123";
-        LoginDTO loginDTO = new LoginDTO(username, wrongPassword);
+        LoginDto loginDto = new LoginDto(username, wrongPassword);
 
         try {
-            userService.login(loginDTO);
+            userService.login(loginDto);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
             assertEquals("Specified combination of username and password was not found", e.getMessage());
@@ -229,39 +231,35 @@ public class UserServiceShould {
         final int count = 100;
         final ExecutorService executor = Executors.newFixedThreadPool(count);
         final CountDownLatch startLatch = new CountDownLatch(count);
-        final List<Future<Token>> results = new ArrayList<>();
+        final List<Future<TokenDto>> results = new ArrayList<>();
         AtomicInteger someDifferenceInUsername = new AtomicInteger(0);
 
-        Callable<Token> callable = new Callable<Token>() {
+        Callable<TokenDto> callable = () -> {
 
-            @Override
-            public Token call() throws Exception {
+            startLatch.countDown();
+            startLatch.await();
 
-                startLatch.countDown();
-                startLatch.await();
+            String username = "username" + someDifferenceInUsername.getAndIncrement();
+            String password = "password";
 
-                String username = "username" + someDifferenceInUsername.getAndIncrement();
-                String password = "password";
+            RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+            userService.register(registrationDto);
 
-                RegistrationDTO registrationDTO = new RegistrationDTO(username, password, password);
-                userService.register(registrationDTO);
+            LoginDto loginDto = new LoginDto(username, password);
 
-                LoginDTO loginDTO = new LoginDTO(username, password);
-
-                return userService.login(loginDTO);
-            }
+            return userService.login(loginDto);
         };
 
         for (int i = 0; i < count; i++) {
 
-            Future<Token> future = executor.submit(callable);
+            Future<TokenDto> future = executor.submit(callable);
             results.add(future);
         }
 
         Set<Long> userIds = new HashSet<>();
         Set<UUID> tokens = new HashSet<>();
 
-        for (Future<Token> future : results) {
+        for (Future<TokenDto> future : results) {
             userIds.add(future.get().getUserId().getId());
             tokens.add(future.get().getToken());
         }

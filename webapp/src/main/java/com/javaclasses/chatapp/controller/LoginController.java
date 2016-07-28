@@ -1,10 +1,10 @@
 package com.javaclasses.chatapp.controller;
 
 import com.javaclasses.chatapp.AuthenticationException;
-import com.javaclasses.chatapp.Token;
+import com.javaclasses.chatapp.entities.Token;
 import com.javaclasses.chatapp.TransferObject;
 import com.javaclasses.chatapp.UserService;
-import com.javaclasses.chatapp.dto.LoginDTO;
+import com.javaclasses.chatapp.dto.LoginDto;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,12 +20,12 @@ public class LoginController implements Handler{
         final String username = request.getParameter("username");
         final String password = request.getParameter("password");
 
-        final LoginDTO loginDTO = new LoginDTO(username, password);
+        final LoginDto loginDto = new LoginDto(username, password);
 
         TransferObject transferObject;
 
         try {
-            Token token = userService.login(loginDTO);
+            Token token = userService.login(loginDto);
             transferObject = new TransferObject(userService.findLoggedInUserByToken(token).getUsername());
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (AuthenticationException e) {

@@ -3,14 +3,14 @@ package com.javaclasses.chatapp.dto;
 /**
  * Registration DTO
  */
-public class RegistrationDTO {
+public class RegistrationDto {
 
     private final String username;
     private final String password;
     private final String confirmPassword;
 
 
-    public RegistrationDTO(String username, String password, String confirmPassword) {
+    public RegistrationDto(String username, String password, String confirmPassword) {
         this.username = username;
         this.password = password;
         this.confirmPassword = confirmPassword;
@@ -33,7 +33,7 @@ public class RegistrationDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        RegistrationDTO that = (RegistrationDTO) o;
+        RegistrationDto that = (RegistrationDto) o;
 
         return username.equals(that.username);
 

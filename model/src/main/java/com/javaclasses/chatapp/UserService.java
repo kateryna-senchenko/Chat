@@ -1,8 +1,9 @@
 package com.javaclasses.chatapp;
 
-import com.javaclasses.chatapp.dto.LoginDTO;
-import com.javaclasses.chatapp.dto.RegistrationDTO;
-import com.javaclasses.chatapp.dto.UserDTO;
+import com.javaclasses.chatapp.dto.LoginDto;
+import com.javaclasses.chatapp.dto.RegistrationDto;
+import com.javaclasses.chatapp.dto.TokenDto;
+import com.javaclasses.chatapp.dto.UserDto;
 
 
 /**
@@ -12,31 +13,31 @@ public interface UserService {
 
     /**
      * Registers new user
-     * @param registrationDTO - contains String username, String password, String confirmPassword
+     * @param registrationDto - contains String username, String password, String confirmPassword
      * @return unique UserId
      * @throws RegistrationException if registration fails
      */
-    UserId register(RegistrationDTO registrationDTO) throws RegistrationException;
+    UserId register(RegistrationDto registrationDto) throws RegistrationException;
 
     /**
      * Logins registered user
-     * @param loginDTO - contains String username and String password
-     * @return access Token
+     * @param loginDto - contains String username and String password
+     * @return access Token DTO
      * @throws AuthenticationException if authentication fails
      */
-    Token login(LoginDTO loginDTO) throws AuthenticationException;
+    TokenDto login(LoginDto loginDto) throws AuthenticationException;
 
     /**
      * Gets registered user dto by user id
      * @param id - user id
      * @return user dto instance
      */
-    UserDTO findRegisteredUserById(UserId id);
+    UserDto findRegisteredUserById(UserId id);
 
     /**
      * Gets logged in user dto by token
-     * @param token - access token
+     * @param token - access token DTO
      * @return user dto instance
      */
-    UserDTO findLoggedInUserByToken(Token token);
+    UserDto findLoggedInUserByToken(TokenDto token);
 }
