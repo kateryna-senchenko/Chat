@@ -2,6 +2,7 @@ package com.javaclasses.chatapp;
 
 
 import com.javaclasses.chatapp.controller.Handler;
+import com.javaclasses.chatapp.controller.LoginController;
 import com.javaclasses.chatapp.controller.RegistrationController;
 
 import java.util.HashMap;
@@ -14,16 +15,17 @@ public class HandlerRegistry {
 
     private HandlerRegistry() {
 
-         registry = new HashMap<String, Handler>() {{
+        registry = new HashMap<String, Handler>() {{
             put("/registrationPOST", new RegistrationController());
-    }};
+            put("/loginPOST", new LoginController());
+        }};
     }
 
     public static HandlerRegistry getInstance() {
         return handlerRegistry;
     }
 
-    public Handler getHandler(String key){
+    public Handler getHandler(String key) {
         return registry.get(key);
     }
 }
