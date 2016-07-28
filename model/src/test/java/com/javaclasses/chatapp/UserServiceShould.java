@@ -7,10 +7,7 @@ import com.javaclasses.chatapp.dto.UserDTO;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -43,7 +40,7 @@ public class UserServiceShould {
     }
 
     @Test
-    public void failRegisterUserWithDuplicateUsername()  {
+    public void failRegisterUserWithDuplicateUsername() {
 
         String username = "Scout";
         String password = "freeparrots";
@@ -66,7 +63,7 @@ public class UserServiceShould {
     }
 
     @Test
-    public void failRegisterUserWithNotMatchingPasswords(){
+    public void failRegisterUserWithNotMatchingPasswords() {
 
         String username = "Jacob";
         String password = "watertoelephants";
@@ -105,7 +102,7 @@ public class UserServiceShould {
     }
 
     @Test
-    public void failRegisterUserWithEmptyUsername(){
+    public void failRegisterUserWithEmptyUsername() {
 
         String username = "";
         String password = "here's looking at you kid";
@@ -122,7 +119,7 @@ public class UserServiceShould {
     }
 
     @Test
-    public void failRegisterUserWithWhiteSapcesUsername(){
+    public void failRegisterUserWithWhiteSapcesUsername() {
 
         String username = "Doctor Zhivago";
         String password = "one coffee please";
@@ -139,7 +136,7 @@ public class UserServiceShould {
     }
 
     @Test
-    public void failRegisterUserWithEmptyPassword(){
+    public void failRegisterUserWithEmptyPassword() {
 
         String username = "Kevin";
         String password = "";
@@ -156,7 +153,7 @@ public class UserServiceShould {
     }
 
     @Test
-    public void loginUser()  {
+    public void loginUser() {
 
         String username = "Mila";
         String password = "lostinnewyork";
@@ -184,7 +181,7 @@ public class UserServiceShould {
     }
 
     @Test
-    public void failLoginUnregisteredUser(){
+    public void failLoginUnregisteredUser() {
 
         String username = "Jacob";
         String password = "watertoelephants";
@@ -232,13 +229,13 @@ public class UserServiceShould {
         final int count = 100;
         final ExecutorService executor = Executors.newFixedThreadPool(count);
         final CountDownLatch startLatch = new CountDownLatch(count);
-        final List<Future<UserDTO>> results = new ArrayList<>();
+        final List<Future<Token>> results = new ArrayList<>();
         AtomicInteger someDifferenceInUsername = new AtomicInteger(0);
 
-        Callable<UserDTO> callable = new Callable<UserDTO>() {
+        Callable<Token> callable = new Callable<Token>() {
 
             @Override
-            public UserDTO call() throws Exception {
+            public Token call() throws Exception {
 
                 startLatch.countDown();
                 startLatch.await();
@@ -250,25 +247,31 @@ public class UserServiceShould {
                 userService.register(registrationDTO);
 
                 LoginDTO loginDTO = new LoginDTO(username, password);
-                Token token = userService.login(loginDTO);
 
-                return userService.findLoggedInUserByToken(token);
+                return userService.login(loginDTO);
             }
         };
 
-        for(int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
 
-            Future<UserDTO> future = executor.submit(callable);
+            Future<Token> future = executor.submit(callable);
             results.add(future);
         }
 
         Set<Long> userIds = new HashSet<>();
-        for (Future<UserDTO> future : results){
-            userIds.add(future.get().getId().getId());
+        Set<UUID> tokens = new HashSet<>();
+
+        for (Future<Token> future : results) {
+            userIds.add(future.get().getUserId().getId());
+            tokens.add(future.get().getToken());
         }
 
-        if(userIds.size() != count){
+        if (userIds.size() != count) {
             fail("Generated user ids are not unique");
+        }
+
+        if (tokens.size() != count) {
+            fail("Generated tokens are not unique");
         }
 
     }
