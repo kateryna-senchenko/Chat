@@ -9,16 +9,19 @@ import java.util.UUID;
  */
 public class Token {
 
-    private final UUID token;
+    private UUID token;
     private final UserId userId;
 
-    public Token(UUID token, UserId userId) {
-        this.token = token;
+    public Token(UserId userId) {
         this.userId = userId;
     }
 
     public UUID getToken() {
         return token;
+    }
+
+    public void setToken(UUID token) {
+        this.token = token;
     }
 
     public UserId getUserId() {

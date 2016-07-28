@@ -16,12 +16,16 @@ abstract class InMemoryRepository<TypeId, Type> implements Repository<TypeId, Ty
     }
 
     @Override
-    public void add(TypeId id, Type item) {
+    public TypeId add(Type item) {
+        TypeId id = generateId();
         entities.put(id, item);
+        return id;
     }
 
     @Override
     public Collection<Type> getAll() {
         return entities.values();
     }
+
+    public abstract TypeId generateId();
 }

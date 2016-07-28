@@ -7,20 +7,23 @@ import com.javaclasses.chatapp.UserId;
  */
 public class User {
 
-    private final UserId id;
+    private UserId id;
 
     private String username;
 
     private String password;
 
-    public User(UserId id, String username, String password) {
-        this.id = id;
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
     public UserId getId() {
         return id;
+    }
+
+    public void setId(UserId id) {
+        this.id = id;
     }
 
     public String getUsername() {

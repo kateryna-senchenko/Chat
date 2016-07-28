@@ -16,5 +16,10 @@ public class TokenRepositoryImpl extends InMemoryRepository<UUID, Token> {
     public static Repository<UUID, Token> getInstance() {
         return tokenRepository;
     }
+
+    @Override
+    public UUID generateId() {
+        return UUID.randomUUID();
+    }
 }
 

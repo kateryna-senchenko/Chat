@@ -29,7 +29,6 @@ public class UserServiceImpl implements UserService {
     private static Repository<UserId, User> userRepository;
     private static Repository<UUID, Token> tokenRepository;
 
-    private AtomicLong count = new AtomicLong(0);
 
     private UserServiceImpl() {
         userRepository = UserRepositoryImpl.getInstance();
@@ -72,11 +71,10 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("Passwords do not match");
         }
 
-        UserId newUserId = new UserId(count.getAndIncrement());
 
-        User newUser = new User(newUserId, username, registrationDto.getPassword());
-
-        userRepository.add(newUserId, newUser);
+        User newUser = new User(username, registrationDto.getPassword());
+        UserId newUserId = userRepository.add(newUser);
+        newUser.setId(newUserId);
 
         if (log.isInfoEnabled()) {
             log.info("Registered user {}", username);
@@ -108,9 +106,10 @@ public class UserServiceImpl implements UserService {
             throw new AuthenticationException("Specified combination of username and password was not found");
         }
 
-        Token newToken = new Token(UUID.randomUUID(), userToLogin.getId());
+        Token newToken = new Token(userToLogin.getId());
 
-        tokenRepository.add(newToken.getToken(), newToken);
+        UUID token = tokenRepository.add(newToken);
+        newToken.setToken(token);
 
         if (log.isInfoEnabled()) {
             log.info("Logged in user {}", loginDto.getUsername());
