@@ -8,6 +8,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -55,10 +56,45 @@ public class DispatcherServletShould {
         }
 
         int expectedStatus = 200;
-        String expectedResult = "Balto";
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", expectedResult, result.toString());
+        assertEquals("Post request failed", username, result.toString());
+
+    }
+
+    @Test
+    public void acceptLoginRequest() throws IOException {
+
+        final String url = "http://localhost:8080/login";
+
+        final String username = "Balto";
+        final String password = "thecallofthewild";
+
+        List<NameValuePair> parameters = new ArrayList<>();
+        parameters.add(new BasicNameValuePair("username", username));
+        parameters.add(new BasicNameValuePair("password", password));
+
+        HttpPost postRequest = new HttpPost(url);
+        postRequest.setHeader("User-Agent", USER_AGENT);
+
+        postRequest.setEntity(new UrlEncodedFormEntity(parameters));
+
+        HttpResponse postResponse = client.execute(postRequest);
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(postResponse.getEntity().getContent()));
+
+        StringBuilder result = new StringBuilder();
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            result.append(line);
+        }
+
+        int expectedStatus = 200;
+      
+        assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
+        assertEquals("Post request failed", username, result.toString());
 
     }
 }
