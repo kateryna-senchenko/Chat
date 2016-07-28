@@ -1,6 +1,5 @@
 package com.javaclasses.chatapp;
 
-
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -14,6 +13,7 @@ import org.junit.Test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +26,14 @@ public class DispatcherServletShould {
     private final HttpClient client = HttpClientBuilder.create().build();
 
     @Test
-    public void acceptRegistrationRequest() throws IOException {
+    public void acceptSuccessfulRegistrationRequest() throws IOException {
 
         final String url = "http://localhost:8080/registration";
 
         final String username = "Balto";
         final String password = "thecallofthewild";
 
-        List<NameValuePair> parameters = new ArrayList<>();
+        final List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("username", username));
         parameters.add(new BasicNameValuePair("password", password));
         parameters.add(new BasicNameValuePair("confirmPassword", password));
@@ -55,7 +55,7 @@ public class DispatcherServletShould {
             result.append(line);
         }
 
-        int expectedStatus = 200;
+        final int expectedStatus = 200;
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
         assertEquals("Post request failed", username, result.toString());
@@ -63,14 +63,104 @@ public class DispatcherServletShould {
     }
 
     @Test
-    public void acceptLoginRequest() throws IOException {
+    public void acceptRegistrationRequestWithDuplicateUsername() throws IOException {
+
+        final String url = "http://localhost:8080/registration";
+
+        final String username = "Alue";
+        final String password = "thecallofthewild";
+
+        final List<NameValuePair> parameters = new ArrayList<>();
+        parameters.add(new BasicNameValuePair("username", username));
+        parameters.add(new BasicNameValuePair("password", password));
+        parameters.add(new BasicNameValuePair("confirmPassword", password));
+
+        HttpPost postRequest = new HttpPost(url);
+        postRequest.setHeader("User-Agent", USER_AGENT);
+
+        postRequest.setEntity(new UrlEncodedFormEntity(parameters));
+
+        client.execute(postRequest);
+
+        HttpResponse postResponse = client.execute(postRequest);
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(postResponse.getEntity().getContent()));
+
+        StringBuilder result = new StringBuilder();
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            result.append(line);
+        }
+
+        final int expectedStatus = 500;
+        final String expectedMessage = "Specified username is not available";
+
+        assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
+        assertEquals("Post request failed", expectedMessage, result.toString());
+
+    }
+
+    @Test
+    public void acceptSuccessfulLoginRequest() throws IOException {
+
+        final String registrationUrl = "http://localhost:8080/registration";
+
+        final String username = "BooReadley";
+        final String password = "boo";
+
+        final List<NameValuePair> registrationParameters = new ArrayList<>();
+        registrationParameters.add(new BasicNameValuePair("username", username));
+        registrationParameters.add(new BasicNameValuePair("password", password));
+        registrationParameters.add(new BasicNameValuePair("confirmPassword", password));
+
+        HttpPost registrationPostRequest = new HttpPost(registrationUrl);
+        registrationPostRequest.setHeader("User-Agent", USER_AGENT);
+
+        registrationPostRequest.setEntity(new UrlEncodedFormEntity(registrationParameters));
+
+        client.execute(registrationPostRequest);
+
+        final String loginUrl = "http://localhost:8080/login";
+
+        final List<NameValuePair> loginParameters = new ArrayList<>();
+        loginParameters.add(new BasicNameValuePair("username", username));
+        loginParameters.add(new BasicNameValuePair("password", password));
+
+        HttpPost loginPostRequest = new HttpPost(loginUrl);
+        loginPostRequest.setHeader("User-Agent", USER_AGENT);
+
+        loginPostRequest.setEntity(new UrlEncodedFormEntity(loginParameters));
+
+        HttpResponse postResponse = client.execute(loginPostRequest);
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(postResponse.getEntity().getContent()));
+
+        StringBuilder result = new StringBuilder();
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            result.append(line);
+        }
+
+        final int expectedStatus = 200;
+
+        assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
+        assertEquals("Post request failed", username, result.toString());
+
+    }
+
+    @Test
+    public void acceptLoginRequestFromUnregisteredUser() throws IOException {
 
         final String url = "http://localhost:8080/login";
 
-        final String username = "Balto";
-        final String password = "thecallofthewild";
+        final String username = "AtticusFinch";
+        final String password = "ForGod'sSakeBelieveHim";
 
-        List<NameValuePair> parameters = new ArrayList<>();
+        final List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("username", username));
         parameters.add(new BasicNameValuePair("password", password));
 
@@ -91,10 +181,10 @@ public class DispatcherServletShould {
             result.append(line);
         }
 
-        int expectedStatus = 200;
-      
-        assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", username, result.toString());
+        final int expectedStatus = 500;
+        final String expectedMessage = "Specified combination of username and password was not found";
 
+        assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
+        assertEquals("Post request failed", expectedMessage, result.toString());
     }
 }
