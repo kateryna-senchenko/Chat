@@ -1,6 +1,9 @@
 package com.javaclasses.chatapp;
 
 
+import com.javaclasses.chatapp.controller.Handler;
+import com.javaclasses.chatapp.controller.RegistrationController;
+
 import java.util.HashMap;
 import java.util.Map;
 

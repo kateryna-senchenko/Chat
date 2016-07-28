@@ -1,5 +1,7 @@
 package com.javaclasses.chatapp;
 
+import com.javaclasses.chatapp.controller.Handler;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,18 +18,29 @@ public class DispatcherServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        processRequest(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        final String uri = request.getRequestURI();
-        final String type = request.getMethod();
-
-        handlerRegistry.getHandler(uri + type).processRequest(request);
-
-        response.setStatus(200);
+        processRequest(request, response);
 
     }
+
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        final String uri = request.getRequestURI();
+        final String method = request.getMethod();
+
+        final Handler handler = handlerRegistry.getHandler(uri + method);
+
+        if (handler == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } else {
+            TransferObject transferObject = handler.processRequest(request);
+            response.getWriter().write(transferObject.getContent());
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+    }
+
 }
