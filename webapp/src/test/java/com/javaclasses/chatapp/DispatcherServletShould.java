@@ -54,10 +54,10 @@ public class DispatcherServletShould {
             result.append(line);
         }
 
-        String expectedStatus = "HTTP/1.1 200";
+        int expectedStatus = 200;
         String expectedResult = "Balto";
 
-        assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().toString());
+        assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
         assertEquals("Post request failed", expectedResult, result.toString());
 
     }

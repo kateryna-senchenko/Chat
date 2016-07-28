@@ -32,6 +32,7 @@ public class DispatcherServlet extends HttpServlet {
         final String uri = request.getRequestURI();
         final String method = request.getMethod();
 
+
         final Handler handler = handlerRegistry.getHandler(uri + method);
 
         if (handler == null) {

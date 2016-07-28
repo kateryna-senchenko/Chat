@@ -15,7 +15,7 @@ public class HandlerRegistry {
     private HandlerRegistry() {
 
          registry = new HashMap<String, Handler>() {{
-            put("registrationPOST", new RegistrationController());
+            put("/registrationPOST", new RegistrationController());
     }};
     }
 
