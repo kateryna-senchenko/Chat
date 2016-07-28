@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         tokenRepository = TokenRepositoryImpl.getInstance();
     }
 
-    public static UserServiceImpl getInstance() {
+    public static UserService getInstance() {
         return userService;
     }
 

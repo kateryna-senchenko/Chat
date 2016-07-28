@@ -12,12 +12,14 @@ import java.util.List;
 public class ChatDto {
 
     private final ChatId chatId;
+    private final String chatName;
     private final UserId owner;
     private final List<UserId> members;
     private final List<Message> messages;
 
-    public ChatDto(ChatId chatId, UserId owner, List<UserId> members, List<Message> messages) {
+    public ChatDto(ChatId chatId, String chatName, UserId owner, List<UserId> members, List<Message> messages) {
         this.chatId = chatId;
+        this.chatName = chatName;
         this.owner = owner;
         this.members = members;
         this.messages = messages;
@@ -25,6 +27,10 @@ public class ChatDto {
 
     public ChatId getChatId() {
         return chatId;
+    }
+
+    public String getChatName() {
+        return chatName;
     }
 
     public UserId getOwner() {

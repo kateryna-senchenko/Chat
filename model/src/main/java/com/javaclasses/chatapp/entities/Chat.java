@@ -12,15 +12,16 @@ import java.util.List;
 public class Chat {
 
     private final ChatId chatId;
+    private String chatName;
     private final UserId owner;
-    private final List<UserId> members;
-    private final List<Message> messages;
+    private List<UserId> members;
+    private List<Message> messages;
 
-    public Chat(ChatId chatId, UserId owner, List<UserId> members, List<Message> messages) {
+    public Chat(ChatId chatId, String chatName, UserId owner) {
         this.chatId = chatId;
+        this.chatName = chatName;
         this.owner = owner;
-        this.members = members;
-        this.messages = messages;
+
     }
 
     public ChatId getChatId() {
@@ -37,6 +38,18 @@ public class Chat {
 
     public List<Message> getMessages() {
         return messages;
+    }
+
+    public void setChatName(String chatName) {
+        this.chatName = chatName;
+    }
+
+    public void setMembers(List<UserId> members) {
+        this.members = members;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 
     @Override

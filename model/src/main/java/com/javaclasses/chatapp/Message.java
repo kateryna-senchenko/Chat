@@ -5,13 +5,13 @@ package com.javaclasses.chatapp;
  */
 public class Message {
 
-    private final ChatId chatId;
     private final UserId author;
+    private final ChatId chatId;
     private final String message;
 
-    public Message(ChatId chatId, UserId author, String message) {
-        this.chatId = chatId;
+    public Message(UserId author, ChatId chatId, String message) {
         this.author = author;
+        this.chatId = chatId;
         this.message = message;
     }
 
