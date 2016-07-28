@@ -239,15 +239,19 @@ public class UserServiceShould {
             startLatch.countDown();
             startLatch.await();
 
-            String username = "username" + someDifferenceInUsername.getAndIncrement();
-            String password = "password";
+            final String username = "username" + someDifferenceInUsername.getAndIncrement();
+            final String password = "password";
 
-            RegistrationDto registrationDto = new RegistrationDto(username, password, password);
-            userService.register(registrationDto);
+            final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+            final UserId userId = userService.register(registrationDto);
 
-            LoginDto loginDto = new LoginDto(username, password);
+            final LoginDto loginDto = new LoginDto(username, password);
 
-            return userService.login(loginDto);
+            final TokenDto tokenDto = userService.login(loginDto);
+
+            assertEquals("User ids after registration and login are not the same", userId, tokenDto.getUserId());
+
+            return tokenDto;
         };
 
         for (int i = 0; i < count; i++) {
@@ -256,8 +260,8 @@ public class UserServiceShould {
             results.add(future);
         }
 
-        Set<Long> userIds = new HashSet<>();
-        Set<UUID> tokens = new HashSet<>();
+        final Set<Long> userIds = new HashSet<>();
+        final Set<UUID> tokens = new HashSet<>();
 
         for (Future<TokenDto> future : results) {
             userIds.add(future.get().getUserId().getId());
