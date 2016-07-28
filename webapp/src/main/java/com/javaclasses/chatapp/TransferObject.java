@@ -3,13 +3,13 @@ package com.javaclasses.chatapp;
 
 public class TransferObject {
 
-    private String content;
+    private final String content;
 
-    public void setContent(String content) {
+    public TransferObject(String content) {
         this.content = content;
     }
 
-    public String getContent() {
+    /* package */ String getContent() {
         return content;
     }
 }

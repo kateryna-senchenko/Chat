@@ -8,28 +8,30 @@ import com.javaclasses.chatapp.dto.LoginDTO;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class LoginController implements Handler{
 
     private final UserService userService = UserServiceImpl.getInstance();
 
     @Override
-    public TransferObject processRequest(HttpServletRequest request) {
+    public TransferObject processRequest(HttpServletRequest request, HttpServletResponse response) {
 
         final String username = request.getParameter("username");
         final String password = request.getParameter("password");
 
-        LoginDTO loginDTO = new LoginDTO(username, password);
+        final LoginDTO loginDTO = new LoginDTO(username, password);
 
-        TransferObject transferObject = new TransferObject();
+        TransferObject transferObject;
 
         try {
             Token token = userService.login(loginDTO);
-            transferObject.setContent(userService.findLoggedInUserByToken(token).getUsername());
+            transferObject = new TransferObject(userService.findLoggedInUserByToken(token).getUsername());
+            response.setStatus(HttpServletResponse.SC_OK);
         } catch (AuthenticationException e) {
-            transferObject.setContent(e.getMessage());
+            transferObject = new TransferObject(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-
 
         return transferObject;
     }

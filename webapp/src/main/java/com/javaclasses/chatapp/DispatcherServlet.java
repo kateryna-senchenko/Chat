@@ -10,11 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebServlet(name = "DispatcherServlet")
 public class DispatcherServlet extends HttpServlet {
 
 
-    private HandlerRegistry handlerRegistry = HandlerRegistry.getInstance();
+    private final HandlerRegistry handlerRegistry = HandlerRegistry.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -32,15 +31,15 @@ public class DispatcherServlet extends HttpServlet {
         final String uri = request.getRequestURI();
         final String method = request.getMethod();
 
+        final CompoundKey key = new CompoundKey(uri, method);
 
-        final Handler handler = handlerRegistry.getHandler(uri + method);
+        final Handler handler = handlerRegistry.getHandler(key);
 
         if (handler == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
-            TransferObject transferObject = handler.processRequest(request);
+            TransferObject transferObject = handler.processRequest(request, response);
             response.getWriter().write(transferObject.getContent());
-            response.setStatus(HttpServletResponse.SC_OK);
         }
     }
 

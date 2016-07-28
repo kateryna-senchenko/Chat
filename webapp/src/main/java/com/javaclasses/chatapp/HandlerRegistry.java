@@ -8,24 +8,24 @@ import com.javaclasses.chatapp.controller.RegistrationController;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HandlerRegistry {
+/* package */ class HandlerRegistry {
 
     private static HandlerRegistry handlerRegistry = new HandlerRegistry();
-    private final Map<String, Handler> registry;
+    private final Map<CompoundKey, Handler> registry;
 
     private HandlerRegistry() {
 
-        registry = new HashMap<String, Handler>() {{
-            put("/registrationPOST", new RegistrationController());
-            put("/loginPOST", new LoginController());
+        registry = new HashMap<CompoundKey, Handler>() {{
+            put(new CompoundKey("/registration", "POST"), new RegistrationController());
+            put(new CompoundKey("/login", "POST"), new LoginController());
         }};
     }
 
-    public static HandlerRegistry getInstance() {
+    /* package */ static HandlerRegistry getInstance() {
         return handlerRegistry;
     }
 
-    public Handler getHandler(String key) {
+    /* package */ Handler getHandler(CompoundKey key) {
         return registry.get(key);
     }
 }
