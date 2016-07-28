@@ -1,4 +1,4 @@
-package com.javaclasses.chatapp.dto;
+package com.javaclasses.chatapp.entities;
 
 import com.javaclasses.chatapp.ChatId;
 import com.javaclasses.chatapp.Message;
@@ -7,16 +7,16 @@ import com.javaclasses.chatapp.UserId;
 import java.util.List;
 
 /**
- * Chat DTO
+ * Chat entity
  */
-public class ChatDto {
+public class Chat {
 
     private final ChatId chatId;
     private final UserId owner;
     private final List<UserId> members;
     private final List<Message> messages;
 
-    public ChatDto(ChatId chatId, UserId owner, List<UserId> members, List<Message> messages) {
+    public Chat(ChatId chatId, UserId owner, List<UserId> members, List<Message> messages) {
         this.chatId = chatId;
         this.owner = owner;
         this.members = members;
@@ -44,9 +44,9 @@ public class ChatDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ChatDto chatDto = (ChatDto) o;
+        Chat chat = (Chat) o;
 
-        return chatId.equals(chatDto.chatId);
+        return chatId.equals(chat.chatId);
 
     }
 
