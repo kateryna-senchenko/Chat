@@ -16,7 +16,7 @@ import java.util.Map;
         registry = new HashMap<CompoundKey, Handler>() {{
             put(new CompoundKey("/registration", "POST"), new RegistrationController());
             put(new CompoundKey("/login", "POST"), new LoginController());
-            put(new CompoundKey("/create-chat", "POST"), new ChatCreationController());
+            put(new CompoundKey("/createchat", "POST"), new ChatCreationController());
             put(new CompoundKey("/join-chat", "POST"), new JoiningChatController());
             put(new CompoundKey("/leave-chat", "POST"), new LeavingChatController());
             put(new CompoundKey("/post-message", "POST"), new PostingMessageController());

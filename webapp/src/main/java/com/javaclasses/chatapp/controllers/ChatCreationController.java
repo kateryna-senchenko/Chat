@@ -11,11 +11,9 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.StringContent;
 
 import java.util.UUID;
 
-import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 public class ChatCreationController implements Handler{
 
@@ -31,10 +29,10 @@ public class ChatCreationController implements Handler{
 
         final UserId id = new UserId(Long.valueOf(userId));
         final TokenDto tokenDto = new TokenDto(UUID.fromString(token), id);
-
         TransferObject transferObject;
         if(userService.findLoggedInUserByToken(tokenDto) == null){
             transferObject = new TransferObject(HttpServletResponse.SC_FORBIDDEN);
+            transferObject.setData("message", "Cannot find user");
         }
 
         final ChatCreationDto chatCreationDto = new ChatCreationDto(id, chatName);
@@ -43,9 +41,10 @@ public class ChatCreationController implements Handler{
             ChatId chatId = chatService.createChat(chatCreationDto);
             transferObject = new TransferObject(HttpServletResponse.SC_OK);
             transferObject.setData("chatId", String.valueOf(chatId.getId()));
+            transferObject.setData("chatName", chatService.findChatById(chatId).getChatName());
         } catch (ChatCreationException e) {
             transferObject = new TransferObject(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            transferObject.setData("message", e.getMessage());
+            transferObject.setData("errorMessage", e.getMessage());
         }
 
         return transferObject;
