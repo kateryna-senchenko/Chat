@@ -1,5 +1,6 @@
 package com.javaclasses.chatapp;
 
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -7,16 +8,17 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.junit.Before;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.javaclasses.chatapp.ErrorType.AUTHENTICATION_FAILED;
+import static com.javaclasses.chatapp.ErrorType.DUPLICATE_USERNAME;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import static org.junit.Assert.assertEquals;
 
@@ -56,9 +58,10 @@ public class DispatcherServletShould {
         }
 
         final int expectedStatus = 200;
+        final JSONObject jsonResult = new JSONObject(result.toString());
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", username, result.toString());
+        assertEquals("Post request failed", username, jsonResult.optString("username"));
 
     }
 
@@ -94,11 +97,12 @@ public class DispatcherServletShould {
             result.append(line);
         }
 
+        final JSONObject jsonResult = new JSONObject(result.toString());
         final int expectedStatus = 500;
-        final String expectedMessage = "Specified username is not available";
+        final String expectedMessage = DUPLICATE_USERNAME.getMessage();
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", expectedMessage, result.toString());
+        assertEquals("Post request failed", expectedMessage, jsonResult.optString("errorMessage"));
 
     }
 
@@ -145,10 +149,11 @@ public class DispatcherServletShould {
             result.append(line);
         }
 
+        final JSONObject jsonResult = new JSONObject(result.toString());
         final int expectedStatus = 200;
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", username, result.toString());
+        assertEquals("Post request failed", username, jsonResult.optString("username"));
 
     }
 
@@ -181,10 +186,11 @@ public class DispatcherServletShould {
             result.append(line);
         }
 
+        final JSONObject jsonResult = new JSONObject(result.toString());
         final int expectedStatus = 500;
-        final String expectedMessage = "Specified combination of username and password was not found";
+        final String expectedMessage = AUTHENTICATION_FAILED.getMessage();
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", expectedMessage, result.toString());
+        assertEquals("Post request failed", expectedMessage, jsonResult.optString("errorMessage"));
     }
 }

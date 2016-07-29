@@ -1,15 +1,31 @@
 package com.javaclasses.chatapp;
 
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class TransferObject {
 
-    private final String content;
+    private final int responseStatus;
+    private final Map<String, String> content;
 
-    public TransferObject(String content) {
-        this.content = content;
+    public TransferObject(int responseStatus) {
+        this.responseStatus = responseStatus;
+        this.content = new HashMap<>();
     }
 
-    /* package */ String getContent() {
-        return content;
+
+    public void setData(String key, String value){
+        content.put(key, value);
+    }
+
+    public int getResponseStatus(){
+        return responseStatus;
+    }
+
+    public String getContent(){
+        return new JSONObject(content).toString();
     }
 }

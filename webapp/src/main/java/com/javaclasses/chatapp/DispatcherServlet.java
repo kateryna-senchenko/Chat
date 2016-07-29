@@ -1,9 +1,8 @@
 package com.javaclasses.chatapp;
 
-import com.javaclasses.chatapp.controller.Handler;
+import com.javaclasses.chatapp.controllers.Handler;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +37,8 @@ public class DispatcherServlet extends HttpServlet {
         if (handler == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
-            TransferObject transferObject = handler.processRequest(request, response);
+            TransferObject transferObject = handler.processRequest(request);
+            response.setStatus(transferObject.getResponseStatus());
             response.getWriter().write(transferObject.getContent());
         }
     }

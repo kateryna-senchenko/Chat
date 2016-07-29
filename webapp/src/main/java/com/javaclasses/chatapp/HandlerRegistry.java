@@ -1,14 +1,12 @@
 package com.javaclasses.chatapp;
 
 
-import com.javaclasses.chatapp.controller.Handler;
-import com.javaclasses.chatapp.controller.LoginController;
-import com.javaclasses.chatapp.controller.RegistrationController;
+import com.javaclasses.chatapp.controllers.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/* package */ class HandlerRegistry {
+/*package*/class HandlerRegistry {
 
     private static HandlerRegistry handlerRegistry = new HandlerRegistry();
     private final Map<CompoundKey, Handler> registry;
@@ -18,14 +16,18 @@ import java.util.Map;
         registry = new HashMap<CompoundKey, Handler>() {{
             put(new CompoundKey("/registration", "POST"), new RegistrationController());
             put(new CompoundKey("/login", "POST"), new LoginController());
+            put(new CompoundKey("/create-chat", "POST"), new ChatCreationController());
+            put(new CompoundKey("/join-chat", "POST"), new JoiningChatController());
+            put(new CompoundKey("/leave-chat", "POST"), new LeavingChatController());
+            put(new CompoundKey("/post-message", "POST"), new PostingMessageController());
         }};
     }
 
-    /* package */ static HandlerRegistry getInstance() {
+    /*package*/static HandlerRegistry getInstance() {
         return handlerRegistry;
     }
 
-    /* package */ Handler getHandler(CompoundKey key) {
+    /*package*/Handler getHandler(CompoundKey key) {
         return registry.get(key);
     }
 }
