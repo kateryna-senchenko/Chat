@@ -5,14 +5,15 @@ import com.javaclasses.chatapp.dto.LoginDto;
 import com.javaclasses.chatapp.dto.RegistrationDto;
 import com.javaclasses.chatapp.dto.TokenDto;
 import com.javaclasses.chatapp.dto.UserDto;
-import com.javaclasses.chatapp.entities.Token;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
+import com.javaclasses.chatapp.tinytypes.UserId;
 import org.junit.Test;
 
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.javaclasses.chatapp.ErrorType.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -59,7 +60,7 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals("Specified username is not available", e.getMessage());
+            assertEquals(DUPLICATE_USERNAME.getMessage(), e.getMessage());
         }
 
     }
@@ -77,7 +78,7 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals("Passwords do not match", e.getMessage());
+            assertEquals(PASSWORDS_DO_NOT_MATCH.getMessage(), e.getMessage());
         }
 
     }
@@ -115,7 +116,7 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals("Username should not be empty or contain white spaces", e.getMessage());
+            assertEquals(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES.getMessage(), e.getMessage());
         }
 
     }
@@ -132,7 +133,7 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals("Username should not be empty or contain white spaces", e.getMessage());
+            assertEquals(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES.getMessage(), e.getMessage());
         }
 
     }
@@ -149,7 +150,7 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals("Password should not be empty", e.getMessage());
+            assertEquals(PASSWORD_IS_EMPTY.getMessage(), e.getMessage());
         }
 
     }
@@ -194,7 +195,7 @@ public class UserServiceShould {
             userService.login(loginDto);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
-            assertEquals("Specified combination of username and password was not found", e.getMessage());
+            assertEquals(AUTHENTICATION_FAILED.getMessage(), e.getMessage());
         }
 
     }
@@ -220,7 +221,7 @@ public class UserServiceShould {
             userService.login(loginDto);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
-            assertEquals("Specified combination of username and password was not found", e.getMessage());
+            assertEquals(AUTHENTICATION_FAILED.getMessage(), e.getMessage());
         }
 
     }

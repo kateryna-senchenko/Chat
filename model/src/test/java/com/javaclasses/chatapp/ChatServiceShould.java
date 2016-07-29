@@ -1,14 +1,18 @@
 package com.javaclasses.chatapp;
 
 import com.javaclasses.chatapp.dto.*;
+import com.javaclasses.chatapp.entities.Message;
 import com.javaclasses.chatapp.impl.ChatServiceImpl;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
+import com.javaclasses.chatapp.tinytypes.ChatId;
+import com.javaclasses.chatapp.tinytypes.UserId;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
+import static com.javaclasses.chatapp.ErrorType.*;
 import static org.junit.Assert.*;
 
 public class ChatServiceShould {
@@ -120,7 +124,7 @@ public class ChatServiceShould {
             chatService.createChat(chatCreationDto);
             fail("Expected ChatCreationException was not thrown");
         } catch (ChatCreationException e) {
-            assertEquals("Specified name is not available", e.getMessage());
+            assertEquals(DUPLICATE_CHATNAME.getMessage(), e.getMessage());
         }
 
     }
@@ -155,7 +159,7 @@ public class ChatServiceShould {
             chatService.createChat(chatCreationDto);
             fail("Expected ChatCreationException was not thrown");
         } catch (ChatCreationException e) {
-            assertEquals("Chat name should not be empty", e.getMessage());
+            assertEquals(CHATNAME_IS_EMPTY.getMessage(), e.getMessage());
         }
 
     }
@@ -177,7 +181,7 @@ public class ChatServiceShould {
             chatService.addMember(memberChatDto);
             fail("Expected MembershipException was not thrown");
         } catch (MembershipException e) {
-            assertEquals("User " + firstUserId.getId() + " is already a member", e.getMessage());
+            assertEquals(ALREADY_A_MEMBER.getMessage(), e.getMessage());
         }
     }
 
@@ -213,7 +217,7 @@ public class ChatServiceShould {
             chatService.removeMember(memberChatDto);
             fail("Expected MembershipException was not thrown");
         } catch (MembershipException e) {
-            assertEquals("User " + secondUserId.getId() + " is not a member", e.getMessage());
+            assertEquals(IS_NOT_A_MEMBER.getMessage(), e.getMessage());
         }
 
     }
@@ -251,7 +255,7 @@ public class ChatServiceShould {
             chatService.postMessage(postMessageDto);
             fail("Expected PostMessageException was not thrown");
         } catch (PostMessageException e) {
-           assertEquals("Cannot post message if not a member", e.getMessage());
+           assertEquals(IS_NOT_A_MEMBER.getMessage(), e.getMessage());
         }
 
 

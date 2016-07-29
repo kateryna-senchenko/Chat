@@ -1,4 +1,4 @@
-package com.javaclasses.chatapp;
+package com.javaclasses.chatapp.tinytypes;
 
 /**
  * Custom data type for user id

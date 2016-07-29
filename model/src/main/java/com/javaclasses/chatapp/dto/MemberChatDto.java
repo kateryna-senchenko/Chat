@@ -1,7 +1,7 @@
 package com.javaclasses.chatapp.dto;
 
-import com.javaclasses.chatapp.ChatId;
-import com.javaclasses.chatapp.UserId;
+import com.javaclasses.chatapp.tinytypes.ChatId;
+import com.javaclasses.chatapp.tinytypes.UserId;
 
 /**
  * DTO that is used while joining and leaving chat

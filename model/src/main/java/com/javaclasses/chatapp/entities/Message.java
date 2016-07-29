@@ -1,4 +1,7 @@
-package com.javaclasses.chatapp;
+package com.javaclasses.chatapp.entities;
+
+import com.javaclasses.chatapp.tinytypes.ChatId;
+import com.javaclasses.chatapp.tinytypes.UserId;
 
 /**
  * Object to hold message data

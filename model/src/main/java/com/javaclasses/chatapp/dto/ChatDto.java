@@ -1,8 +1,8 @@
 package com.javaclasses.chatapp.dto;
 
-import com.javaclasses.chatapp.ChatId;
-import com.javaclasses.chatapp.Message;
-import com.javaclasses.chatapp.UserId;
+import com.javaclasses.chatapp.tinytypes.ChatId;
+import com.javaclasses.chatapp.entities.Message;
+import com.javaclasses.chatapp.tinytypes.UserId;
 
 import java.util.List;
 

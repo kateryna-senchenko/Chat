@@ -4,6 +4,7 @@ import com.javaclasses.chatapp.dto.LoginDto;
 import com.javaclasses.chatapp.dto.RegistrationDto;
 import com.javaclasses.chatapp.dto.TokenDto;
 import com.javaclasses.chatapp.dto.UserDto;
+import com.javaclasses.chatapp.tinytypes.UserId;
 
 
 /**

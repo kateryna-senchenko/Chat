@@ -1,6 +1,6 @@
 package com.javaclasses.chatapp.entities;
 
-import com.javaclasses.chatapp.UserId;
+import com.javaclasses.chatapp.tinytypes.UserId;
 
 /**
  * User entity

@@ -11,12 +11,14 @@ import com.javaclasses.chatapp.entities.User;
 import com.javaclasses.chatapp.storage.TokenRepositoryImpl;
 import com.javaclasses.chatapp.storage.Repository;
 import com.javaclasses.chatapp.storage.UserRepositoryImpl;
+import com.javaclasses.chatapp.tinytypes.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
+
+import static com.javaclasses.chatapp.ErrorType.*;
 
 /**
  * Implementation of the UserService Interface
@@ -47,12 +49,12 @@ public class UserServiceImpl implements UserService {
 
         if (username.isEmpty() || username.contains(" ")) {
             log.error("Failed to register user {}: invalid username input", username);
-            throw new RegistrationException("Username should not be empty or contain white spaces");
+            throw new RegistrationException(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES.getMessage());
         }
 
         if (registrationDto.getPassword().isEmpty()) {
             log.error("Failed to register user {}: invalid password input", username);
-            throw new RegistrationException("Password should not be empty");
+            throw new RegistrationException(PASSWORD_IS_EMPTY.getMessage());
         }
 
 
@@ -62,13 +64,13 @@ public class UserServiceImpl implements UserService {
 
             if (user.getUsername().equals(username)) {
                 log.error("Registration failed: username {} is already taken", username);
-                throw new RegistrationException("Specified username is not available");
+                throw new RegistrationException(DUPLICATE_USERNAME.getMessage());
             }
         }
 
         if (!(registrationDto.getPassword().equals(registrationDto.getConfirmPassword()))) {
             log.error("Failed to register user {}: passwords do not match", username);
-            throw new RegistrationException("Passwords do not match");
+            throw new RegistrationException(PASSWORDS_DO_NOT_MATCH.getMessage());
         }
 
 
@@ -103,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
         if (userToLogin == null) {
             log.error("Failed to login user {}: either username or password is incorrect", loginDto.getUsername());
-            throw new AuthenticationException("Specified combination of username and password was not found");
+            throw new AuthenticationException(AUTHENTICATION_FAILED.getMessage());
         }
 
         Token newToken = new Token(userToLogin.getId());

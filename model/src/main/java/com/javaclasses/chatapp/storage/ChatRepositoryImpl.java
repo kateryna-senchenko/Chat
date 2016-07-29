@@ -1,6 +1,6 @@
 package com.javaclasses.chatapp.storage;
 
-import com.javaclasses.chatapp.ChatId;
+import com.javaclasses.chatapp.tinytypes.ChatId;
 import com.javaclasses.chatapp.entities.Chat;
 
 import java.util.concurrent.atomic.AtomicLong;

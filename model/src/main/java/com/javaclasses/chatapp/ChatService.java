@@ -4,6 +4,7 @@ import com.javaclasses.chatapp.dto.ChatCreationDto;
 import com.javaclasses.chatapp.dto.ChatDto;
 import com.javaclasses.chatapp.dto.MemberChatDto;
 import com.javaclasses.chatapp.dto.PostMessageDto;
+import com.javaclasses.chatapp.tinytypes.ChatId;
 
 /**
  * Public API of ChatService
