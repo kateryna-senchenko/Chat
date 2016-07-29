@@ -47,8 +47,9 @@ public interface ChatService {
     ChatDto findChatById(ChatId id);
 
     /**
-     * removes all chats from the storage
+     * removes chad with specified id
+     * @param chatId - id of the chat to be removed
      */
-    void deleteAll();
+    void deleteChat(ChatId chatId);
 
 }

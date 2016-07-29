@@ -134,11 +134,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void deleteAll() {
-         chatRepository.deleteAll();
+    public void deleteChat(ChatId chatId) {
+
+        chatRepository.remove(chatId);
 
         if (log.isInfoEnabled()) {
-            log.info("Chat repository has been cleared");
+            log.info("Removed chat {}", chatId.getId());
         }
     }
 }

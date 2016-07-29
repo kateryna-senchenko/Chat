@@ -13,5 +13,5 @@ public interface Repository<TypeId, Type> {
 
     Collection<Type> getAll();
 
-    void deleteAll();
+    Type remove(TypeId id);
 }

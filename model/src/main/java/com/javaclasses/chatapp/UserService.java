@@ -42,7 +42,14 @@ public interface UserService {
     UserDto findLoggedInUserByToken(TokenDto token);
 
     /**
-     * removes all the users from storage
+     * removes registered user
+     * @param id - id of the user to be removed
      */
-    void deleteAll();
+    void deleteUser(UserId id);
+
+    /**
+     * logout logged in user
+     * @param token - access token
+     */
+    void logout(TokenDto token);
 }

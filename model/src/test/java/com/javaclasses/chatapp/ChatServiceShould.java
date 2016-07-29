@@ -3,6 +3,7 @@ package com.javaclasses.chatapp;
 import com.javaclasses.chatapp.dto.*;
 import com.javaclasses.chatapp.impl.ChatServiceImpl;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,13 +18,13 @@ public class ChatServiceShould {
 
     private UserId firstUserId;
     private UserId secondUserId;
+    private TokenDto firstToken;
+    private TokenDto secondToken;
     private ChatId chatId;
     private final String chatName = "Protect the Mockingbirds";
 
     @Before
     public void registerAndLoginUsers() {
-
-        userService.deleteAll();
 
         final String atticusUsername = "Atticus";
         final String atticusPassword = "Finch";
@@ -50,17 +51,26 @@ public class ChatServiceShould {
         final LoginDto selmaLoginDto = new LoginDto(selmaUsername, selmaPassword);
 
         try {
-            userService.login(atticusLoginDto);
-            userService.login(selmaLoginDto);
+            firstToken = userService.login(atticusLoginDto);
+            secondToken = userService.login(selmaLoginDto);
         } catch (AuthenticationException e) {
             fail("Registered users were not authenticated");
         }
     }
 
+    @After
+    public void deleteUsers(){
+
+        userService.logout(firstToken);
+        userService.deleteUser(firstUserId);
+
+        userService.logout(secondToken);
+        userService.deleteUser(secondUserId);
+
+    }
+
     @Before
     public void createChatAndAddMember(){
-
-        chatService.deleteAll();
 
         final ChatCreationDto chatCreationDto = new ChatCreationDto(firstUserId, chatName);
 
@@ -78,6 +88,11 @@ public class ChatServiceShould {
         } catch (MembershipException e) {
             fail("Member could not join the chat");
         }
+    }
+
+    @After
+    public void deleteChat(){
+        chatService.deleteChat(chatId);
     }
 
     @Test
