@@ -132,4 +132,14 @@ public class UserServiceImpl implements UserService {
 
         return findRegisteredUserById(userToken.getUserId());
     }
+
+    @Override
+    public void deleteAll() {
+        userRepository.deleteAll();
+        tokenRepository.deleteAll();
+
+        if (log.isInfoEnabled()) {
+            log.info("User Repository and Token Repository have been cleared");
+        }
+    }
 }

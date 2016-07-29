@@ -1,6 +1,5 @@
 package com.javaclasses.chatapp;
 
-
 import com.javaclasses.chatapp.dto.*;
 import com.javaclasses.chatapp.impl.ChatServiceImpl;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
@@ -23,6 +22,8 @@ public class ChatServiceShould {
 
     @Before
     public void registerAndLoginUsers() {
+
+        userService.deleteAll();
 
         final String atticusUsername = "Atticus";
         final String atticusPassword = "Finch";
@@ -57,7 +58,9 @@ public class ChatServiceShould {
     }
 
     @Before
-    public void createFirstChatAndAddMember(){
+    public void createChatAndAddMember(){
+
+        chatService.deleteAll();
 
         final ChatCreationDto chatCreationDto = new ChatCreationDto(firstUserId, chatName);
 
@@ -159,7 +162,7 @@ public class ChatServiceShould {
             chatService.addMember(memberChatDto);
             fail("Expected MembershipException was not thrown");
         } catch (MembershipException e) {
-            assertEquals("Atticus is already a member", e.getMessage());
+            assertEquals("User " + firstUserId.getId() + " is already a member", e.getMessage());
         }
     }
 
@@ -195,7 +198,7 @@ public class ChatServiceShould {
             chatService.removeMember(memberChatDto);
             fail("Expected MembershipException was not thrown");
         } catch (MembershipException e) {
-            assertEquals("Cannot leave chat if not a member", e.getMessage());
+            assertEquals("User " + secondUserId.getId() + " is not a member", e.getMessage());
         }
 
     }

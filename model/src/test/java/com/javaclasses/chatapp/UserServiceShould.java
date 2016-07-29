@@ -23,10 +23,10 @@ public class UserServiceShould {
     @Test
     public void registerUser() {
 
-        String username = "Alice";
-        String password = "fromwonderland";
+        final String username = "Alice";
+        final String password = "fromwonderland";
 
-        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         UserId newUserId = null;
         try {
@@ -35,7 +35,7 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        UserDto newUser = userService.findRegisteredUserById(newUserId);
+        final UserDto newUser = userService.findRegisteredUserById(newUserId);
 
         assertEquals("New user was not registered", username, newUser.getUsername());
 
@@ -44,10 +44,10 @@ public class UserServiceShould {
     @Test
     public void failRegisterUserWithDuplicateUsername() {
 
-        String username = "Scout";
-        String password = "freeparrots";
+        final String username = "Scout";
+        final String password = "freeparrots";
 
-        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
             userService.register(registrationDto);
@@ -67,11 +67,11 @@ public class UserServiceShould {
     @Test
     public void failRegisterUserWithNotMatchingPasswords() {
 
-        String username = "Jacob";
-        String password = "watertoelephants";
-        String confirmPassword = password + "123";
+        final String username = "Jacob";
+        final String password = "watertoelephants";
+        final String confirmPassword = password + "123";
 
-        RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
 
         try {
             userService.register(registrationDto);
@@ -85,10 +85,10 @@ public class UserServiceShould {
     @Test
     public void trimUsername() {
 
-        String username = " Jem ";
-        String password = "somethinghappend";
+        final String username = " Jem ";
+        final String password = "somethinghappend";
 
-        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         UserId newUserId = null;
         try {
@@ -97,7 +97,7 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        UserDto newUser = userService.findRegisteredUserById(newUserId);
+        final UserDto newUser = userService.findRegisteredUserById(newUserId);
 
         assertEquals("New user was not registered", username.trim(), newUser.getUsername());
 
@@ -106,10 +106,10 @@ public class UserServiceShould {
     @Test
     public void failRegisterUserWithEmptyUsername() {
 
-        String username = "";
-        String password = "here's looking at you kid";
+        final String username = "";
+        final String password = "here's looking at you kid";
 
-        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+        final  RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
             userService.register(registrationDto);
@@ -123,10 +123,10 @@ public class UserServiceShould {
     @Test
     public void failRegisterUserWithWhiteSapcesUsername() {
 
-        String username = "Doctor Zhivago";
-        String password = "one coffee please";
+        final String username = "Doctor Zhivago";
+        final String password = "one coffee please";
 
-        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
             userService.register(registrationDto);
@@ -140,10 +140,10 @@ public class UserServiceShould {
     @Test
     public void failRegisterUserWithEmptyPassword() {
 
-        String username = "Kevin";
-        String password = "";
+        final String username = "Kevin";
+        final String password = "";
 
-        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
             userService.register(registrationDto);
@@ -157,10 +157,10 @@ public class UserServiceShould {
     @Test
     public void loginUser() {
 
-        String username = "Mila";
-        String password = "lostinnewyork";
+        final String username = "Mila";
+        final String password = "lostinnewyork";
 
-        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
             userService.register(registrationDto);
@@ -168,7 +168,7 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        LoginDto loginDto = new LoginDto(username, password);
+        final LoginDto loginDto = new LoginDto(username, password);
         TokenDto token = null;
         try {
             token = userService.login(loginDto);
@@ -176,7 +176,7 @@ public class UserServiceShould {
             fail("Registered user was not logged in");
         }
 
-        UserDto loggedInUser = userService.findLoggedInUserByToken(token);
+        final UserDto loggedInUser = userService.findLoggedInUserByToken(token);
 
         assertEquals("User was not logged in", username, loggedInUser.getUsername());
 
@@ -185,10 +185,10 @@ public class UserServiceShould {
     @Test
     public void failLoginUnregisteredUser() {
 
-        String username = "Jacob";
-        String password = "watertoelephants";
+        final String username = "Jacob";
+        final String password = "watertoelephants";
 
-        LoginDto loginDto = new LoginDto(username, password);
+        final LoginDto loginDto = new LoginDto(username, password);
 
         try {
             userService.login(loginDto);
@@ -202,10 +202,10 @@ public class UserServiceShould {
     @Test
     public void failLoginUserWithWrongPassword() {
 
-        String username = "Ilsa";
-        String password = "here's looking at you kid";
+        final String username = "Ilsa";
+        final String password = "here's looking at you kid";
 
-        RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
             userService.register(registrationDto);
@@ -213,8 +213,8 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        String wrongPassword = password + "123";
-        LoginDto loginDto = new LoginDto(username, wrongPassword);
+        final String wrongPassword = password + "123";
+        final LoginDto loginDto = new LoginDto(username, wrongPassword);
 
         try {
             userService.login(loginDto);

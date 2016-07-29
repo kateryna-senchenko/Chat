@@ -45,4 +45,10 @@ public interface ChatService {
      * @return Chat DTO
      */
     ChatDto findChatById(ChatId id);
+
+    /**
+     * removes all chats from the storage
+     */
+    void deleteAll();
+
 }

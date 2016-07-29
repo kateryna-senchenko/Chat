@@ -40,4 +40,9 @@ public interface UserService {
      * @return user dto instance
      */
     UserDto findLoggedInUserByToken(TokenDto token);
+
+    /**
+     * removes all the users from storage
+     */
+    void deleteAll();
 }

@@ -28,4 +28,9 @@ abstract class InMemoryRepository<TypeId, Type> implements Repository<TypeId, Ty
     }
 
     public abstract TypeId generateId();
+
+    @Override
+    public void deleteAll() {
+        entities.clear();
+    }
 }

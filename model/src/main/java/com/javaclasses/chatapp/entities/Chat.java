@@ -4,6 +4,7 @@ import com.javaclasses.chatapp.ChatId;
 import com.javaclasses.chatapp.Message;
 import com.javaclasses.chatapp.UserId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,14 +12,13 @@ import java.util.List;
  */
 public class Chat {
 
-    private final ChatId chatId;
+    private ChatId chatId;
     private String chatName;
     private final UserId owner;
-    private List<UserId> members;
-    private List<Message> messages;
+    private List<UserId> members = new ArrayList<>();
+    private List<Message> messages = new ArrayList<>();
 
-    public Chat(ChatId chatId, String chatName, UserId owner) {
-        this.chatId = chatId;
+    public Chat(UserId owner, String chatName) {
         this.chatName = chatName;
         this.owner = owner;
 
@@ -26,6 +26,10 @@ public class Chat {
 
     public ChatId getChatId() {
         return chatId;
+    }
+
+    public String getChatName() {
+        return chatName;
     }
 
     public UserId getOwner() {
@@ -38,6 +42,10 @@ public class Chat {
 
     public List<Message> getMessages() {
         return messages;
+    }
+
+    public void setChatId(ChatId chatId) {
+        this.chatId = chatId;
     }
 
     public void setChatName(String chatName) {
