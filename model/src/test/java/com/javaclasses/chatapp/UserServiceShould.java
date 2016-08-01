@@ -7,6 +7,7 @@ import com.javaclasses.chatapp.dto.TokenDto;
 import com.javaclasses.chatapp.dto.UserDto;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import com.javaclasses.chatapp.tinytypes.UserId;
+
 import org.junit.Test;
 
 import java.util.*;
@@ -21,55 +22,75 @@ public class UserServiceShould {
 
     private final UserService userService = UserServiceImpl.getInstance();
 
-    @Test
-    public void registerUser() {
+    private final String username = "Alice";
+    private final String password = "fromwonderland";
 
-        final String username = "Alice";
-        final String password = "fromwonderland";
 
-        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
+    private UserId registerUser(String username, String password, String confirmPassword) throws RegistrationException {
 
-        UserId newUserId = null;
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
+        return userService.register(registrationDto);
+    }
+
+    private TokenDto loginUser(String username, String password) throws AuthenticationException {
+
+        final LoginDto loginDto = new LoginDto(username, password);
+        return userService.login(loginDto);
+    }
+
+    private void deleteRegisteredUser(UserId userId) {
         try {
-            newUserId = userService.register(registrationDto);
+            userService.deleteUser(userId);
+        } catch (UserRemovalException e) {
+            fail("Cannot delete user");
+        }
+    }
+
+    private void logoutUser(TokenDto tokenDto){
+        userService.logout(tokenDto);
+    }
+
+    @Test
+    public void successfullyRegisterUser() {
+
+        UserId userId = null;
+        try {
+            userId = registerUser(username, password, password);
         } catch (RegistrationException e) {
-            fail("New user was not registered");
+            fail("Failed to register new user");
         }
 
-        final UserDto newUser = userService.findRegisteredUserById(newUserId);
+        final UserDto newUser = userService.findRegisteredUserById(userId);
 
         assertEquals("New user was not registered", username, newUser.getUsername());
 
+        deleteRegisteredUser(userId);
     }
 
     @Test
     public void failRegisterUserWithDuplicateUsername() {
 
-        final String username = "Scout";
-        final String password = "freeparrots";
-
-        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
-
+        UserId userId = null;
         try {
-            userService.register(registrationDto);
+            userId = registerUser(username, password, password);
         } catch (RegistrationException e) {
-            fail("New user was not registered");
+            fail("Failed to register new user");
         }
 
         try {
-            userService.register(registrationDto);
+            registerUser(username, password, password);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals(DUPLICATE_USERNAME, e.getErrorType());
         }
+
+        deleteRegisteredUser(userId);
 
     }
 
     @Test
     public void failRegisterUserWithNotMatchingPasswords() {
 
-        final String username = "Jacob";
-        final String password = "watertoelephants";
         final String confirmPassword = password + "123";
 
         final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
@@ -81,39 +102,32 @@ public class UserServiceShould {
             assertEquals(PASSWORDS_DO_NOT_MATCH, e.getErrorType());
         }
 
+
     }
 
     @Test
     public void trimUsernameUponRegistration() {
 
-        final String username = " Jem ";
-        final String password = "somethinghappend";
-
-        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
-
-        UserId newUserId = null;
+        UserId userId = null;
         try {
-            newUserId = userService.register(registrationDto);
+            userId = registerUser("  " + username + " ", password, password);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
-        final UserDto newUser = userService.findRegisteredUserById(newUserId);
+        final UserDto newUser = userService.findRegisteredUserById(userId);
 
         assertEquals("New user was not registered", username.trim(), newUser.getUsername());
+
+        deleteRegisteredUser(userId);
 
     }
 
     @Test
     public void failRegisterUserWithEmptyUsername() {
 
-        final String username = "";
-        final String password = "here's looking at you kid";
-
-        final  RegistrationDto registrationDto = new RegistrationDto(username, password, password);
-
         try {
-            userService.register(registrationDto);
+            registerUser("", password, password);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES, e.getErrorType());
@@ -122,15 +136,12 @@ public class UserServiceShould {
     }
 
     @Test
-    public void failRegisterUserWithWhiteSapcesUsername() {
+    public void failRegisterUserWithWhiteSpacesUsername() {
 
         final String username = "Doctor Zhivago";
-        final String password = "one coffee please";
-
-        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
-            userService.register(registrationDto);
+            registerUser(username, password, password);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES, e.getErrorType());
@@ -141,13 +152,8 @@ public class UserServiceShould {
     @Test
     public void failRegisterUserWithEmptyPassword() {
 
-        final String username = "Kevin";
-        final String password = "";
-
-        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
-
         try {
-            userService.register(registrationDto);
+            registerUser(username, "", password);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals(PASSWORD_IS_EMPTY, e.getErrorType());
@@ -156,23 +162,18 @@ public class UserServiceShould {
     }
 
     @Test
-    public void loginUser() {
+    public void successfullyLoginUser() {
 
-        final String username = "Mila";
-        final String password = "lostinnewyork";
-
-        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
-
+        UserId userId = null;
         try {
-            userService.register(registrationDto);
+            userId = registerUser(username, password, password);
         } catch (RegistrationException e) {
-            fail("New user was not registered");
+            fail("Failed to register new user");
         }
 
-        final LoginDto loginDto = new LoginDto(username, password);
         TokenDto token = null;
         try {
-            token = userService.login(loginDto);
+            token = loginUser(username, password);
         } catch (AuthenticationException e) {
             fail("Registered user was not logged in");
         }
@@ -181,18 +182,15 @@ public class UserServiceShould {
 
         assertEquals("User was not logged in", username, loggedInUser.getUsername());
 
+        logoutUser(token);
+        deleteRegisteredUser(userId);
     }
 
     @Test
     public void failLoginUnregisteredUser() {
 
-        final String username = "Jacob";
-        final String password = "watertoelephants";
-
-        final LoginDto loginDto = new LoginDto(username, password);
-
         try {
-            userService.login(loginDto);
+            loginUser(username, password);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
             assertEquals(AUTHENTICATION_FAILED, e.getErrorType());
@@ -203,27 +201,23 @@ public class UserServiceShould {
     @Test
     public void failLoginUserWithWrongPassword() {
 
-        final String username = "Ilsa";
-        final String password = "here's looking at you kid";
-
-        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
-
+        UserId userId = null;
         try {
-            userService.register(registrationDto);
+            userId = registerUser(username, password, password);
         } catch (RegistrationException e) {
             fail("New user was not registered");
         }
 
         final String wrongPassword = password + "123";
-        final LoginDto loginDto = new LoginDto(username, wrongPassword);
 
         try {
-            userService.login(loginDto);
+            loginUser(username, wrongPassword);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
             assertEquals(AUTHENTICATION_FAILED, e.getErrorType());
         }
 
+        deleteRegisteredUser(userId);
     }
 
     @Test
@@ -243,14 +237,13 @@ public class UserServiceShould {
             final String username = "username" + someDifferenceInUsername.getAndIncrement();
             final String password = "password";
 
-            final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
-            final UserId userId = userService.register(registrationDto);
 
-            final LoginDto loginDto = new LoginDto(username, password);
+            final UserId userId = registerUser(username, password, password);
 
-            final TokenDto tokenDto = userService.login(loginDto);
+            final TokenDto tokenDto = loginUser(username, password);
 
             assertEquals("User ids after registration and login are not the same", userId, tokenDto.getUserId());
+
 
             return tokenDto;
         };
@@ -267,6 +260,9 @@ public class UserServiceShould {
         for (Future<TokenDto> future : results) {
             userIds.add(future.get().getUserId().getId());
             tokens.add(future.get().getToken().getId());
+
+            logoutUser((future.get()));
+            deleteRegisteredUser(future.get().getUserId());
         }
 
         if (userIds.size() != count) {

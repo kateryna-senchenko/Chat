@@ -19,135 +19,130 @@ public class ChatServiceShould {
     private final UserService userService = UserServiceImpl.getInstance();
     private final ChatService chatService = ChatServiceImpl.getInstance();
 
-    private UserId firstUserId;
-    private UserId secondUserId;
-    private TokenDto firstToken;
-    private TokenDto secondToken;
-    private ChatId chatId;
     private final String chatName = "Protect the Mockingbirds";
+    private final String message = "Hello there!";
+
+    private UserId userId;
+    private TokenDto token;
 
     @Before
-    public void registerAndLoginUsers() {
+    public void registerAndLoginUser() {
 
-        final String atticusUsername = "Atticus";
-        final String atticusPassword = "Finch";
+        final String username = "Scout";
+        final String password = "Finch";
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
-        final String selmaUsername = "Selma";
-        final String selmaPassword = "BloodySundayAfternoon";
-
-        final RegistrationDto atticusRegistrationDto =
-                new RegistrationDto(atticusUsername, atticusPassword, atticusPassword);
-
-        final RegistrationDto selmaRegistrationDto =
-                new RegistrationDto(selmaUsername, selmaPassword, selmaPassword);
-
-        firstUserId = null;
-        secondUserId = null;
         try {
-            firstUserId = userService.register(atticusRegistrationDto);
-            secondUserId = userService.register(selmaRegistrationDto);
+            userId = userService.register(registrationDto);
         } catch (RegistrationException e) {
-            fail("New users were not registered");
+            fail("Failed to register new user");
         }
 
-        final LoginDto atticusLoginDto = new LoginDto(atticusUsername, atticusPassword);
-        final LoginDto selmaLoginDto = new LoginDto(selmaUsername, selmaPassword);
+        final LoginDto loginDto = new LoginDto(username, password);
 
         try {
-            firstToken = userService.login(atticusLoginDto);
-            secondToken = userService.login(selmaLoginDto);
+            token = userService.login(loginDto);
         } catch (AuthenticationException e) {
-            fail("Registered users were not authenticated");
+            fail("Failed to login user");
         }
 
-        final ChatCreationDto chatCreationDto = new ChatCreationDto(firstUserId, chatName);
-
-        chatId = null;
-        try {
-            chatId = chatService.createChat(chatCreationDto);
-        } catch (ChatCreationException e) {
-            fail("New chat was not created");
-        }
-
-        final MemberChatDto memberChatDto= new MemberChatDto(firstUserId, chatId);
-
-        try {
-            chatService.addMember(memberChatDto);
-        } catch (MembershipException e) {
-            fail("Member could not join the chat");
-        }
     }
 
     @After
-    public void deleteUsers(){
-
-        chatService.deleteChat(chatId);
-        userService.logout(firstToken);
-        userService.deleteUser(firstUserId);
-        userService.logout(secondToken);
-        userService.deleteUser(secondUserId);
-
-    }
-
-
-    @Test
-    public void createChat(){
-
-        assertEquals("New chat was not created", chatName, chatService.findChatById(chatId).getChatName());
-        assertEquals("Wrong chat owner", firstUserId, chatService.findChatById(chatId).getOwner());
-
-    }
-
-    @Test
-    public void failToCreateChatWithDuplicateName(){
-
-        final String chatName = "Let's save Tom Robinson";
-
-        final ChatCreationDto chatCreationDto = new ChatCreationDto(firstUserId, chatName);
-
+    public void logoutAndDeleteUser() {
+        userService.logout(token);
         try {
-            chatService.createChat(chatCreationDto);
+            userService.deleteUser(userId);
+        } catch (UserRemovalException e) {
+            fail("Cannot delete user");
+        }
+    }
+
+
+    private ChatId createChat(UserId userId, String chatName) throws ChatCreationException {
+        final ChatCreationDto chatCreationDto = new ChatCreationDto(userId, chatName);
+        return chatService.createChat(chatCreationDto);
+
+    }
+
+    private void deleteChat(ChatId chatId) {
+        chatService.deleteChat(chatId);
+    }
+
+    private void addMemberToChat(UserId userId, ChatId chatId) throws MembershipException {
+        final MemberChatDto memberChatDto = new MemberChatDto(userId, chatId);
+        chatService.addMember(memberChatDto);
+    }
+
+
+    private void removeMemberFromChat(UserId userId, ChatId chatId) throws MembershipException {
+        final MemberChatDto memberChatDto = new MemberChatDto(userId, chatId);
+        chatService.removeMember(memberChatDto);
+    }
+
+    private void postMessage(UserId userId, ChatId chatId, String message) throws PostMessageException {
+        final PostMessageDto postMessageDto = new PostMessageDto(userId, chatId, message);
+        chatService.postMessage(postMessageDto);
+    }
+
+    @Test
+    public void successfullyCreateChat() {
+
+        ChatId chatId = null;
+        try {
+            chatId = createChat(userId, chatName);
+        } catch (ChatCreationException e) {
+            fail("Failed to create new chat");
+        }
+        assertEquals("New chat was not created", chatName, chatService.findChatById(chatId).getChatName());
+        assertEquals("Wrong chat owner", userId, chatService.findChatById(chatId).getOwner());
+
+        deleteChat(chatId);
+    }
+
+    @Test
+    public void failToCreateChatWithDuplicateName() {
+
+        ChatId chatId = null;
+        try {
+            chatId = createChat(userId, chatName);
         } catch (ChatCreationException e) {
             fail("New chat was not created");
         }
 
         try {
-            chatService.createChat(chatCreationDto);
+            createChat(userId, chatName);
             fail("Expected ChatCreationException was not thrown");
         } catch (ChatCreationException e) {
             assertEquals(DUPLICATE_CHATNAME, e.getErrorType());
         }
 
+        deleteChat(chatId);
+
     }
 
     @Test
-    public void trimChatNameUponCreation(){
-
-        final String chatName = " Hush Scout!  ";
-
-        final ChatCreationDto chatCreationDto = new ChatCreationDto(firstUserId, chatName);
+    public void trimChatNameUponCreation() {
 
         ChatId chatId = null;
         try {
-            chatId = chatService.createChat(chatCreationDto);
+            chatId = createChat(userId, "  " + chatName + " ");
         } catch (ChatCreationException e) {
             fail("New chat was not created");
         }
 
         assertEquals("New chat was not created", chatName.trim(), chatService.findChatById(chatId).getChatName());
-        assertEquals("Wrong chat owner", firstUserId, chatService.findChatById(chatId).getOwner());
+        assertEquals("Wrong chat owner", userId, chatService.findChatById(chatId).getOwner());
+
+        deleteChat(chatId);
 
     }
 
     @Test
-    public void failToCreateChatIfNameIsEmpty(){
-
-        final String chatName = " ";
-
-        final ChatCreationDto chatCreationDto = new ChatCreationDto(firstUserId, chatName);
+    public void failToCreateChatIfNameIsEmpty() {
 
         try {
-            chatService.createChat(chatCreationDto);
+            createChat(userId, "");
             fail("Expected ChatCreationException was not thrown");
         } catch (ChatCreationException e) {
             assertEquals(CHATNAME_IS_EMPTY, e.getErrorType());
@@ -156,99 +151,143 @@ public class ChatServiceShould {
     }
 
     @Test
-    public void addMemberToChat(){
+    public void successfullyAddMemberToChat() {
 
+        ChatId chatId = null;
+        try {
+            chatId = createChat(userId, chatName);
+        } catch (ChatCreationException e) {
+            fail("Failed to create new chat");
+        }
+
+        try {
+            addMemberToChat(userId, chatId);
+        } catch (MembershipException e) {
+            fail("Failed to add member to chat");
+        }
         final List<UserId> members = chatService.findChatById(chatId).getMembers();
 
-        assertTrue("Member failed to join the chat", members.contains(firstUserId));
+        assertTrue("Member failed to join the chat", members.contains(userId));
+
+        deleteChat(chatId);
     }
 
     @Test
-    public void failToAddMemberIfAlreadyThere(){
+    public void failToAddMemberIfAlreadyThere() {
 
-        final MemberChatDto memberChatDto= new MemberChatDto(firstUserId, chatId);
+        ChatId chatId = null;
+        try {
+            chatId = createChat(userId, chatName);
+        } catch (ChatCreationException e) {
+            fail("Failed to create new chat");
+        }
 
         try {
-            chatService.addMember(memberChatDto);
+            addMemberToChat(userId, chatId);
+        } catch (MembershipException e) {
+            fail("Failed to add member to chat");
+        }
+        try {
+            addMemberToChat(userId, chatId);
             fail("Expected MembershipException was not thrown");
         } catch (MembershipException e) {
             assertEquals(ALREADY_A_MEMBER, e.getErrorType());
         }
+
+        deleteChat(chatId);
     }
 
     @Test
-    public void removeMemberFromChat(){
+    public void successfullyRemoveMemberFromChat() {
 
-        List<UserId> members = chatService.findChatById(chatId).getMembers();
-        assertTrue("Member is not in the chat", members.contains(firstUserId));
-
-        final MemberChatDto memberChatDto= new MemberChatDto(firstUserId, chatId);
-
+        ChatId chatId = null;
         try {
-            chatService.removeMember(memberChatDto);
-        } catch (MembershipException e) {
-            fail("Member failed to leave the chat");
+            chatId = createChat(userId, chatName);
+        } catch (ChatCreationException e) {
+            fail("Failed to create new chat");
         }
+        try {
+            addMemberToChat(userId, chatId);
+        } catch (MembershipException e) {
+            fail("Failed to add member to chat");
+        }
+        try {
+            removeMemberFromChat(userId, chatId);
+        } catch (MembershipException e) {
+            fail("Failed to remove member from chat");
+        }
+        List<UserId> members = chatService.findChatById(chatId).getMembers();
 
-        members = chatService.findChatById(chatId).getMembers();
+        assertFalse("Member was not removed from the chat", members.contains(userId));
 
-        assertFalse("Member was not removed from the chat", members.contains(firstUserId));
+        deleteChat(chatId);
     }
 
     @Test
-    public void failToLeaveChatIfNotAMember(){
+    public void failToLeaveChatIfNotAMember() {
 
-        final List<UserId> members = chatService.findChatById(chatId).getMembers();
-
-        assertFalse("User is a member", members.contains(secondUserId));
-
-        final MemberChatDto memberChatDto= new MemberChatDto(secondUserId, chatId);
-
+        ChatId chatId = null;
         try {
-            chatService.removeMember(memberChatDto);
+            chatId = createChat(userId, chatName);
+        } catch (ChatCreationException e) {
+            fail("Failed to create new chat");
+        }
+        try {
+            removeMemberFromChat(userId, chatId);
             fail("Expected MembershipException was not thrown");
         } catch (MembershipException e) {
             assertEquals(IS_NOT_A_MEMBER, e.getErrorType());
         }
 
+        deleteChat(chatId);
+
     }
 
     @Test
-    public void postMessage(){
+    public void successfullyPostMessage() {
 
-        final String message = "Hello there!";
-        final PostMessageDto postMessageDto = new PostMessageDto(firstUserId, chatId, message);
-
+        ChatId chatId = null;
         try {
-            chatService.postMessage(postMessageDto);
+            chatId = createChat(userId, chatName);
+        } catch (ChatCreationException e) {
+            fail("Failed to create new chat");
+        }
+        try {
+            addMemberToChat(userId, chatId);
+        } catch (MembershipException e) {
+            fail("Failed to add member to chat");
+        }
+        try {
+            postMessage(userId, chatId, message);
         } catch (PostMessageException e) {
             fail("Message was not posted");
         }
 
-        final MessageDto messageData = new MessageDto(firstUserId, chatId, message);
-
+        final MessageDto messageData = new MessageDto(userId, chatId, message);
         final List<MessageDto> messages = chatService.findChatById(chatId).getMessages();
 
         assertTrue("Message was not posted", messages.contains(messageData));
+
+        deleteChat(chatId);
     }
 
     @Test
-    public void failToPostMessageIfNotAMember(){
+    public void failToPostMessageIfNotAMember() {
 
-        final List<UserId> members = chatService.findChatById(chatId).getMembers();
-
-        assertFalse("User is a member", members.contains(secondUserId));
-
-        final String message = "Hello there!";
-        final PostMessageDto postMessageDto = new PostMessageDto(secondUserId, chatId, message);
-
+        ChatId chatId = null;
         try {
-            chatService.postMessage(postMessageDto);
+            chatId = createChat(userId, chatName);
+        } catch (ChatCreationException e) {
+            fail("Failed to create new chat");
+        }
+        try {
+            postMessage(userId, chatId, message);
             fail("Expected PostMessageException was not thrown");
         } catch (PostMessageException e) {
-           assertEquals(IS_NOT_A_MEMBER, e.getErrorType());
+            assertEquals(IS_NOT_A_MEMBER, e.getErrorType());
         }
 
+        deleteChat(chatId);
 
     }
 }
