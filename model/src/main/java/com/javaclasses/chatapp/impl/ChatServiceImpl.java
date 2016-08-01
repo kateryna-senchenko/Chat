@@ -1,6 +1,7 @@
 package com.javaclasses.chatapp.impl;
 
-import com.javaclasses.chatapp.*;
+import 
+        com.javaclasses.chatapp.*;
 import com.javaclasses.chatapp.dto.*;
 import com.javaclasses.chatapp.entities.Chat;
 import com.javaclasses.chatapp.entities.Message;

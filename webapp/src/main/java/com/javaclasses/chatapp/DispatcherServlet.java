@@ -1,6 +1,8 @@
 package com.javaclasses.chatapp;
 
+import com.javaclasses.chatapp.controllers.ChatController;
 import com.javaclasses.chatapp.controllers.Handler;
+import com.javaclasses.chatapp.controllers.UserController;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +13,11 @@ import java.io.IOException;
 
 public class DispatcherServlet extends HttpServlet {
 
+
+    static {
+        UserController.getInstance();
+        ChatController.getInstance();
+    }
 
     private final HandlerRegistry handlerRegistry = HandlerRegistry.getInstance();
 

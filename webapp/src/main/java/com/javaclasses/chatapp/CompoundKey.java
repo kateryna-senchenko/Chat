@@ -1,11 +1,11 @@
 package com.javaclasses.chatapp;
 
 
-/* package */ class CompoundKey {
+public class CompoundKey {
 
     private final String compoundKey;
 
-    /* package */ CompoundKey(String url, String method) {
+    public CompoundKey(String url, String method) {
         this.compoundKey = url + method;
     }
 

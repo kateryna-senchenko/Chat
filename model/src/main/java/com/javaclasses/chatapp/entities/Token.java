@@ -3,8 +3,6 @@ package com.javaclasses.chatapp.entities;
 import com.javaclasses.chatapp.tinytypes.TokenId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
-import java.util.UUID;
-
 /**
  * Access token
  */

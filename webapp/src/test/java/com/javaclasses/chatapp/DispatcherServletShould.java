@@ -63,9 +63,9 @@ public class DispatcherServletShould {
         final String password = "thecallofthewild";
 
         final List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair(USERNAME.getName(), username));
-        parameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
-        parameters.add(new BasicNameValuePair(CONFIRM_PASSWORD.getName(), password));
+        parameters.add(new BasicNameValuePair(USERNAME, username));
+        parameters.add(new BasicNameValuePair(PASSWORD, password));
+        parameters.add(new BasicNameValuePair(CONFIRM_PASSWORD, password));
 
         HttpResponse postResponse = sendRequest(url, parameters);
         final JSONObject jsonResult = getResponseContent(postResponse);
@@ -73,7 +73,7 @@ public class DispatcherServletShould {
         final int expectedStatus = 200;
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", username, jsonResult.optString(USERNAME.getName()));
+        assertEquals("Post request failed", username, jsonResult.optString(USERNAME));
 
     }
 
@@ -86,9 +86,9 @@ public class DispatcherServletShould {
         final String password = "thecallofthewild";
 
         final List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair(USERNAME.getName(), username));
-        parameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
-        parameters.add(new BasicNameValuePair(CONFIRM_PASSWORD.getName(), password));
+        parameters.add(new BasicNameValuePair(USERNAME, username));
+        parameters.add(new BasicNameValuePair(PASSWORD, password));
+        parameters.add(new BasicNameValuePair(CONFIRM_PASSWORD, password));
 
         sendRequest(url, parameters);
         HttpResponse postResponse = sendRequest(url, parameters);
@@ -98,7 +98,7 @@ public class DispatcherServletShould {
         final String expectedMessage = DUPLICATE_USERNAME.getMessage();
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", expectedMessage, jsonResult.optString(ERROR_MESSAGE.getName()));
+        assertEquals("Post request failed", expectedMessage, jsonResult.optString(ERROR_MESSAGE));
 
     }
 
@@ -111,17 +111,17 @@ public class DispatcherServletShould {
         final String password = "boo";
 
         final List<NameValuePair> registrationParameters = new ArrayList<>();
-        registrationParameters.add(new BasicNameValuePair(USERNAME.getName(), username));
-        registrationParameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
-        registrationParameters.add(new BasicNameValuePair(CONFIRM_PASSWORD.getName(), password));
+        registrationParameters.add(new BasicNameValuePair(USERNAME, username));
+        registrationParameters.add(new BasicNameValuePair(PASSWORD, password));
+        registrationParameters.add(new BasicNameValuePair(CONFIRM_PASSWORD, password));
 
         sendRequest(registrationUrl, registrationParameters);
 
         final String loginUrl = "http://localhost:8080/login";
 
         final List<NameValuePair> loginParameters = new ArrayList<>();
-        loginParameters.add(new BasicNameValuePair(USERNAME.getName(), username));
-        loginParameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
+        loginParameters.add(new BasicNameValuePair(USERNAME, username));
+        loginParameters.add(new BasicNameValuePair(PASSWORD, password));
 
         HttpResponse postResponse = sendRequest(loginUrl, loginParameters);
 
@@ -129,7 +129,7 @@ public class DispatcherServletShould {
         final int expectedStatus = 200;
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", username, jsonResult.optString(USERNAME.getName()));
+        assertEquals("Post request failed", username, jsonResult.optString(USERNAME));
 
     }
 
@@ -142,8 +142,8 @@ public class DispatcherServletShould {
         final String password = "ForGod'sSakeBelieveHim";
 
         final List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair(USERNAME.getName(), username));
-        parameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
+        parameters.add(new BasicNameValuePair(USERNAME, username));
+        parameters.add(new BasicNameValuePair(PASSWORD, password));
 
         HttpResponse postResponse = sendRequest(url, parameters);
 
@@ -152,7 +152,7 @@ public class DispatcherServletShould {
         final String expectedMessage = AUTHENTICATION_FAILED.getMessage();
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", expectedMessage, jsonResult.optString(ERROR_MESSAGE.getName()));
+        assertEquals("Post request failed", expectedMessage, jsonResult.optString(ERROR_MESSAGE));
     }
 
 
