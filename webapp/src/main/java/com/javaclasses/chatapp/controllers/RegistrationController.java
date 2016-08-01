@@ -11,6 +11,8 @@ import com.javaclasses.chatapp.impl.UserServiceImpl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.javaclasses.chatapp.Parameters.*;
+
 
 public class RegistrationController implements Handler {
 
@@ -18,9 +20,9 @@ public class RegistrationController implements Handler {
 
     public HandlerProcessingResult processRequest(HttpServletRequest request) {
 
-        final String username = request.getParameter("username");
-        final String password = request.getParameter("password");
-        final String confirmPassword = request.getParameter("confirmPassword");
+        final String username = request.getParameter(USERNAME.getName());
+        final String password = request.getParameter(PASSWORD.getName());
+        final String confirmPassword = request.getParameter(CONFIRM_PASSWORD.getName());
 
         final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
 
@@ -28,11 +30,11 @@ public class RegistrationController implements Handler {
         try {
             UserId userId = userService.register(registrationDto);
             handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
-            handlerProcessingResult.setData("userId", String.valueOf(userId.getId()));
-            handlerProcessingResult.setData("username", userService.findRegisteredUserById(userId).getUsername());
+            handlerProcessingResult.setData(USER_ID.getName(), String.valueOf(userId.getId()));
+            handlerProcessingResult.setData(USERNAME.getName(), userService.findRegisteredUserById(userId).getUsername());
         } catch (RegistrationException e) {
             handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            handlerProcessingResult.setData("errorMessage", e.getMessage());
+            handlerProcessingResult.setData(ERROR_MESSAGE.getName(), e.getMessage());
         }
 
         return handlerProcessingResult;

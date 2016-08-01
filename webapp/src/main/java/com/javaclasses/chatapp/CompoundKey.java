@@ -9,9 +9,6 @@ package com.javaclasses.chatapp;
         this.compoundKey = url + method;
     }
 
-    public String getCompoundKey() {
-        return compoundKey;
-    }
 
     @Override
     public boolean equals(Object o) {

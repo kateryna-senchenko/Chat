@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
+import static com.javaclasses.chatapp.Parameters.*;
+
 public class LeavingChatController implements Handler {
 
     private final ChatService chatService = ChatServiceImpl.getInstance();
@@ -22,26 +24,27 @@ public class LeavingChatController implements Handler {
     @Override
     public HandlerProcessingResult processRequest(HttpServletRequest request) {
 
-        final String token = request.getParameter("token");
-        final UserId userId = new UserId(Long.valueOf(request.getParameter("userId")));
-        final ChatId chatId = new ChatId(Long.valueOf(request.getParameter("chatId")));
+        final String tokenId = request.getParameter(TOKEN_ID.getName());
+        final UserId userId = new UserId(Long.valueOf(request.getParameter(USER_ID.getName())));
+        final ChatId chatId = new ChatId(Long.valueOf(request.getParameter(CHAT_ID.getName())));
 
-        final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(token)), userId);
+        final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), userId);
 
         HandlerProcessingResult handlerProcessingResult;
         if (userService.findLoggedInUserByToken(tokenDto) == null) {
             handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
+            handlerProcessingResult.setData(ERROR_MESSAGE.getName(), "Cannot find user");
         }
         final MemberChatDto memberChatDto = new MemberChatDto(userId, chatId);
 
         try {
             chatService.removeMember(memberChatDto);
             handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
-            handlerProcessingResult.setData("userId", String.valueOf(userId.getId()));
-            handlerProcessingResult.setData("chatId", String.valueOf(chatId.getId()));
+            handlerProcessingResult.setData(USER_ID.getName(), String.valueOf(userId.getId()));
+            handlerProcessingResult.setData(CHAT_ID.getName(), String.valueOf(chatId.getId()));
         } catch (MembershipException e) {
             handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            handlerProcessingResult.setData("errorMessage", e.getMessage());
+            handlerProcessingResult.setData(ERROR_MESSAGE.getName(), e.getMessage());
         }
         return handlerProcessingResult;
     }

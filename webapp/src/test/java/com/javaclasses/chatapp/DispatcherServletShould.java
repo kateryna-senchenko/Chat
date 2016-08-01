@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.javaclasses.chatapp.ErrorType.AUTHENTICATION_FAILED;
-import static com.javaclasses.chatapp.ErrorType.DUPLICATE_CHATNAME;
 import static com.javaclasses.chatapp.ErrorType.DUPLICATE_USERNAME;
+import static com.javaclasses.chatapp.Parameters.*;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import static org.junit.Assert.assertEquals;
 
@@ -63,9 +63,9 @@ public class DispatcherServletShould {
         final String password = "thecallofthewild";
 
         final List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair("username", username));
-        parameters.add(new BasicNameValuePair("password", password));
-        parameters.add(new BasicNameValuePair("confirmPassword", password));
+        parameters.add(new BasicNameValuePair(USERNAME.getName(), username));
+        parameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
+        parameters.add(new BasicNameValuePair(CONFIRM_PASSWORD.getName(), password));
 
         HttpResponse postResponse = sendRequest(url, parameters);
         final JSONObject jsonResult = getResponseContent(postResponse);
@@ -73,7 +73,7 @@ public class DispatcherServletShould {
         final int expectedStatus = 200;
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", username, jsonResult.optString("username"));
+        assertEquals("Post request failed", username, jsonResult.optString(USERNAME.getName()));
 
     }
 
@@ -86,9 +86,9 @@ public class DispatcherServletShould {
         final String password = "thecallofthewild";
 
         final List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair("username", username));
-        parameters.add(new BasicNameValuePair("password", password));
-        parameters.add(new BasicNameValuePair("confirmPassword", password));
+        parameters.add(new BasicNameValuePair(USERNAME.getName(), username));
+        parameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
+        parameters.add(new BasicNameValuePair(CONFIRM_PASSWORD.getName(), password));
 
         sendRequest(url, parameters);
         HttpResponse postResponse = sendRequest(url, parameters);
@@ -98,7 +98,7 @@ public class DispatcherServletShould {
         final String expectedMessage = DUPLICATE_USERNAME.getMessage();
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", expectedMessage, jsonResult.optString("errorMessage"));
+        assertEquals("Post request failed", expectedMessage, jsonResult.optString(ERROR_MESSAGE.getName()));
 
     }
 
@@ -111,17 +111,17 @@ public class DispatcherServletShould {
         final String password = "boo";
 
         final List<NameValuePair> registrationParameters = new ArrayList<>();
-        registrationParameters.add(new BasicNameValuePair("username", username));
-        registrationParameters.add(new BasicNameValuePair("password", password));
-        registrationParameters.add(new BasicNameValuePair("confirmPassword", password));
+        registrationParameters.add(new BasicNameValuePair(USERNAME.getName(), username));
+        registrationParameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
+        registrationParameters.add(new BasicNameValuePair(CONFIRM_PASSWORD.getName(), password));
 
         sendRequest(registrationUrl, registrationParameters);
 
         final String loginUrl = "http://localhost:8080/login";
 
         final List<NameValuePair> loginParameters = new ArrayList<>();
-        loginParameters.add(new BasicNameValuePair("username", username));
-        loginParameters.add(new BasicNameValuePair("password", password));
+        loginParameters.add(new BasicNameValuePair(USERNAME.getName(), username));
+        loginParameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
 
         HttpResponse postResponse = sendRequest(loginUrl, loginParameters);
 
@@ -129,7 +129,7 @@ public class DispatcherServletShould {
         final int expectedStatus = 200;
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", username, jsonResult.optString("username"));
+        assertEquals("Post request failed", username, jsonResult.optString(USERNAME.getName()));
 
     }
 
@@ -142,8 +142,8 @@ public class DispatcherServletShould {
         final String password = "ForGod'sSakeBelieveHim";
 
         final List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair("username", username));
-        parameters.add(new BasicNameValuePair("password", password));
+        parameters.add(new BasicNameValuePair(USERNAME.getName(), username));
+        parameters.add(new BasicNameValuePair(PASSWORD.getName(), password));
 
         HttpResponse postResponse = sendRequest(url, parameters);
 
@@ -152,101 +152,8 @@ public class DispatcherServletShould {
         final String expectedMessage = AUTHENTICATION_FAILED.getMessage();
 
         assertEquals("Unexpected response status", expectedStatus, postResponse.getStatusLine().getStatusCode());
-        assertEquals("Post request failed", expectedMessage, jsonResult.optString("errorMessage"));
+        assertEquals("Post request failed", expectedMessage, jsonResult.optString(ERROR_MESSAGE.getName()));
     }
 
-   /* @Test
-    public void acceptCreationChatRequest() throws IOException {
 
-        final String registrationUrl = "http://localhost:8080/registration";
-
-        final String username = "Valery";
-        final String password = "justdoit";
-
-        final List<NameValuePair> registrationParameters = new ArrayList<>();
-        registrationParameters.add(new BasicNameValuePair("username", username));
-        registrationParameters.add(new BasicNameValuePair("password", password));
-        registrationParameters.add(new BasicNameValuePair("confirmPassword", password));
-
-        sendRequest(registrationUrl, registrationParameters);
-
-        final String loginUrl = "http://localhost:8080/login";
-
-        final List<NameValuePair> loginParameters = new ArrayList<>();
-        loginParameters.add(new BasicNameValuePair("username", username));
-        loginParameters.add(new BasicNameValuePair("password", password));
-
-        HttpResponse loginPostResponse = sendRequest(loginUrl, loginParameters);
-        JSONObject loggedInUserData = getResponseContent(loginPostResponse);
-
-        final String createChatUrl = "http://localhost:8080/createchat";
-        final String token = loggedInUserData.optString("token");
-        final String userId = loggedInUserData.optString("userId");
-        final String chatName = "just do it";
-
-        final List<NameValuePair> chatCreationParameters = new ArrayList<>();
-        chatCreationParameters.add(new BasicNameValuePair("token", token));
-        chatCreationParameters.add(new BasicNameValuePair("userId", userId));
-        chatCreationParameters.add(new BasicNameValuePair("chatName", chatName));
-
-        HttpResponse chatCreationResponse = sendRequest(createChatUrl, chatCreationParameters);
-
-        JSONObject chatData = getResponseContent(chatCreationResponse);
-
-        System.out.println(chatData.optString("message"));
-
-        final int expectedStatus = 200;
-
-        assertEquals("Unexpected response status", expectedStatus, chatCreationResponse.getStatusLine().getStatusCode());
-        assertEquals("Chat creation post failed", chatName, chatData.optString("chatName"));
-
-    }*/
-
-   /* @Test
-    public void acceptCreationChatRequestWithDuplicateName() throws IOException {
-
-        final String registrationUrl = "http://localhost:8080/registration";
-
-        final String username = "Harper";
-        final String password = "justdoit";
-
-        final List<NameValuePair> registrationParameters = new ArrayList<>();
-        registrationParameters.add(new BasicNameValuePair("username", username));
-        registrationParameters.add(new BasicNameValuePair("password", password));
-        registrationParameters.add(new BasicNameValuePair("confirmPassword", password));
-
-        sendRequest(registrationUrl, registrationParameters);
-
-        final String loginUrl = "http://localhost:8080/login";
-
-        final List<NameValuePair> loginParameters = new ArrayList<>();
-        loginParameters.add(new BasicNameValuePair("username", username));
-        loginParameters.add(new BasicNameValuePair("password", password));
-
-        HttpResponse loginPostResponse = sendRequest(loginUrl, loginParameters);
-        JSONObject loggedInUserData = getResponseContent(loginPostResponse);
-
-        final String createChatUrl = "http://localhost:8080/create-chat";
-        final String token = loggedInUserData.optString("token");
-        final String userId = loggedInUserData.optString("userId");
-        final String chatName = "GoScout!";
-
-        final List<NameValuePair> chatCreationParameters = new ArrayList<>();
-        chatCreationParameters.add(new BasicNameValuePair("token", token));
-        chatCreationParameters.add(new BasicNameValuePair("userId", userId));
-        chatCreationParameters.add(new BasicNameValuePair("chatName", chatName));
-
-        sendRequest(createChatUrl, chatCreationParameters);
-
-        HttpResponse chatCreationResponse = sendRequest(createChatUrl, chatCreationParameters);
-
-        JSONObject chatData = getResponseContent(chatCreationResponse);
-
-        final int expectedStatus = 500;
-        final String expectedMessage = DUPLICATE_CHATNAME.getMessage();
-
-        assertEquals("Unexpected response status", expectedStatus, chatCreationResponse.getStatusLine().getStatusCode());
-        assertEquals("Chat creation post failed", expectedMessage, chatData.optString("errorMessage"));
-
-    }*/
 }
