@@ -46,7 +46,7 @@ public interface UserService {
      * removes registered user
      * @param id - id of the user to be removed
      */
-    void deleteUser(UserId id);
+    void deleteUser(UserId id) throws UserRemovalException;
 
     /**
      * logout logged in user

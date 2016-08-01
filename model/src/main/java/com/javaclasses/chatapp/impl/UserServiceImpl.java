@@ -2,10 +2,7 @@ package com.javaclasses.chatapp.impl;
 
 
 import com.javaclasses.chatapp.*;
-import com.javaclasses.chatapp.dto.LoginDto;
-import com.javaclasses.chatapp.dto.RegistrationDto;
-import com.javaclasses.chatapp.dto.TokenDto;
-import com.javaclasses.chatapp.dto.UserDto;
+import com.javaclasses.chatapp.dto.*;
 import com.javaclasses.chatapp.entities.Token;
 import com.javaclasses.chatapp.entities.User;
 import com.javaclasses.chatapp.storage.TokenRepositoryImpl;
@@ -17,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.List;
 
 
 import static com.javaclasses.chatapp.ErrorType.*;
@@ -32,10 +30,12 @@ public class UserServiceImpl implements UserService {
     private static Repository<UserId, User> userRepository;
     private static Repository<TokenId, Token> tokenRepository;
 
+    private static ChatService chatService;
 
     private UserServiceImpl() {
         userRepository = UserRepositoryImpl.getInstance();
         tokenRepository = TokenRepositoryImpl.getInstance();
+        chatService = ChatServiceImpl.getInstance();
     }
 
     public static UserService getInstance() {
@@ -137,8 +137,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(UserId id) {
+    public void deleteUser(UserId id) throws UserRemovalException{
 
+        Collection<ChatDto> chatDtos = chatService.findAllChats();
+
+        for(ChatDto chat: chatDtos){
+            List<UserId> members = chat.getMembers();
+            if(members.contains(id)){
+                throw new UserRemovalException(USER_IS_A_MEMBER_OF_CHAT);
+            }
+        }
 
         userRepository.remove(id);
 

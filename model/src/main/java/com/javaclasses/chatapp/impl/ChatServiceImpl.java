@@ -150,4 +150,23 @@ public class ChatServiceImpl implements ChatService {
             log.info("Removed chat {}", chatId.getId());
         }
     }
+
+    @Override
+    public Collection<ChatDto> findAllChats() {
+
+        final Collection<Chat> chats = chatRepository.getAll();
+        Collection<ChatDto> chatDtos = new ArrayList<>();
+
+        for(Chat chat: chats){
+            List<Message> messages = chat.getMessages();
+            List<MessageDto> messageDtos = new ArrayList<>();
+
+            for(Message message: messages){
+                messageDtos.add(new MessageDto(message.getAuthor(),message.getChatId(), message.getMessage()));
+            }
+            chatDtos.add(new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwner(), chat.getMembers(), messageDtos));
+        }
+
+        return chatDtos;
+    }
 }

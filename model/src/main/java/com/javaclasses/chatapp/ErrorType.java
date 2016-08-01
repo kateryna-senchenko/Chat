@@ -15,7 +15,12 @@ public enum ErrorType {
     CHATNAME_IS_EMPTY("Chat name should not be empty"),
     DUPLICATE_CHATNAME("Specified name is not available"),
     ALREADY_A_MEMBER("User is already a member"),
-    IS_NOT_A_MEMBER("User is not a member");
+    IS_NOT_A_MEMBER("User is not a member"),
+
+    USER_IS_A_MEMBER_OF_CHAT("User ia a member of chat");
+
+
+
 
     private final String message;
 

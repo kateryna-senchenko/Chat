@@ -6,6 +6,8 @@ import com.javaclasses.chatapp.dto.MemberChatDto;
 import com.javaclasses.chatapp.dto.PostMessageDto;
 import com.javaclasses.chatapp.tinytypes.ChatId;
 
+import java.util.Collection;
+
 /**
  * Public API of ChatService
  */
@@ -52,5 +54,11 @@ public interface ChatService {
      * @param chatId - id of the chat to be removed
      */
     void deleteChat(ChatId chatId);
+
+    /**
+     * provides access to collection of all chats
+     * @return collection of chat dto
+     */
+    Collection<ChatDto> findAllChats();
 
 }
