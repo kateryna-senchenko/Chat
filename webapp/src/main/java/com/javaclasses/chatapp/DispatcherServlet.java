@@ -37,9 +37,9 @@ public class DispatcherServlet extends HttpServlet {
         if (handler == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
-            TransferObject transferObject = handler.processRequest(request);
-            response.setStatus(transferObject.getResponseStatus());
-            response.getWriter().write(transferObject.getContent());
+            HandlerProcessingResult handlerProcessingResult = handler.processRequest(request);
+            response.setStatus(handlerProcessingResult.getResponseStatus());
+            response.getWriter().write(handlerProcessingResult.getContent());
         }
     }
 

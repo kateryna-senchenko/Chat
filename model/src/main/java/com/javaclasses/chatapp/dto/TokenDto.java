@@ -1,23 +1,23 @@
 package com.javaclasses.chatapp.dto;
 
+import com.javaclasses.chatapp.tinytypes.TokenId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
-import java.util.UUID;
 
 /**
  * Token DTO
  */
 public class TokenDto {
 
-    private final UUID token;
+    private final TokenId token;
     private final UserId userId;
 
-    public TokenDto(UUID token, UserId userId) {
+    public TokenDto(TokenId token, UserId userId) {
         this.token = token;
         this.userId = userId;
     }
 
-    public UUID getToken() {
+    public TokenId getToken() {
         return token;
     }
 

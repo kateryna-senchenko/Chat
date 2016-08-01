@@ -1,11 +1,11 @@
 package com.javaclasses.chatapp.controllers;
 
 
-import com.javaclasses.chatapp.TransferObject;
+import com.javaclasses.chatapp.HandlerProcessingResult;
 
 import javax.servlet.http.HttpServletRequest;
 
 public interface Handler {
 
-    TransferObject processRequest(HttpServletRequest request);
+    HandlerProcessingResult processRequest(HttpServletRequest request);
 }

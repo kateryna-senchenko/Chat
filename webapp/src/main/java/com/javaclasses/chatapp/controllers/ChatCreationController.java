@@ -7,6 +7,7 @@ import com.javaclasses.chatapp.dto.TokenDto;
 import com.javaclasses.chatapp.impl.ChatServiceImpl;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import com.javaclasses.chatapp.tinytypes.ChatId;
+import com.javaclasses.chatapp.tinytypes.TokenId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,32 +22,32 @@ public class ChatCreationController implements Handler{
     private final UserService userService = UserServiceImpl.getInstance();
 
     @Override
-    public TransferObject processRequest(HttpServletRequest request) {
+    public HandlerProcessingResult processRequest(HttpServletRequest request) {
 
         final String token = request.getParameter("token");
         final String userId = request.getParameter("userId");
         final String chatName = request.getParameter("chatName");
 
         final UserId id = new UserId(Long.valueOf(userId));
-        final TokenDto tokenDto = new TokenDto(UUID.fromString(token), id);
-        TransferObject transferObject;
+        final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(token)), id);
+        HandlerProcessingResult handlerProcessingResult;
         if(userService.findLoggedInUserByToken(tokenDto) == null){
-            transferObject = new TransferObject(HttpServletResponse.SC_FORBIDDEN);
-            transferObject.setData("message", "Cannot find user");
+            handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
+            handlerProcessingResult.setData("message", "Cannot find user");
         }
 
         final ChatCreationDto chatCreationDto = new ChatCreationDto(id, chatName);
 
         try {
             ChatId chatId = chatService.createChat(chatCreationDto);
-            transferObject = new TransferObject(HttpServletResponse.SC_OK);
-            transferObject.setData("chatId", String.valueOf(chatId.getId()));
-            transferObject.setData("chatName", chatService.findChatById(chatId).getChatName());
+            handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
+            handlerProcessingResult.setData("chatId", String.valueOf(chatId.getId()));
+            handlerProcessingResult.setData("chatName", chatService.findChatById(chatId).getChatName());
         } catch (ChatCreationException e) {
-            transferObject = new TransferObject(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            transferObject.setData("errorMessage", e.getMessage());
+            handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            handlerProcessingResult.setData("errorMessage", e.getMessage());
         }
 
-        return transferObject;
+        return handlerProcessingResult;
     }
 }

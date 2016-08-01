@@ -11,12 +11,13 @@ import com.javaclasses.chatapp.entities.User;
 import com.javaclasses.chatapp.storage.TokenRepositoryImpl;
 import com.javaclasses.chatapp.storage.Repository;
 import com.javaclasses.chatapp.storage.UserRepositoryImpl;
+import com.javaclasses.chatapp.tinytypes.TokenId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.UUID;
+
 
 import static com.javaclasses.chatapp.ErrorType.*;
 
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     private static UserServiceImpl userService = new UserServiceImpl();
     private static Repository<UserId, User> userRepository;
-    private static Repository<UUID, Token> tokenRepository;
+    private static Repository<TokenId, Token> tokenRepository;
 
 
     private UserServiceImpl() {
@@ -49,12 +50,12 @@ public class UserServiceImpl implements UserService {
 
         if (username.isEmpty() || username.contains(" ")) {
             log.error("Failed to register user {}: invalid username input", username);
-            throw new RegistrationException(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES.getMessage());
+            throw new RegistrationException(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES);
         }
 
         if (registrationDto.getPassword().isEmpty()) {
             log.error("Failed to register user {}: invalid password input", username);
-            throw new RegistrationException(PASSWORD_IS_EMPTY.getMessage());
+            throw new RegistrationException(PASSWORD_IS_EMPTY);
         }
 
 
@@ -64,13 +65,13 @@ public class UserServiceImpl implements UserService {
 
             if (user.getUsername().equals(username)) {
                 log.error("Registration failed: username {} is already taken", username);
-                throw new RegistrationException(DUPLICATE_USERNAME.getMessage());
+                throw new RegistrationException(DUPLICATE_USERNAME);
             }
         }
 
         if (!(registrationDto.getPassword().equals(registrationDto.getConfirmPassword()))) {
             log.error("Failed to register user {}: passwords do not match", username);
-            throw new RegistrationException(PASSWORDS_DO_NOT_MATCH.getMessage());
+            throw new RegistrationException(PASSWORDS_DO_NOT_MATCH);
         }
 
 
@@ -105,12 +106,12 @@ public class UserServiceImpl implements UserService {
 
         if (userToLogin == null) {
             log.error("Failed to login user {}: either username or password is incorrect", loginDto.getUsername());
-            throw new AuthenticationException(AUTHENTICATION_FAILED.getMessage());
+            throw new AuthenticationException(AUTHENTICATION_FAILED);
         }
 
         Token newToken = new Token(userToLogin.getId());
 
-        UUID token = tokenRepository.add(newToken);
+        TokenId token = tokenRepository.add(newToken);
         newToken.setToken(token);
 
         if (log.isInfoEnabled()) {
@@ -137,6 +138,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(UserId id) {
+
 
         userRepository.remove(id);
 

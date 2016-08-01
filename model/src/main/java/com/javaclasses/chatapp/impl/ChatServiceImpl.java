@@ -1,10 +1,7 @@
 package com.javaclasses.chatapp.impl;
 
 import com.javaclasses.chatapp.*;
-import com.javaclasses.chatapp.dto.ChatCreationDto;
-import com.javaclasses.chatapp.dto.ChatDto;
-import com.javaclasses.chatapp.dto.MemberChatDto;
-import com.javaclasses.chatapp.dto.PostMessageDto;
+import com.javaclasses.chatapp.dto.*;
 import com.javaclasses.chatapp.entities.Chat;
 import com.javaclasses.chatapp.entities.Message;
 import com.javaclasses.chatapp.storage.ChatRepositoryImpl;
@@ -14,6 +11,7 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class ChatServiceImpl implements ChatService {
 
         if (chatName.isEmpty()) {
             log.error("Failed to create chat: empty chat name");
-            throw new ChatCreationException(CHATNAME_IS_EMPTY.getMessage());
+            throw new ChatCreationException(CHATNAME_IS_EMPTY);
         }
 
         Collection<Chat> allChats = chatRepository.getAll();
@@ -54,7 +52,7 @@ public class ChatServiceImpl implements ChatService {
 
             if (chat.getChatName().equals(chatName)) {
                 log.error("Failed to create chat: chat name {} is already taken", chatName);
-                throw new ChatCreationException(DUPLICATE_CHATNAME.getMessage());
+                throw new ChatCreationException(DUPLICATE_CHATNAME);
             }
         }
 
@@ -77,7 +75,7 @@ public class ChatServiceImpl implements ChatService {
 
         if(members.contains(memberChatDto.getUserId())){
             log.error("Failed to join chat: User {} is already a member", memberChatDto.getUserId().getId());
-            throw new MembershipException(ALREADY_A_MEMBER.getMessage());
+            throw new MembershipException(ALREADY_A_MEMBER);
         }else{
             members.add(memberChatDto.getUserId());
             chat.setMembers(members);
@@ -97,7 +95,7 @@ public class ChatServiceImpl implements ChatService {
 
         if(!members.contains(memberChatDto.getUserId())){
             log.error("Failed to leave chat: User {} is not a member", memberChatDto.getUserId().getId());
-            throw new MembershipException(IS_NOT_A_MEMBER.getMessage());
+            throw new MembershipException(IS_NOT_A_MEMBER);
         }else{
             members.remove(memberChatDto.getUserId());
             chat.setMembers(members);
@@ -116,7 +114,7 @@ public class ChatServiceImpl implements ChatService {
 
         if(!members.contains(postMessageDto.getUserId())){
             log.error("Failed to post message: User {} is not a member", postMessageDto.getUserId().getId());
-            throw new PostMessageException(IS_NOT_A_MEMBER.getMessage());
+            throw new PostMessageException(IS_NOT_A_MEMBER);
         }else{
             Message message = new Message(postMessageDto.getUserId(), chat.getChatId(), postMessageDto.getMessage());
             List<Message> messages = chat.getMessages();
@@ -134,7 +132,13 @@ public class ChatServiceImpl implements ChatService {
     public ChatDto findChatById(ChatId id) {
 
         Chat chat = chatRepository.getItem(id);
-        return new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwner(), chat.getMembers(), chat.getMessages());
+        List<Message> messages = chat.getMessages();
+        List<MessageDto> messageDtos = new ArrayList<>();
+
+        for(Message message: messages){
+            messageDtos.add(new MessageDto(message.getAuthor(),message.getChatId(), message.getMessage()));
+        }
+        return new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwner(), chat.getMembers(), messageDtos);
     }
 
     @Override

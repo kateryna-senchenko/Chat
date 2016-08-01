@@ -1,25 +1,26 @@
 package com.javaclasses.chatapp.storage;
 
 import com.javaclasses.chatapp.entities.Token;
+import com.javaclasses.chatapp.tinytypes.TokenId;
 
 import java.util.UUID;
 
 /**
  * Implementation of the Repository interface for logged in user repository
  */
-public class TokenRepositoryImpl extends InMemoryRepository<UUID, Token> {
+public class TokenRepositoryImpl extends InMemoryRepository<TokenId, Token> {
 
-    private static Repository<UUID, Token> tokenRepository = new TokenRepositoryImpl();
+    private static Repository<TokenId, Token> tokenRepository = new TokenRepositoryImpl();
 
     private TokenRepositoryImpl() {}
 
-    public static Repository<UUID, Token> getInstance() {
+    public static Repository<TokenId, Token> getInstance() {
         return tokenRepository;
     }
 
     @Override
-    public UUID generateId() {
-        return UUID.randomUUID();
+    public TokenId generateId() {
+        return new TokenId(UUID.randomUUID());
     }
 }
 

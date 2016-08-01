@@ -12,7 +12,7 @@ import java.util.List;
 public class Chat {
 
     private ChatId chatId;
-    private String chatName;
+    private final String chatName;
     private final UserId owner;
     private List<UserId> members = new ArrayList<>();
     private List<Message> messages = new ArrayList<>();
@@ -45,10 +45,6 @@ public class Chat {
 
     public void setChatId(ChatId chatId) {
         this.chatId = chatId;
-    }
-
-    public void setChatName(String chatName) {
-        this.chatName = chatName;
     }
 
     public void setMembers(List<UserId> members) {

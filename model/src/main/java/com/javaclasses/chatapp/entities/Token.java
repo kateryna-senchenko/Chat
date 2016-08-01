@@ -1,5 +1,6 @@
 package com.javaclasses.chatapp.entities;
 
+import com.javaclasses.chatapp.tinytypes.TokenId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 import java.util.UUID;
@@ -9,18 +10,18 @@ import java.util.UUID;
  */
 public class Token {
 
-    private UUID token;
+    private TokenId token;
     private final UserId userId;
 
     public Token(UserId userId) {
         this.userId = userId;
     }
 
-    public UUID getToken() {
+    public TokenId getToken() {
         return token;
     }
 
-    public void setToken(UUID token) {
+    public void setToken(TokenId token) {
         this.token = token;
     }
 
@@ -35,8 +36,7 @@ public class Token {
 
         Token token1 = (Token) o;
 
-        if (!token.equals(token1.token)) return false;
-        return userId.equals(token1.userId);
+        return token.equals(token1.token) && userId.equals(token1.userId);
 
     }
 

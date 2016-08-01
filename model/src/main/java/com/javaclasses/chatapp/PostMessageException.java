@@ -3,9 +3,9 @@ package com.javaclasses.chatapp;
 /**
  * Exception that indicates failure of posting a message
  */
-/*package*/public class PostMessageException extends Exception{
+public class PostMessageException extends ChatAppException{
 
-    public PostMessageException(String message){
-        super(message);
+    public PostMessageException(ErrorType errorType) {
+        super(errorType);
     }
 }

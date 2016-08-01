@@ -2,7 +2,7 @@ package com.javaclasses.chatapp.controllers;
 
 import com.javaclasses.chatapp.AuthenticationException;
 import com.javaclasses.chatapp.dto.TokenDto;
-import com.javaclasses.chatapp.TransferObject;
+import com.javaclasses.chatapp.HandlerProcessingResult;
 import com.javaclasses.chatapp.UserService;
 import com.javaclasses.chatapp.dto.LoginDto;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
@@ -15,26 +15,26 @@ public class LoginController implements Handler{
     private final UserService userService = UserServiceImpl.getInstance();
 
     @Override
-    public TransferObject processRequest(HttpServletRequest request) {
+    public HandlerProcessingResult processRequest(HttpServletRequest request) {
 
         final String username = request.getParameter("username");
         final String password = request.getParameter("password");
 
         final LoginDto loginDto = new LoginDto(username, password);
 
-        TransferObject transferObject;
+        HandlerProcessingResult handlerProcessingResult;
 
         try {
             TokenDto token = userService.login(loginDto);
-            transferObject = new TransferObject(HttpServletResponse.SC_OK);
-            transferObject.setData("token", String.valueOf(token.getToken()));
-            transferObject.setData("userId", String.valueOf(token.getUserId().getId()));
-            transferObject.setData("username", userService.findLoggedInUserByToken(token).getUsername());
+            handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
+            handlerProcessingResult.setData("token", String.valueOf(token.getToken()));
+            handlerProcessingResult.setData("userId", String.valueOf(token.getUserId().getId()));
+            handlerProcessingResult.setData("username", userService.findLoggedInUserByToken(token).getUsername());
         } catch (AuthenticationException e) {
-            transferObject = new TransferObject(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            transferObject.setData("errorMessage", e.getMessage());
+            handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            handlerProcessingResult.setData("errorMessage", e.getMessage());
         }
 
-        return transferObject;
+        return handlerProcessingResult;
     }
 }

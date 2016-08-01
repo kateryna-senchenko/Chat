@@ -6,12 +6,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TransferObject {
+public class HandlerProcessingResult {
 
     private final int responseStatus;
     private final Map<String, String> content;
 
-    public TransferObject(int responseStatus) {
+    public HandlerProcessingResult(int responseStatus) {
         this.responseStatus = responseStatus;
         this.content = new HashMap<>();
     }

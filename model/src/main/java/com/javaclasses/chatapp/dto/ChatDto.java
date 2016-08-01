@@ -1,7 +1,6 @@
 package com.javaclasses.chatapp.dto;
 
 import com.javaclasses.chatapp.tinytypes.ChatId;
-import com.javaclasses.chatapp.entities.Message;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 import java.util.List;
@@ -15,9 +14,9 @@ public class ChatDto {
     private final String chatName;
     private final UserId owner;
     private final List<UserId> members;
-    private final List<Message> messages;
+    private final List<MessageDto> messages;
 
-    public ChatDto(ChatId chatId, String chatName, UserId owner, List<UserId> members, List<Message> messages) {
+    public ChatDto(ChatId chatId, String chatName, UserId owner, List<UserId> members, List<MessageDto> messages) {
         this.chatId = chatId;
         this.chatName = chatName;
         this.owner = owner;
@@ -41,7 +40,7 @@ public class ChatDto {
         return members;
     }
 
-    public List<Message> getMessages() {
+    public List<MessageDto> getMessages() {
         return messages;
     }
 

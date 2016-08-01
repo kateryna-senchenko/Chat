@@ -3,9 +3,9 @@ package com.javaclasses.chatapp;
 /**
  * Exception that indicates failure of a chat creation
  */
-public class ChatCreationException extends Exception {
+public class ChatCreationException extends ChatAppException {
 
-    public ChatCreationException(String message) {
-        super(message);
+    public ChatCreationException(ErrorType errorType) {
+        super(errorType);
     }
 }

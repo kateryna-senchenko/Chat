@@ -3,10 +3,9 @@ package com.javaclasses.chatapp;
 /**
  * Exception that indicates registration failure
  */
-public class RegistrationException extends Exception {
+public class RegistrationException extends ChatAppException {
 
-
-    public RegistrationException(String message){
-        super(message);
+    public RegistrationException(ErrorType errorType) {
+        super(errorType);
     }
 }

@@ -3,9 +3,9 @@ package com.javaclasses.chatapp;
 /**
  * Exception to indicate the failure of joining/leaving chat
  */
-public class MembershipException extends Exception {
+public class MembershipException extends ChatAppException {
 
-    public MembershipException(String message) {
-        super(message);
+    public MembershipException(ErrorType errorType) {
+        super(errorType);
     }
 }

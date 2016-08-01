@@ -3,9 +3,9 @@ package com.javaclasses.chatapp;
 /**
  * Exception that indicates authentication failure
  */
-public class AuthenticationException extends Exception {
+public class AuthenticationException extends ChatAppException {
 
-    public AuthenticationException(String message){
-        super(message);
+    public AuthenticationException(ErrorType errorType){
+        super(errorType);
     }
 }

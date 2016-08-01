@@ -7,6 +7,7 @@ import com.javaclasses.chatapp.dto.TokenDto;
 import com.javaclasses.chatapp.impl.ChatServiceImpl;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import com.javaclasses.chatapp.tinytypes.ChatId;
+import com.javaclasses.chatapp.tinytypes.TokenId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,33 +20,33 @@ public class PostingMessageController implements Handler {
     private final UserService userService = UserServiceImpl.getInstance();
 
     @Override
-    public TransferObject processRequest(HttpServletRequest request) {
+    public HandlerProcessingResult processRequest(HttpServletRequest request) {
 
         final String token = request.getParameter("token");
         final UserId userId = new UserId(Long.valueOf(request.getParameter("userId")));
         final ChatId chatId = new ChatId(Long.valueOf(request.getParameter("chatId")));
         final String message = request.getParameter("message");
 
-        final TokenDto tokenDto = new TokenDto(UUID.fromString(token), userId);
+        final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(token)), userId);
 
-        TransferObject transferObject;
+        HandlerProcessingResult handlerProcessingResult;
         if (userService.findLoggedInUserByToken(tokenDto) == null) {
-            transferObject = new TransferObject(HttpServletResponse.SC_FORBIDDEN);
+            handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
         }
 
         final PostMessageDto postMessageDto = new PostMessageDto(userId, chatId, message);
 
         try {
             chatService.postMessage(postMessageDto);
-            transferObject = new TransferObject(HttpServletResponse.SC_OK);
-            transferObject.setData("userId", String.valueOf(userId.getId()));
-            transferObject.setData("chatId", String.valueOf(chatId.getId()));
-            transferObject.setData("message", message);
+            handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
+            handlerProcessingResult.setData("userId", String.valueOf(userId.getId()));
+            handlerProcessingResult.setData("chatId", String.valueOf(chatId.getId()));
+            handlerProcessingResult.setData("message", message);
         } catch (PostMessageException e) {
-            transferObject = new TransferObject(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            transferObject.setData("errorMessage", e.getMessage());
+            handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            handlerProcessingResult.setData("errorMessage", e.getMessage());
         }
 
-        return transferObject;
+        return handlerProcessingResult;
     }
 }

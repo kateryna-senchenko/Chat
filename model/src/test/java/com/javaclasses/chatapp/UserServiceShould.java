@@ -60,7 +60,7 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals(DUPLICATE_USERNAME.getMessage(), e.getMessage());
+            assertEquals(DUPLICATE_USERNAME, e.getErrorType());
         }
 
     }
@@ -78,13 +78,13 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals(PASSWORDS_DO_NOT_MATCH.getMessage(), e.getMessage());
+            assertEquals(PASSWORDS_DO_NOT_MATCH, e.getErrorType());
         }
 
     }
 
     @Test
-    public void trimUsername() {
+    public void trimUsernameUponRegistration() {
 
         final String username = " Jem ";
         final String password = "somethinghappend";
@@ -116,7 +116,7 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES.getMessage(), e.getMessage());
+            assertEquals(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES, e.getErrorType());
         }
 
     }
@@ -133,7 +133,7 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES.getMessage(), e.getMessage());
+            assertEquals(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES, e.getErrorType());
         }
 
     }
@@ -150,7 +150,7 @@ public class UserServiceShould {
             userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
-            assertEquals(PASSWORD_IS_EMPTY.getMessage(), e.getMessage());
+            assertEquals(PASSWORD_IS_EMPTY, e.getErrorType());
         }
 
     }
@@ -195,7 +195,7 @@ public class UserServiceShould {
             userService.login(loginDto);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
-            assertEquals(AUTHENTICATION_FAILED.getMessage(), e.getMessage());
+            assertEquals(AUTHENTICATION_FAILED, e.getErrorType());
         }
 
     }
@@ -221,7 +221,7 @@ public class UserServiceShould {
             userService.login(loginDto);
             fail("Expected AuthenticationException was not thrown");
         } catch (AuthenticationException e) {
-            assertEquals(AUTHENTICATION_FAILED.getMessage(), e.getMessage());
+            assertEquals(AUTHENTICATION_FAILED, e.getErrorType());
         }
 
     }
@@ -266,7 +266,7 @@ public class UserServiceShould {
 
         for (Future<TokenDto> future : results) {
             userIds.add(future.get().getUserId().getId());
-            tokens.add(future.get().getToken());
+            tokens.add(future.get().getToken().getId());
         }
 
         if (userIds.size() != count) {
