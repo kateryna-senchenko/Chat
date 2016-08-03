@@ -3,8 +3,8 @@ package com.javaclasses.chatapp;
 
 import com.javaclasses.chatapp.dto.LoginParametersDto;
 import com.javaclasses.chatapp.dto.RegistrationParametersDto;
-import com.javaclasses.chatapp.dto.TokenEntityDto;
-import com.javaclasses.chatapp.dto.UserEntityDto;
+import com.javaclasses.chatapp.dto.TokenDto;
+import com.javaclasses.chatapp.dto.UserDto;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
@@ -32,7 +32,7 @@ public class UserServiceShould {
         return userService.register(registrationParametersDto);
     }
 
-    private TokenEntityDto loginUser(String username, String password) throws AuthenticationException {
+    private TokenDto loginUser(String username, String password) throws AuthenticationException {
 
         final LoginParametersDto loginDto = new LoginParametersDto(username, password);
         return userService.login(loginDto);
@@ -46,8 +46,8 @@ public class UserServiceShould {
         }
     }
 
-    private void logoutUser(TokenEntityDto tokenEntityDto){
-        userService.logout(tokenEntityDto);
+    private void logoutUser(TokenDto tokenDto){
+        userService.logout(tokenDto);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class UserServiceShould {
             fail("Failed to register new user");
         }
 
-        final UserEntityDto newUser = userService.findRegisteredUserById(userId);
+        final UserDto newUser = userService.findRegisteredUserById(userId);
 
         assertEquals("New user was not registered", username, newUser.getUsername());
 
@@ -115,7 +115,7 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        final UserEntityDto newUser = userService.findRegisteredUserById(userId);
+        final UserDto newUser = userService.findRegisteredUserById(userId);
 
         assertEquals("New user was not registered", username.trim(), newUser.getUsername());
 
@@ -171,14 +171,14 @@ public class UserServiceShould {
             fail("Failed to register new user");
         }
 
-        TokenEntityDto token = null;
+        TokenDto token = null;
         try {
             token = loginUser(username, password);
         } catch (AuthenticationException e) {
             fail("Registered user was not logged in");
         }
 
-        final UserEntityDto loggedInUser = userService.findLoggedInUserByToken(token);
+        final UserDto loggedInUser = userService.findLoggedInUserByToken(token);
 
         assertEquals("User was not logged in", username, loggedInUser.getUsername());
 
@@ -226,10 +226,10 @@ public class UserServiceShould {
         final int count = 100;
         final ExecutorService executor = Executors.newFixedThreadPool(count);
         final CountDownLatch startLatch = new CountDownLatch(count);
-        final List<Future<TokenEntityDto>> results = new ArrayList<>();
+        final List<Future<TokenDto>> results = new ArrayList<>();
         AtomicInteger someDifferenceInUsername = new AtomicInteger(0);
 
-        Callable<TokenEntityDto> callable = () -> {
+        Callable<TokenDto> callable = () -> {
 
             startLatch.countDown();
             startLatch.await();
@@ -240,24 +240,24 @@ public class UserServiceShould {
 
             final UserId userId = registerUser(username, password, password);
 
-            final TokenEntityDto tokenEntityDto = loginUser(username, password);
+            final TokenDto tokenDto = loginUser(username, password);
 
-            assertEquals("User ids after registration and login are not the same", userId, tokenEntityDto.getUserId());
+            assertEquals("User ids after registration and login are not the same", userId, tokenDto.getUserId());
 
 
-            return tokenEntityDto;
+            return tokenDto;
         };
 
         for (int i = 0; i < count; i++) {
 
-            Future<TokenEntityDto> future = executor.submit(callable);
+            Future<TokenDto> future = executor.submit(callable);
             results.add(future);
         }
 
         final Set<Long> userIds = new HashSet<>();
         final Set<UUID> tokens = new HashSet<>();
 
-        for (Future<TokenEntityDto> future : results) {
+        for (Future<TokenDto> future : results) {
             userIds.add(future.get().getUserId().getId());
             tokens.add(future.get().getTokenId().getId());
 

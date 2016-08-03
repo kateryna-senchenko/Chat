@@ -1,7 +1,7 @@
 package com.javaclasses.chatapp;
 
 import com.javaclasses.chatapp.dto.ChatCreationParametersDto;
-import com.javaclasses.chatapp.dto.ChatEntityDto;
+import com.javaclasses.chatapp.dto.ChatDto;
 import com.javaclasses.chatapp.dto.MemberChatParametersDto;
 import com.javaclasses.chatapp.dto.PostMessageParametersDto;
 import com.javaclasses.chatapp.tinytypes.ChatId;
@@ -47,14 +47,14 @@ public interface ChatService {
      * @param id - chat id
      * @return Chat DTO
      */
-    ChatEntityDto findChatById(ChatId id);
+    ChatDto findChatById(ChatId id);
 
     /**
      * Provides access to chat by name
      * @param chatName - chat name
      * @return Chat DTO
      */
-    ChatEntityDto findChatByName(String chatName);
+    ChatDto findChatByName(String chatName);
 
     /**
      * Removes chad with specified id
@@ -66,6 +66,6 @@ public interface ChatService {
      * Provides access to collection of all chats
      * @return collection of chat dto
      */
-    Collection<ChatEntityDto> findAllChats();
+    Collection<ChatDto> findAllChats();
 
 }

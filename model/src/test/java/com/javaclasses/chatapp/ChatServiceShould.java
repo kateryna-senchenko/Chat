@@ -24,7 +24,7 @@ public class ChatServiceShould {
     private final String message = "Hello there!";
 
     private UserId userId;
-    private TokenEntityDto token;
+    private TokenDto token;
 
     @Before
     public void registerAndLoginUser() {
@@ -263,8 +263,8 @@ public class ChatServiceShould {
             fail("Message was not posted");
         }
 
-        final MessageEntityDto messageData = new MessageEntityDto(username, chatId, message);
-        final List<MessageEntityDto> messages = chatService.findChatById(chatId).getMessages();
+        final MessageDto messageData = new MessageDto(username, chatId, message);
+        final List<MessageDto> messages = chatService.findChatById(chatId).getMessages();
 
         assertTrue("Message was not posted", messages.contains(messageData));
 

@@ -51,9 +51,9 @@ public class ChatController {
             final String chatName = request.getParameter(CHAT_NAME);
 
             final UserId id = new UserId(Long.valueOf(userId));
-            final TokenEntityDto tokenEntityDto = new TokenEntityDto(new TokenId(UUID.fromString(tokenId)), id);
+            final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), id);
             HandlerProcessingResult handlerProcessingResult;
-            if (userService.findLoggedInUserByToken(tokenEntityDto) == null) {
+            if (userService.findLoggedInUserByToken(tokenDto) == null) {
 
                 if (log.isInfoEnabled()) {
                     log.info("Forbidden chat creation operation");
@@ -68,9 +68,9 @@ public class ChatController {
             try {
                 final ChatId chatId = chatService.createChat(chatCreationParametersDto);
 
-                final Collection<ChatEntityDto> allChats = chatService.findAllChats();
+                final Collection<ChatDto> allChats = chatService.findAllChats();
                 List<String> chatNames = new ArrayList<>();
-                for (ChatEntityDto chat : allChats) {
+                for (ChatDto chat : allChats) {
                     chatNames.add(chat.getChatName());
                 }
                 final JSONArray chatList = new JSONArray(chatNames);
@@ -106,10 +106,10 @@ public class ChatController {
             final UserId userId = new UserId(Long.valueOf(request.getParameter(USER_ID)));
             final String chatName = request.getParameter(CHAT_NAME);
 
-            final TokenEntityDto tokenEntityDto = new TokenEntityDto(new TokenId(UUID.fromString(tokenId)), userId);
+            final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), userId);
 
             HandlerProcessingResult handlerProcessingResult;
-            if (userService.findLoggedInUserByToken(tokenEntityDto) == null) {
+            if (userService.findLoggedInUserByToken(tokenDto) == null) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
 
@@ -119,19 +119,19 @@ public class ChatController {
 
             }
 
-            final ChatEntityDto chatEntityDto = chatService.findChatByName(chatName);
-            final ChatId chatId = chatEntityDto.getChatId();
+            final ChatDto chatDto = chatService.findChatByName(chatName);
+            final ChatId chatId = chatDto.getChatId();
             final MemberChatParametersDto memberChatParametersDto = new MemberChatParametersDto(userId, chatId);
 
             try {
                 chatService.addMember(memberChatParametersDto);
 
-                final List<MessageEntityDto> messages = chatEntityDto.getMessages();
+                final List<MessageDto> messages = chatDto.getMessages();
 
                 final List<String> results = new ArrayList<>();
 
-                for (MessageEntityDto messageEntityDto : messages) {
-                    results.add(messageEntityDto.getAuthorName() + ": " + messageEntityDto.getMessage());
+                for (MessageDto messageDto : messages) {
+                    results.add(messageDto.getAuthorName() + ": " + messageDto.getMessage());
                 }
                 final JSONArray chatMessages = new JSONArray(results);
 
@@ -168,10 +168,10 @@ public class ChatController {
             final UserId userId = new UserId(Long.valueOf(request.getParameter(USER_ID)));
             final ChatId chatId = new ChatId(Long.valueOf(request.getParameter(CHAT_ID)));
 
-            final TokenEntityDto tokenEntityDto = new TokenEntityDto(new TokenId(UUID.fromString(tokenId)), userId);
+            final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), userId);
 
             HandlerProcessingResult handlerProcessingResult;
-            if (userService.findLoggedInUserByToken(tokenEntityDto) == null) {
+            if (userService.findLoggedInUserByToken(tokenDto) == null) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
 
@@ -217,10 +217,10 @@ public class ChatController {
             final ChatId chatId = new ChatId(Long.valueOf(request.getParameter(CHAT_ID)));
             final String message = request.getParameter(CHAT_MESSAGE);
 
-            final TokenEntityDto tokenEntityDto = new TokenEntityDto(new TokenId(UUID.fromString(tokenId)), userId);
+            final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), userId);
 
             HandlerProcessingResult handlerProcessingResult;
-            if (userService.findLoggedInUserByToken(tokenEntityDto) == null) {
+            if (userService.findLoggedInUserByToken(tokenDto) == null) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
 
@@ -236,13 +236,13 @@ public class ChatController {
             try {
                 chatService.postMessage(postMessageParametersDto);
 
-                final ChatEntityDto chatEntityDto = chatService.findChatById(chatId);
-                final List<MessageEntityDto> messages = chatEntityDto.getMessages();
+                final ChatDto chatDto = chatService.findChatById(chatId);
+                final List<MessageDto> messages = chatDto.getMessages();
 
                 final List<String> results = new ArrayList<>();
 
-                for (MessageEntityDto messageEntityDto : messages) {
-                    results.add(messageEntityDto.getAuthorName() + ": " + messageEntityDto.getMessage());
+                for (MessageDto messageDto : messages) {
+                    results.add(messageDto.getAuthorName() + ": " + messageDto.getMessage());
                 }
                 final JSONArray chatMessages = new JSONArray(results);
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
@@ -277,10 +277,10 @@ public class ChatController {
             final UserId userId = new UserId(Long.valueOf(request.getParameter(USER_ID)));
             final ChatId chatId = new ChatId(Long.valueOf(request.getParameter(CHAT_ID)));
 
-            final TokenEntityDto tokenEntityDto = new TokenEntityDto(new TokenId(UUID.fromString(tokenId)), userId);
+            final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), userId);
 
             HandlerProcessingResult handlerProcessingResult;
-            if (userService.findLoggedInUserByToken(tokenEntityDto) == null) {
+            if (userService.findLoggedInUserByToken(tokenDto) == null) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
 

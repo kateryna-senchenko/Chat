@@ -6,13 +6,13 @@ import com.javaclasses.chatapp.tinytypes.ChatId;
 /**
  * Message DTO
  */
-public class MessageEntityDto {
+public class MessageDto {
 
     private final String authorName;
     private final ChatId chatId;
     private final String message;
 
-    public MessageEntityDto(String authorName, ChatId chatId, String message) {
+    public MessageDto(String authorName, ChatId chatId, String message) {
         this.authorName = authorName;
         this.chatId = chatId;
         this.message = message;
@@ -35,7 +35,7 @@ public class MessageEntityDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MessageEntityDto that = (MessageEntityDto) o;
+        MessageDto that = (MessageDto) o;
 
         return authorName.equals(that.authorName) && chatId.equals(that.chatId) && message.equals(that.message);
 

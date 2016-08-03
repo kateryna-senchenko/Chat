@@ -2,8 +2,8 @@ package com.javaclasses.chatapp;
 
 import com.javaclasses.chatapp.dto.LoginParametersDto;
 import com.javaclasses.chatapp.dto.RegistrationParametersDto;
-import com.javaclasses.chatapp.dto.TokenEntityDto;
-import com.javaclasses.chatapp.dto.UserEntityDto;
+import com.javaclasses.chatapp.dto.TokenDto;
+import com.javaclasses.chatapp.dto.UserDto;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 
@@ -26,21 +26,21 @@ public interface UserService {
      * @return access Token DTO
      * @throws AuthenticationException if authentication fails
      */
-    TokenEntityDto login(LoginParametersDto loginDto) throws AuthenticationException;
+    TokenDto login(LoginParametersDto loginDto) throws AuthenticationException;
 
     /**
      * Provides access to registered user dto by user id
      * @param id - user id
      * @return user dto instance
      */
-    UserEntityDto findRegisteredUserById(UserId id);
+    UserDto findRegisteredUserById(UserId id);
 
     /**
      * Provides access to logged in user dto by token
      * @param token - access token DTO
      * @return user dto instance
      */
-    UserEntityDto findLoggedInUserByToken(TokenEntityDto token);
+    UserDto findLoggedInUserByToken(TokenDto token);
 
     /**
      * Removes registered user
@@ -52,5 +52,5 @@ public interface UserService {
      * Logs out logged in user
      * @param token - access token
      */
-    void logout(TokenEntityDto token);
+    void logout(TokenDto token);
 }

@@ -129,24 +129,24 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatEntityDto findChatById(ChatId id) {
+    public ChatDto findChatById(ChatId id) {
 
         Chat chat = chatRepository.getItem(id);
         List<Message> messages = chat.getMessages();
-        List<MessageEntityDto> messageEntityDtos = new ArrayList<>();
+        List<MessageDto> messageDtos = new ArrayList<>();
 
         for (Message message : messages) {
-            messageEntityDtos.add(new MessageEntityDto(message.getAuthorName(), message.getChatId(), message.getMessage()));
+            messageDtos.add(new MessageDto(message.getAuthorName(), message.getChatId(), message.getMessage()));
         }
-        return new ChatEntityDto(chat.getChatId(), chat.getChatName(), chat.getOwnerId(), chat.getMembers(), messageEntityDtos);
+        return new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwnerId(), chat.getMembers(), messageDtos);
     }
 
     @Override
-    public ChatEntityDto findChatByName(String chatName) {
+    public ChatDto findChatByName(String chatName) {
 
-        final Collection<ChatEntityDto> allChats = findAllChats();
+        final Collection<ChatDto> allChats = findAllChats();
 
-        for (ChatEntityDto chat : allChats) {
+        for (ChatDto chat : allChats) {
             if (chat.getChatName().equals(chatName)) {
                 return chat;
             }
@@ -166,21 +166,21 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Collection<ChatEntityDto> findAllChats() {
+    public Collection<ChatDto> findAllChats() {
 
         final Collection<Chat> chats = chatRepository.getAll();
-        Collection<ChatEntityDto> chatEntityDtos = new ArrayList<>();
+        Collection<ChatDto> chatDtos = new ArrayList<>();
 
         for (Chat chat : chats) {
             List<Message> messages = chat.getMessages();
-            List<MessageEntityDto> messageEntityDtos = new ArrayList<>();
+            List<MessageDto> messageDtos = new ArrayList<>();
 
             for (Message message : messages) {
-                messageEntityDtos.add(new MessageEntityDto(message.getAuthorName(), message.getChatId(), message.getMessage()));
+                messageDtos.add(new MessageDto(message.getAuthorName(), message.getChatId(), message.getMessage()));
             }
-            chatEntityDtos.add(new ChatEntityDto(chat.getChatId(), chat.getChatName(), chat.getOwnerId(), chat.getMembers(), messageEntityDtos));
+            chatDtos.add(new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwnerId(), chat.getMembers(), messageDtos));
         }
 
-        return chatEntityDtos;
+        return chatDtos;
     }
 }

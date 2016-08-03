@@ -6,12 +6,12 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 /**
  * User DTO
  */
-public class UserEntityDto {
+public class UserDto {
 
     private final UserId id;
     private final String username;
 
-    public UserEntityDto(UserId id, String username) {
+    public UserDto(UserId id, String username) {
         this.id = id;
         this.username = username;
     }
@@ -30,9 +30,9 @@ public class UserEntityDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserEntityDto userEntityDto = (UserEntityDto) o;
+        UserDto userDto = (UserDto) o;
 
-        return id.equals(userEntityDto.id);
+        return id.equals(userDto.id);
 
     }
 

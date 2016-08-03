@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenEntityDto login(LoginParametersDto loginDto) throws AuthenticationException {
+    public TokenDto login(LoginParametersDto loginDto) throws AuthenticationException {
 
         Collection<User> allUsers = userRepository.getAll();
         User userToLogin = null;
@@ -117,19 +117,19 @@ public class UserServiceImpl implements UserService {
             log.info("Logged in user {}", loginDto.getUsername());
         }
 
-        return new TokenEntityDto(newToken.getTokenId(), newToken.getUserId());
+        return new TokenDto(newToken.getTokenId(), newToken.getUserId());
     }
 
     @Override
-    public UserEntityDto findRegisteredUserById(UserId id) {
+    public UserDto findRegisteredUserById(UserId id) {
 
         User user = userRepository.getItem(id);
 
-        return new UserEntityDto(user.getId(), user.getUsername());
+        return new UserDto(user.getId(), user.getUsername());
     }
 
     @Override
-    public UserEntityDto findLoggedInUserByToken(TokenEntityDto token) {
+    public UserDto findLoggedInUserByToken(TokenDto token) {
 
         Token userToken = tokenRepository.getItem(token.getTokenId());
 
@@ -139,9 +139,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(UserId id) throws UserRemovalException{
 
-        Collection<ChatEntityDto> chatEntityDtos = chatService.findAllChats();
+        Collection<ChatDto> chatDtos = chatService.findAllChats();
 
-        for(ChatEntityDto chat: chatEntityDtos){
+        for(ChatDto chat: chatDtos){
             List<UserId> members = chat.getMembers();
             if(members.contains(id)){
                 throw new UserRemovalException(USER_IS_A_MEMBER_OF_CHAT);
@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout(TokenEntityDto token) {
+    public void logout(TokenDto token) {
 
         tokenRepository.remove(token.getTokenId());
 
