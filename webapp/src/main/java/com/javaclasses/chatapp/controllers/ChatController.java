@@ -1,18 +1,20 @@
 package com.javaclasses.chatapp.controllers;
 
-
 import com.javaclasses.chatapp.*;
-import com.javaclasses.chatapp.dto.ChatCreationDto;
-import com.javaclasses.chatapp.dto.MemberChatDto;
-import com.javaclasses.chatapp.dto.PostMessageDto;
-import com.javaclasses.chatapp.dto.TokenDto;
+import com.javaclasses.chatapp.dto.*;
 import com.javaclasses.chatapp.impl.ChatServiceImpl;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import com.javaclasses.chatapp.tinytypes.ChatId;
 import com.javaclasses.chatapp.tinytypes.TokenId;
 import com.javaclasses.chatapp.tinytypes.UserId;
+import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import static com.javaclasses.chatapp.Parameters.*;
@@ -20,25 +22,29 @@ import static com.javaclasses.chatapp.Parameters.*;
 
 public class ChatController {
 
+    private static final Logger log = LoggerFactory.getLogger(ChatController.class);
+
     private static ChatController chatController = new ChatController();
 
     private final ChatService chatService = ChatServiceImpl.getInstance();
     private final UserService userService = UserServiceImpl.getInstance();
     private final HandlerRegistry handlerRegistry = HandlerRegistry.getInstance();
 
-    private ChatController(){
+    private ChatController() {
         createChat();
         addMemberToChat();
         removeMemberFromChat();
         postMassage();
+        deleteChat();
     }
 
     public static ChatController getInstance() {
         return chatController;
     }
 
-    private void createChat(){
-        handlerRegistry.registerHandler(new CompoundKey("/create-chat", "POST"), request -> {
+    private void createChat() {
+
+        handlerRegistry.registerHandler(new CompoundKey("/chat/create-chat", "POST"), request -> {
 
             final String tokenId = request.getParameter(TOKEN_ID);
             final String userId = request.getParameter(USER_ID);
@@ -47,7 +53,12 @@ public class ChatController {
             final UserId id = new UserId(Long.valueOf(userId));
             final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), id);
             HandlerProcessingResult handlerProcessingResult;
-            if(userService.findLoggedInUserByToken(tokenDto) == null){
+            if (userService.findLoggedInUserByToken(tokenDto) == null) {
+
+                if (log.isInfoEnabled()) {
+                    log.info("Forbidden chat creation operation");
+                }
+
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
             }
@@ -55,51 +66,104 @@ public class ChatController {
             final ChatCreationDto chatCreationDto = new ChatCreationDto(id, chatName);
 
             try {
-                ChatId chatId = chatService.createChat(chatCreationDto);
+                final ChatId chatId = chatService.createChat(chatCreationDto);
+
+                final Collection<ChatDto> allChats = chatService.findAllChats();
+                List<String> chatNames = new ArrayList<>();
+                for (ChatDto chat : allChats) {
+                    chatNames.add(chat.getChatName());
+                }
+                final JSONArray chatList = new JSONArray(chatNames);
+
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
                 handlerProcessingResult.setData(CHAT_ID, String.valueOf(chatId.getId()));
                 handlerProcessingResult.setData(CHAT_NAME, chatService.findChatById(chatId).getChatName());
+                handlerProcessingResult.setData(TOKEN_ID, tokenId);
+                handlerProcessingResult.setData(CHAT_LIST, chatList.toString());
+
+                if (log.isInfoEnabled()) {
+                    log.info("Created chat {}", chatName);
+                }
+
             } catch (ChatCreationException e) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 handlerProcessingResult.setData(ERROR_MESSAGE, e.getMessage());
+
+                if (log.isInfoEnabled()) {
+                    log.info("Failed to create chat {}", chatName);
+                }
             }
 
             return handlerProcessingResult;
         });
     }
 
-    private void addMemberToChat(){
-        handlerRegistry.registerHandler(new CompoundKey("/join-chat", "POST"), request -> {
+    private void addMemberToChat() {
+
+        handlerRegistry.registerHandler(new CompoundKey("/chat/join-chat", "POST"), request -> {
+
             final String tokenId = request.getParameter(TOKEN_ID);
             final UserId userId = new UserId(Long.valueOf(request.getParameter(USER_ID)));
-            final ChatId chatId = new ChatId(Long.valueOf(request.getParameter(CHAT_ID)));
+            final String chatName = request.getParameter(CHAT_NAME);
 
             final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), userId);
 
             HandlerProcessingResult handlerProcessingResult;
-            if(userService.findLoggedInUserByToken(tokenDto) == null){
+            if (userService.findLoggedInUserByToken(tokenDto) == null) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
+
+                if (log.isInfoEnabled()) {
+                    log.info("Forbidden joining chat operation");
+                }
+
             }
 
+            final ChatDto chatDto = chatService.findChatByName(chatName);
+            final ChatId chatId = chatDto.getChatId();
             final MemberChatDto memberChatDto = new MemberChatDto(userId, chatId);
-
 
             try {
                 chatService.addMember(memberChatDto);
+
+                final List<MessageDto> messages = chatDto.getMessages();
+
+                final List<String> results = new ArrayList<>();
+
+                for (MessageDto messageDto : messages) {
+                    results.add(messageDto.getAuthorName() + ": " + messageDto.getMessage());
+                }
+                final JSONArray chatMessages = new JSONArray(results);
+
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
+                handlerProcessingResult.setData(TOKEN_ID, tokenId);
                 handlerProcessingResult.setData(USER_ID, String.valueOf(userId.getId()));
                 handlerProcessingResult.setData(CHAT_ID, String.valueOf(chatId.getId()));
+                handlerProcessingResult.setData(USERNAME, userService.findRegisteredUserById(userId).getUsername());
+                handlerProcessingResult.setData(CHAT_NAME, chatService.findChatById(chatId).getChatName());
+                handlerProcessingResult.setData(MESSAGE_LIST, chatMessages.toString());
+
+                if (log.isInfoEnabled()) {
+                    log.info("User {} has joined chat {}", userId.getId(), chatId.getId());
+                }
+
             } catch (MembershipException e) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 handlerProcessingResult.setData(ERROR_MESSAGE, e.getMessage());
+
+                if (log.isInfoEnabled()) {
+                    log.info("User {} failed to join chat {}", userId.getId(), chatId.getId());
+                }
+
             }
             return handlerProcessingResult;
         });
     }
 
-    private void removeMemberFromChat(){
-        handlerRegistry.registerHandler(new CompoundKey("/leave-chat", "POST"), request -> {
+    private void removeMemberFromChat() {
+
+        handlerRegistry.registerHandler(new CompoundKey("/chat/leave-chat", "POST"), request -> {
+
             final String tokenId = request.getParameter(TOKEN_ID);
             final UserId userId = new UserId(Long.valueOf(request.getParameter(USER_ID)));
             final ChatId chatId = new ChatId(Long.valueOf(request.getParameter(CHAT_ID)));
@@ -110,24 +174,44 @@ public class ChatController {
             if (userService.findLoggedInUserByToken(tokenDto) == null) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
+
+                if (log.isInfoEnabled()) {
+                    log.info("Forbidden leaving chat operation");
+                }
+
             }
             final MemberChatDto memberChatDto = new MemberChatDto(userId, chatId);
 
             try {
                 chatService.removeMember(memberChatDto);
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
+                handlerProcessingResult.setData(TOKEN_ID, tokenId);
                 handlerProcessingResult.setData(USER_ID, String.valueOf(userId.getId()));
                 handlerProcessingResult.setData(CHAT_ID, String.valueOf(chatId.getId()));
+                handlerProcessingResult.setData(USERNAME, userService.findRegisteredUserById(userId).getUsername());
+                handlerProcessingResult.setData(CHAT_NAME, chatService.findChatById(chatId).getChatName());
+
+                if (log.isInfoEnabled()) {
+                    log.info("User {} has left chat {}", userId.getId(), chatId.getId());
+                }
+
             } catch (MembershipException e) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 handlerProcessingResult.setData(ERROR_MESSAGE, e.getMessage());
+
+                if (log.isInfoEnabled()) {
+                    log.info("User {} failed to leave chat {}", userId.getId(), chatId.getId());
+                }
+
             }
             return handlerProcessingResult;
         });
     }
 
-    private void postMassage(){
-        handlerRegistry.registerHandler(new CompoundKey("/post-message", "POST"), request -> {
+    private void postMassage() {
+
+        handlerRegistry.registerHandler(new CompoundKey("/chat/post-message", "POST"), request -> {
+
             final String tokenId = request.getParameter(TOKEN_ID);
             final UserId userId = new UserId(Long.valueOf(request.getParameter(USER_ID)));
             final ChatId chatId = new ChatId(Long.valueOf(request.getParameter(CHAT_ID)));
@@ -139,22 +223,84 @@ public class ChatController {
             if (userService.findLoggedInUserByToken(tokenDto) == null) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
+
+                if (log.isInfoEnabled()) {
+                    log.info("Forbidden posting message operation");
+                }
+
             }
 
-            final PostMessageDto postMessageDto = new PostMessageDto(userId, chatId, message);
+            final PostMessageDto postMessageDto =
+                    new PostMessageDto(userId, userService.findRegisteredUserById(userId).getUsername(), chatId, message);
 
             try {
                 chatService.postMessage(postMessageDto);
+
+                final ChatDto chatDto = chatService.findChatById(chatId);
+                final List<MessageDto> messages = chatDto.getMessages();
+
+                final List<String> results = new ArrayList<>();
+
+                for (MessageDto messageDto : messages) {
+                    results.add(messageDto.getAuthorName() + ": " + messageDto.getMessage());
+                }
+                final JSONArray chatMessages = new JSONArray(results);
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
+                handlerProcessingResult.setData(TOKEN_ID, tokenId);
                 handlerProcessingResult.setData(USER_ID, String.valueOf(userId.getId()));
                 handlerProcessingResult.setData(CHAT_ID, String.valueOf(chatId.getId()));
                 handlerProcessingResult.setData(CHAT_MESSAGE, message);
+                handlerProcessingResult.setData(MESSAGE_LIST, chatMessages.toString());
+
+                if (log.isInfoEnabled()) {
+                    log.info("User {} has posted a message to chat {}", userId.getId(), chatId.getId());
+                }
+
             } catch (PostMessageException e) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 handlerProcessingResult.setData(ERROR_MESSAGE, e.getMessage());
+
+                if (log.isInfoEnabled()) {
+                    log.info("User {} failed to post a message to chat {}", userId.getId(), chatId.getId());
+                }
             }
 
             return handlerProcessingResult;
+        });
+    }
+
+    private void deleteChat() {
+
+        handlerRegistry.registerHandler(new CompoundKey("/chat/delete-chat", "POST"), request -> {
+
+            final String tokenId = request.getParameter(TOKEN_ID);
+            final UserId userId = new UserId(Long.valueOf(request.getParameter(USER_ID)));
+            final ChatId chatId = new ChatId(Long.valueOf(request.getParameter(CHAT_ID)));
+
+            final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), userId);
+
+            HandlerProcessingResult handlerProcessingResult;
+            if (userService.findLoggedInUserByToken(tokenDto) == null) {
+                handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
+                handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
+
+                if (log.isInfoEnabled()) {
+                    log.info("Forbidden chat deletion operation");
+                }
+
+            }
+
+            chatService.deleteChat(chatId);
+            handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
+            handlerProcessingResult.setData(TOKEN_ID, tokenId);
+            handlerProcessingResult.setData(CHAT_ID, String.valueOf(chatId.getId()));
+
+            if (log.isInfoEnabled()) {
+                log.info("Chat {} has been deleted", chatId.getId());
+            }
+
+            return handlerProcessingResult;
+
         });
     }
 
