@@ -2,19 +2,17 @@ package com.javaclasses.chatapp.dto;
 
 
 /**
- * Contains data to register a new user
+ * Contains data to login user
  */
-public class RegistrationParametersDto {
+public class LoginDto {
 
     private final String username;
     private final String password;
-    private final String confirmPassword;
 
 
-    public RegistrationParametersDto(String username, String password, String confirmPassword) {
+    public LoginDto(String username, String password) {
         this.username = username;
         this.password = password;
-        this.confirmPassword = confirmPassword;
     }
 
     public String getUsername() {
@@ -25,18 +23,14 @@ public class RegistrationParametersDto {
         return password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        RegistrationParametersDto that = (RegistrationParametersDto) o;
+        LoginDto loginDto = (LoginDto) o;
 
-        return username.equals(that.username);
+        return username.equals(loginDto.username);
 
     }
 

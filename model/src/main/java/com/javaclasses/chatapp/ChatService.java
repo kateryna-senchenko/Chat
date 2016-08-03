@@ -1,9 +1,9 @@
 package com.javaclasses.chatapp;
 
-import com.javaclasses.chatapp.dto.ChatCreationParametersDto;
+import com.javaclasses.chatapp.dto.ChatCreationDto;
 import com.javaclasses.chatapp.dto.ChatDto;
-import com.javaclasses.chatapp.dto.MemberChatParametersDto;
-import com.javaclasses.chatapp.dto.PostMessageParametersDto;
+import com.javaclasses.chatapp.dto.MemberChatDto;
+import com.javaclasses.chatapp.dto.PostMessageDto;
 import com.javaclasses.chatapp.tinytypes.ChatId;
 
 import java.util.Collection;
@@ -15,32 +15,32 @@ public interface ChatService {
 
     /**
      * Creates new chat
-     * @param chatCreationParametersDto - contains owner userId and chat name
+     * @param chatCreationDto - contains owner userId and chat name
      * @return chat id
      * @throws ChatCreationException if chat creation fails
      */
-    ChatId createChat(ChatCreationParametersDto chatCreationParametersDto) throws ChatCreationException;
+    ChatId createChat(ChatCreationDto chatCreationDto) throws ChatCreationException;
 
     /**
      * Adds member to chat
-     * @param memberChatParametersDto - contains user id and chat id
+     * @param memberChatDto - contains user id and chat id
      * @throws MembershipException if member cannot join the chat
      */
-    void addMember(MemberChatParametersDto memberChatParametersDto) throws MembershipException;
+    void addMember(MemberChatDto memberChatDto) throws MembershipException;
 
     /**
      * Removes member from chat
-     * @param memberChatParametersDto - contains user id and chat id
+     * @param memberChatDto - contains user id and chat id
      * @throws MembershipException if member cannot leave chat
      */
-    void removeMember(MemberChatParametersDto memberChatParametersDto)throws MembershipException;
+    void removeMember(MemberChatDto memberChatDto)throws MembershipException;
 
     /**
      * Posts a message
-     * @param postMessageParametersDto - contains user id, chat id and message
+     * @param postMessageDto - contains user id, chat id and message
      * @throws PostMessageException if posting message fails
      */
-    void postMessage(PostMessageParametersDto postMessageParametersDto) throws PostMessageException;
+    void postMessage(PostMessageDto postMessageDto) throws PostMessageException;
 
     /**
      * Provides access to chat by id

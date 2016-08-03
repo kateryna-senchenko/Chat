@@ -1,8 +1,8 @@
 package com.javaclasses.chatapp;
 
 
-import com.javaclasses.chatapp.dto.LoginParametersDto;
-import com.javaclasses.chatapp.dto.RegistrationParametersDto;
+import com.javaclasses.chatapp.dto.LoginDto;
+import com.javaclasses.chatapp.dto.RegistrationDto;
 import com.javaclasses.chatapp.dto.TokenDto;
 import com.javaclasses.chatapp.dto.UserDto;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
@@ -28,13 +28,13 @@ public class UserServiceShould {
 
     private UserId registerUser(String username, String password, String confirmPassword) throws RegistrationException {
 
-        final RegistrationParametersDto registrationParametersDto = new RegistrationParametersDto(username, password, confirmPassword);
-        return userService.register(registrationParametersDto);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
+        return userService.register(registrationDto);
     }
 
     private TokenDto loginUser(String username, String password) throws AuthenticationException {
 
-        final LoginParametersDto loginDto = new LoginParametersDto(username, password);
+        final LoginDto loginDto = new LoginDto(username, password);
         return userService.login(loginDto);
     }
 
@@ -93,10 +93,10 @@ public class UserServiceShould {
 
         final String confirmPassword = password + "123";
 
-        final RegistrationParametersDto registrationParametersDto = new RegistrationParametersDto(username, password, confirmPassword);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
 
         try {
-            userService.register(registrationParametersDto);
+            userService.register(registrationDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals(PASSWORDS_DO_NOT_MATCH, e.getErrorType());

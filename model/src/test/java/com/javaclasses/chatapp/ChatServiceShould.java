@@ -30,15 +30,15 @@ public class ChatServiceShould {
     public void registerAndLoginUser() {
 
         String password = "Finch";
-        final RegistrationParametersDto registrationParametersDto = new RegistrationParametersDto(username, password, password);
+        final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
-            userId = userService.register(registrationParametersDto);
+            userId = userService.register(registrationDto);
         } catch (RegistrationException e) {
             fail("Failed to register new user");
         }
 
-        final LoginParametersDto loginDto = new LoginParametersDto(username, password);
+        final LoginDto loginDto = new LoginDto(username, password);
 
         try {
             token = userService.login(loginDto);
@@ -60,8 +60,8 @@ public class ChatServiceShould {
 
 
     private ChatId createChat(UserId userId, String chatName) throws ChatCreationException {
-        final ChatCreationParametersDto chatCreationParametersDto = new ChatCreationParametersDto(userId, chatName);
-        return chatService.createChat(chatCreationParametersDto);
+        final ChatCreationDto chatCreationDto = new ChatCreationDto(userId, chatName);
+        return chatService.createChat(chatCreationDto);
 
     }
 
@@ -70,19 +70,19 @@ public class ChatServiceShould {
     }
 
     private void addMemberToChat(UserId userId, ChatId chatId) throws MembershipException {
-        final MemberChatParametersDto memberChatParametersDto = new MemberChatParametersDto(userId, chatId);
-        chatService.addMember(memberChatParametersDto);
+        final MemberChatDto memberChatDto = new MemberChatDto(userId, chatId);
+        chatService.addMember(memberChatDto);
     }
 
 
     private void removeMemberFromChat(UserId userId, ChatId chatId) throws MembershipException {
-        final MemberChatParametersDto memberChatParametersDto = new MemberChatParametersDto(userId, chatId);
-        chatService.removeMember(memberChatParametersDto);
+        final MemberChatDto memberChatDto = new MemberChatDto(userId, chatId);
+        chatService.removeMember(memberChatDto);
     }
 
     private void postMessage(UserId userId, String username, ChatId chatId, String message) throws PostMessageException {
-        final PostMessageParametersDto postMessageParametersDto = new PostMessageParametersDto(userId, username, chatId, message);
-        chatService.postMessage(postMessageParametersDto);
+        final PostMessageDto postMessageDto = new PostMessageDto(userId, username, chatId, message);
+        chatService.postMessage(postMessageDto);
     }
 
     @Test

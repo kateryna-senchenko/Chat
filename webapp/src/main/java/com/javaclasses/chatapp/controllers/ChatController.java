@@ -63,10 +63,10 @@ public class ChatController {
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
             }
 
-            final ChatCreationParametersDto chatCreationParametersDto = new ChatCreationParametersDto(id, chatName);
+            final ChatCreationDto chatCreationDto = new ChatCreationDto(id, chatName);
 
             try {
-                final ChatId chatId = chatService.createChat(chatCreationParametersDto);
+                final ChatId chatId = chatService.createChat(chatCreationDto);
 
                 final Collection<ChatDto> allChats = chatService.findAllChats();
                 List<String> chatNames = new ArrayList<>();
@@ -121,10 +121,10 @@ public class ChatController {
 
             final ChatDto chatDto = chatService.findChatByName(chatName);
             final ChatId chatId = chatDto.getChatId();
-            final MemberChatParametersDto memberChatParametersDto = new MemberChatParametersDto(userId, chatId);
+            final MemberChatDto memberChatDto = new MemberChatDto(userId, chatId);
 
             try {
-                chatService.addMember(memberChatParametersDto);
+                chatService.addMember(memberChatDto);
 
                 final List<MessageDto> messages = chatDto.getMessages();
 
@@ -180,10 +180,10 @@ public class ChatController {
                 }
 
             }
-            final MemberChatParametersDto memberChatParametersDto = new MemberChatParametersDto(userId, chatId);
+            final MemberChatDto memberChatDto = new MemberChatDto(userId, chatId);
 
             try {
-                chatService.removeMember(memberChatParametersDto);
+                chatService.removeMember(memberChatDto);
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
                 handlerProcessingResult.setData(TOKEN_ID, tokenId);
                 handlerProcessingResult.setData(USER_ID, String.valueOf(userId.getId()));
@@ -230,11 +230,11 @@ public class ChatController {
 
             }
 
-            final PostMessageParametersDto postMessageParametersDto =
-                    new PostMessageParametersDto(userId, userService.findRegisteredUserById(userId).getUsername(), chatId, message);
+            final PostMessageDto postMessageDto =
+                    new PostMessageDto(userId, userService.findRegisteredUserById(userId).getUsername(), chatId, message);
 
             try {
-                chatService.postMessage(postMessageParametersDto);
+                chatService.postMessage(postMessageDto);
 
                 final ChatDto chatDto = chatService.findChatById(chatId);
                 final List<MessageDto> messages = chatDto.getMessages();

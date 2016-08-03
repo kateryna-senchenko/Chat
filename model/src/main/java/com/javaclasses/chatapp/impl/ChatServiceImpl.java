@@ -37,9 +37,9 @@ public class ChatServiceImpl implements ChatService {
 
 
     @Override
-    public ChatId createChat(ChatCreationParametersDto chatCreationParametersDto) throws ChatCreationException {
+    public ChatId createChat(ChatCreationDto chatCreationDto) throws ChatCreationException {
 
-        String chatName = chatCreationParametersDto.getChatName().trim();
+        String chatName = chatCreationDto.getChatName().trim();
 
         if (chatName.isEmpty()) {
             log.error("Failed to create chat: empty chat name");
@@ -56,7 +56,7 @@ public class ChatServiceImpl implements ChatService {
             }
         }
 
-        Chat newChat = new Chat(chatCreationParametersDto.getUserId(), chatName);
+        Chat newChat = new Chat(chatCreationDto.getUserId(), chatName);
         ChatId newChatId = chatRepository.add(newChat);
         newChat.setChatId(newChatId);
 
@@ -68,61 +68,61 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void addMember(MemberChatParametersDto memberChatParametersDto) throws MembershipException {
+    public void addMember(MemberChatDto memberChatDto) throws MembershipException {
 
-        Chat chat = chatRepository.getItem(memberChatParametersDto.getChatId());
+        Chat chat = chatRepository.getItem(memberChatDto.getChatId());
         List<UserId> members = chat.getMembers();
 
-        if (members.contains(memberChatParametersDto.getUserId())) {
-            log.error("Failed to join chat: User {} is already a member", memberChatParametersDto.getUserId().getId());
+        if (members.contains(memberChatDto.getUserId())) {
+            log.error("Failed to join chat: User {} is already a member", memberChatDto.getUserId().getId());
             throw new MembershipException(ALREADY_A_MEMBER);
         } else {
-            members.add(memberChatParametersDto.getUserId());
+            members.add(memberChatDto.getUserId());
             chat.setMembers(members);
 
             if (log.isInfoEnabled()) {
-                log.info("User {} has joined chat {}", memberChatParametersDto.getUserId().getId(), chat.getChatName());
+                log.info("User {} has joined chat {}", memberChatDto.getUserId().getId(), chat.getChatName());
             }
         }
 
     }
 
     @Override
-    public void removeMember(MemberChatParametersDto memberChatParametersDto) throws MembershipException {
+    public void removeMember(MemberChatDto memberChatDto) throws MembershipException {
 
-        Chat chat = chatRepository.getItem(memberChatParametersDto.getChatId());
+        Chat chat = chatRepository.getItem(memberChatDto.getChatId());
         List<UserId> members = chat.getMembers();
 
-        if (!members.contains(memberChatParametersDto.getUserId())) {
-            log.error("Failed to leave chat: User {} is not a member", memberChatParametersDto.getUserId().getId());
+        if (!members.contains(memberChatDto.getUserId())) {
+            log.error("Failed to leave chat: User {} is not a member", memberChatDto.getUserId().getId());
             throw new MembershipException(IS_NOT_A_MEMBER);
         } else {
-            members.remove(memberChatParametersDto.getUserId());
+            members.remove(memberChatDto.getUserId());
             chat.setMembers(members);
 
             if (log.isInfoEnabled()) {
-                log.info("User {} has left chat {}", memberChatParametersDto.getUserId().getId(), chat.getChatName());
+                log.info("User {} has left chat {}", memberChatDto.getUserId().getId(), chat.getChatName());
             }
         }
     }
 
     @Override
-    public void postMessage(PostMessageParametersDto postMessageParametersDto) throws PostMessageException {
+    public void postMessage(PostMessageDto postMessageDto) throws PostMessageException {
 
-        Chat chat = chatRepository.getItem(postMessageParametersDto.getChatId());
+        Chat chat = chatRepository.getItem(postMessageDto.getChatId());
         List<UserId> members = chat.getMembers();
 
-        if (!members.contains(postMessageParametersDto.getUserId())) {
-            log.error("Failed to post message: User {} is not a member", postMessageParametersDto.getUserId().getId());
+        if (!members.contains(postMessageDto.getUserId())) {
+            log.error("Failed to post message: User {} is not a member", postMessageDto.getUserId().getId());
             throw new PostMessageException(IS_NOT_A_MEMBER);
         } else {
-            Message message = new Message(chat.getChatId(), postMessageParametersDto.getUsername(), postMessageParametersDto.getMessage());
+            Message message = new Message(chat.getChatId(), postMessageDto.getUsername(), postMessageDto.getMessage());
             List<Message> messages = chat.getMessages();
             messages.add(message);
             chat.setMessages(messages);
 
             if (log.isInfoEnabled()) {
-                log.info("User {} has posted a message to chat {}", postMessageParametersDto.getUserId().getId(), chat.getChatName());
+                log.info("User {} has posted a message to chat {}", postMessageDto.getUserId().getId(), chat.getChatName());
             }
         }
 

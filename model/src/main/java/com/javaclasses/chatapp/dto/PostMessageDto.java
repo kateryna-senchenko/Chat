@@ -6,14 +6,14 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 /**
  * Contains necessary data to post a message
  */
-public class PostMessageParametersDto {
+public class PostMessageDto {
 
     private final UserId userId;
     private final String username;
     private final ChatId chatId;
     private final String message;
 
-    public PostMessageParametersDto(UserId userId, String username, ChatId chatId, String message) {
+    public PostMessageDto(UserId userId, String username, ChatId chatId, String message) {
         this.userId = userId;
         this.username = username;
         this.chatId = chatId;
@@ -41,7 +41,7 @@ public class PostMessageParametersDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PostMessageParametersDto that = (PostMessageParametersDto) o;
+        PostMessageDto that = (PostMessageDto) o;
         return userId.equals(that.userId) && chatId.equals(that.chatId) && message.equals(that.message);
 
     }

@@ -1,7 +1,7 @@
 package com.javaclasses.chatapp;
 
-import com.javaclasses.chatapp.dto.LoginParametersDto;
-import com.javaclasses.chatapp.dto.RegistrationParametersDto;
+import com.javaclasses.chatapp.dto.LoginDto;
+import com.javaclasses.chatapp.dto.RegistrationDto;
 import com.javaclasses.chatapp.dto.TokenDto;
 import com.javaclasses.chatapp.dto.UserDto;
 import com.javaclasses.chatapp.tinytypes.UserId;
@@ -14,11 +14,11 @@ public interface UserService {
 
     /**
      * Registers new user
-     * @param registrationParametersDto - contains String username, String password, String confirmPassword
+     * @param registrationDto - contains String username, String password, String confirmPassword
      * @return unique UserId
      * @throws RegistrationException if registration fails
      */
-    UserId register(RegistrationParametersDto registrationParametersDto) throws RegistrationException;
+    UserId register(RegistrationDto registrationDto) throws RegistrationException;
 
     /**
      * Logins registered user
@@ -26,7 +26,7 @@ public interface UserService {
      * @return access Token DTO
      * @throws AuthenticationException if authentication fails
      */
-    TokenDto login(LoginParametersDto loginDto) throws AuthenticationException;
+    TokenDto login(LoginDto loginDto) throws AuthenticationException;
 
     /**
      * Provides access to registered user dto by user id

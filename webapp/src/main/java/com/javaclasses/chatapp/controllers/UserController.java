@@ -1,8 +1,8 @@
 package com.javaclasses.chatapp.controllers;
 
 import com.javaclasses.chatapp.*;
-import com.javaclasses.chatapp.dto.LoginParametersDto;
-import com.javaclasses.chatapp.dto.RegistrationParametersDto;
+import com.javaclasses.chatapp.dto.LoginDto;
+import com.javaclasses.chatapp.dto.RegistrationDto;
 import com.javaclasses.chatapp.dto.TokenDto;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import com.javaclasses.chatapp.tinytypes.TokenId;
@@ -46,11 +46,11 @@ public class UserController {
             final String password = request.getParameter(PASSWORD);
             final String confirmPassword = request.getParameter(CONFIRM_PASSWORD);
 
-            final RegistrationParametersDto registrationParametersDto = new RegistrationParametersDto(username, password, confirmPassword);
+            final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
 
             HandlerProcessingResult handlerProcessingResult;
             try {
-                UserId userId = userService.register(registrationParametersDto);
+                UserId userId = userService.register(registrationDto);
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
                 handlerProcessingResult.setData(USER_ID, String.valueOf(userId.getId()));
                 handlerProcessingResult.setData(USERNAME, userService.findRegisteredUserById(userId).getUsername());
@@ -79,7 +79,7 @@ public class UserController {
             final String username = request.getParameter(USERNAME);
             final String password = request.getParameter(PASSWORD);
 
-            final LoginParametersDto loginDto = new LoginParametersDto(username, password);
+            final LoginDto loginDto = new LoginDto(username, password);
 
             HandlerProcessingResult handlerProcessingResult;
 

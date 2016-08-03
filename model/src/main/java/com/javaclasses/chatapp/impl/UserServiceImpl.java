@@ -45,16 +45,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserId register(RegistrationParametersDto registrationParametersDto) throws RegistrationException {
+    public UserId register(RegistrationDto registrationDto) throws RegistrationException {
 
-        String username = registrationParametersDto.getUsername().trim();
+        String username = registrationDto.getUsername().trim();
 
         if (username.isEmpty() || username.contains(" ")) {
             log.error("Failed to register user {}: invalid username input", username);
             throw new RegistrationException(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES);
         }
 
-        if (registrationParametersDto.getPassword().isEmpty()) {
+        if (registrationDto.getPassword().isEmpty()) {
             log.error("Failed to register user {}: invalid password input", username);
             throw new RegistrationException(PASSWORD_IS_EMPTY);
         }
@@ -70,13 +70,13 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (!(registrationParametersDto.getPassword().equals(registrationParametersDto.getConfirmPassword()))) {
+        if (!(registrationDto.getPassword().equals(registrationDto.getConfirmPassword()))) {
             log.error("Failed to register user {}: passwords do not match", username);
             throw new RegistrationException(PASSWORDS_DO_NOT_MATCH);
         }
 
 
-        User newUser = new User(username, registrationParametersDto.getPassword());
+        User newUser = new User(username, registrationDto.getPassword());
         UserId newUserId = userRepository.add(newUser);
         newUser.setId(newUserId);
 
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenDto login(LoginParametersDto loginDto) throws AuthenticationException {
+    public TokenDto login(LoginDto loginDto) throws AuthenticationException {
 
         Collection<User> allUsers = userRepository.getAll();
         User userToLogin = null;

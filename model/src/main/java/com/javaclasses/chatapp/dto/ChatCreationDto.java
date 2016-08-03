@@ -6,13 +6,13 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 /**
  * Contains data to create a new chat
  */
-public class ChatCreationParametersDto {
+public class ChatCreationDto {
 
     private final UserId userId;
     private final String chatName;
 
 
-    public ChatCreationParametersDto(UserId userId, String chatName) {
+    public ChatCreationDto(UserId userId, String chatName) {
         this.userId = userId;
         this.chatName = chatName;
     }
@@ -30,9 +30,9 @@ public class ChatCreationParametersDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ChatCreationParametersDto chatCreationParametersDto = (ChatCreationParametersDto) o;
+        ChatCreationDto chatCreationDto = (ChatCreationDto) o;
 
-        return userId.equals(chatCreationParametersDto.userId) && chatName.equals(chatCreationParametersDto.chatName);
+        return userId.equals(chatCreationDto.userId) && chatName.equals(chatCreationDto.chatName);
 
     }
 
