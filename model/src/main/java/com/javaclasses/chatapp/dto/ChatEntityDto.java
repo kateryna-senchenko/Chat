@@ -9,15 +9,15 @@ import java.util.List;
 /**
  * Chat DTO
  */
-public class ChatDto {
+public class ChatEntityDto {
 
     private final ChatId chatId;
     private final String chatName;
     private final UserId owner;
     private final List<UserId> members;
-    private final List<MessageDto> messages;
+    private final List<MessageEntityDto> messages;
 
-    public ChatDto(ChatId chatId, String chatName, UserId owner, List<UserId> members, List<MessageDto> messages) {
+    public ChatEntityDto(ChatId chatId, String chatName, UserId owner, List<UserId> members, List<MessageEntityDto> messages) {
         this.chatId = chatId;
         this.chatName = chatName;
         this.owner = owner;
@@ -41,7 +41,7 @@ public class ChatDto {
         return members;
     }
 
-    public List<MessageDto> getMessages() {
+    public List<MessageEntityDto> getMessages() {
         return messages;
     }
 
@@ -50,9 +50,9 @@ public class ChatDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ChatDto chatDto = (ChatDto) o;
+        ChatEntityDto chatEntityDto = (ChatEntityDto) o;
 
-        return chatId.equals(chatDto.chatId);
+        return chatId.equals(chatEntityDto.chatId);
 
     }
 

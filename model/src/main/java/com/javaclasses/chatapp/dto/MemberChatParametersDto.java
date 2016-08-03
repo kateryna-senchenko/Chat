@@ -7,13 +7,13 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 /**
  * Contains data necessary to join or leave chat
  */
-public class MemberChatDto {
+public class MemberChatParametersDto {
 
     private final UserId userId;
     private final ChatId chatId;
 
 
-    public MemberChatDto(UserId userId, ChatId chatId) {
+    public MemberChatParametersDto(UserId userId, ChatId chatId) {
         this.userId = userId;
         this.chatId = chatId;
     }
@@ -31,7 +31,7 @@ public class MemberChatDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MemberChatDto that = (MemberChatDto) o;
+        MemberChatParametersDto that = (MemberChatParametersDto) o;
         return userId.equals(that.userId) && chatId.equals(that.chatId);
 
     }

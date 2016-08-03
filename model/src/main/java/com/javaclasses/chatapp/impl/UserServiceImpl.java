@@ -45,16 +45,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserId register(RegistrationDto registrationDto) throws RegistrationException {
+    public UserId register(RegistrationParametersDto registrationParametersDto) throws RegistrationException {
 
-        String username = registrationDto.getUsername().trim();
+        String username = registrationParametersDto.getUsername().trim();
 
         if (username.isEmpty() || username.contains(" ")) {
             log.error("Failed to register user {}: invalid username input", username);
             throw new RegistrationException(USERNAME_IS_EMPTY_OR_CONTAINS_WHITE_SPACES);
         }
 
-        if (registrationDto.getPassword().isEmpty()) {
+        if (registrationParametersDto.getPassword().isEmpty()) {
             log.error("Failed to register user {}: invalid password input", username);
             throw new RegistrationException(PASSWORD_IS_EMPTY);
         }
@@ -70,13 +70,13 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (!(registrationDto.getPassword().equals(registrationDto.getConfirmPassword()))) {
+        if (!(registrationParametersDto.getPassword().equals(registrationParametersDto.getConfirmPassword()))) {
             log.error("Failed to register user {}: passwords do not match", username);
             throw new RegistrationException(PASSWORDS_DO_NOT_MATCH);
         }
 
 
-        User newUser = new User(username, registrationDto.getPassword());
+        User newUser = new User(username, registrationParametersDto.getPassword());
         UserId newUserId = userRepository.add(newUser);
         newUser.setId(newUserId);
 
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenDto login(LoginDto loginDto) throws AuthenticationException {
+    public TokenEntityDto login(LoginParametersDto loginDto) throws AuthenticationException {
 
         Collection<User> allUsers = userRepository.getAll();
         User userToLogin = null;
@@ -117,19 +117,19 @@ public class UserServiceImpl implements UserService {
             log.info("Logged in user {}", loginDto.getUsername());
         }
 
-        return new TokenDto(newToken.getTokenId(), newToken.getUserId());
+        return new TokenEntityDto(newToken.getTokenId(), newToken.getUserId());
     }
 
     @Override
-    public UserDto findRegisteredUserById(UserId id) {
+    public UserEntityDto findRegisteredUserById(UserId id) {
 
         User user = userRepository.getItem(id);
 
-        return new UserDto(user.getId(), user.getUsername());
+        return new UserEntityDto(user.getId(), user.getUsername());
     }
 
     @Override
-    public UserDto findLoggedInUserByToken(TokenDto token) {
+    public UserEntityDto findLoggedInUserByToken(TokenEntityDto token) {
 
         Token userToken = tokenRepository.getItem(token.getTokenId());
 
@@ -139,9 +139,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(UserId id) throws UserRemovalException{
 
-        Collection<ChatDto> chatDtos = chatService.findAllChats();
+        Collection<ChatEntityDto> chatEntityDtos = chatService.findAllChats();
 
-        for(ChatDto chat: chatDtos){
+        for(ChatEntityDto chat: chatEntityDtos){
             List<UserId> members = chat.getMembers();
             if(members.contains(id)){
                 throw new UserRemovalException(USER_IS_A_MEMBER_OF_CHAT);
@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout(TokenDto token) {
+    public void logout(TokenEntityDto token) {
 
         tokenRepository.remove(token.getTokenId());
 

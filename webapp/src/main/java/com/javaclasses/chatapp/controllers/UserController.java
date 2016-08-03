@@ -1,9 +1,9 @@
 package com.javaclasses.chatapp.controllers;
 
 import com.javaclasses.chatapp.*;
-import com.javaclasses.chatapp.dto.LoginDto;
-import com.javaclasses.chatapp.dto.RegistrationDto;
-import com.javaclasses.chatapp.dto.TokenDto;
+import com.javaclasses.chatapp.dto.LoginParametersDto;
+import com.javaclasses.chatapp.dto.RegistrationParametersDto;
+import com.javaclasses.chatapp.dto.TokenEntityDto;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import com.javaclasses.chatapp.tinytypes.TokenId;
 import com.javaclasses.chatapp.tinytypes.UserId;
@@ -46,11 +46,11 @@ public class UserController {
             final String password = request.getParameter(PASSWORD);
             final String confirmPassword = request.getParameter(CONFIRM_PASSWORD);
 
-            final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
+            final RegistrationParametersDto registrationParametersDto = new RegistrationParametersDto(username, password, confirmPassword);
 
             HandlerProcessingResult handlerProcessingResult;
             try {
-                UserId userId = userService.register(registrationDto);
+                UserId userId = userService.register(registrationParametersDto);
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
                 handlerProcessingResult.setData(USER_ID, String.valueOf(userId.getId()));
                 handlerProcessingResult.setData(USERNAME, userService.findRegisteredUserById(userId).getUsername());
@@ -79,12 +79,12 @@ public class UserController {
             final String username = request.getParameter(USERNAME);
             final String password = request.getParameter(PASSWORD);
 
-            final LoginDto loginDto = new LoginDto(username, password);
+            final LoginParametersDto loginDto = new LoginParametersDto(username, password);
 
             HandlerProcessingResult handlerProcessingResult;
 
             try {
-                TokenDto token = userService.login(loginDto);
+                TokenEntityDto token = userService.login(loginDto);
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
                 handlerProcessingResult.setData(TOKEN_ID, String.valueOf(token.getTokenId().getId()));
                 handlerProcessingResult.setData(USER_ID, String.valueOf(token.getUserId().getId()));
@@ -115,9 +115,9 @@ public class UserController {
             final String userId = request.getParameter(USER_ID);
 
             final UserId id = new UserId(Long.valueOf(userId));
-            final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), id);
+            final TokenEntityDto tokenEntityDto = new TokenEntityDto(new TokenId(UUID.fromString(tokenId)), id);
             HandlerProcessingResult handlerProcessingResult;
-            if (userService.findLoggedInUserByToken(tokenDto) == null) {
+            if (userService.findLoggedInUserByToken(tokenEntityDto) == null) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
 
@@ -128,7 +128,7 @@ public class UserController {
 
             try {
                 userService.deleteUser(id);
-                userService.logout(tokenDto);
+                userService.logout(tokenEntityDto);
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
                 handlerProcessingResult.setData(USER_ID, String.valueOf(id.getId()));
 
@@ -156,9 +156,9 @@ public class UserController {
             final String userId = request.getParameter(USER_ID);
 
             final UserId id = new UserId(Long.valueOf(userId));
-            final TokenDto tokenDto = new TokenDto(new TokenId(UUID.fromString(tokenId)), id);
+            final TokenEntityDto tokenEntityDto = new TokenEntityDto(new TokenId(UUID.fromString(tokenId)), id);
             HandlerProcessingResult handlerProcessingResult;
-            if (userService.findLoggedInUserByToken(tokenDto) == null) {
+            if (userService.findLoggedInUserByToken(tokenEntityDto) == null) {
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_FORBIDDEN);
                 handlerProcessingResult.setData(ERROR_MESSAGE, "Cannot find user");
 
@@ -167,7 +167,7 @@ public class UserController {
                 }
             }
 
-            userService.logout(tokenDto);
+            userService.logout(tokenEntityDto);
             handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
             handlerProcessingResult.setData(USER_ID, String.valueOf(id.getId()));
 

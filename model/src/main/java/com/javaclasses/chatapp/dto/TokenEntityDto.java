@@ -7,12 +7,12 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 /**
  * Token DTO
  */
-public class TokenDto {
+public class TokenEntityDto {
 
     private final TokenId tokenId;
     private final UserId userId;
 
-    public TokenDto(TokenId tokenId, UserId userId) {
+    public TokenEntityDto(TokenId tokenId, UserId userId) {
         this.tokenId = tokenId;
         this.userId = userId;
     }
@@ -30,7 +30,7 @@ public class TokenDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TokenDto token1 = (TokenDto) o;
+        TokenEntityDto token1 = (TokenEntityDto) o;
 
         return tokenId.equals(token1.tokenId) && userId.equals(token1.userId);
 

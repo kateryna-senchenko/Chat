@@ -1,9 +1,9 @@
 package com.javaclasses.chatapp;
 
-import com.javaclasses.chatapp.dto.LoginDto;
-import com.javaclasses.chatapp.dto.RegistrationDto;
-import com.javaclasses.chatapp.dto.TokenDto;
-import com.javaclasses.chatapp.dto.UserDto;
+import com.javaclasses.chatapp.dto.LoginParametersDto;
+import com.javaclasses.chatapp.dto.RegistrationParametersDto;
+import com.javaclasses.chatapp.dto.TokenEntityDto;
+import com.javaclasses.chatapp.dto.UserEntityDto;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 
@@ -14,11 +14,11 @@ public interface UserService {
 
     /**
      * Registers new user
-     * @param registrationDto - contains String username, String password, String confirmPassword
+     * @param registrationParametersDto - contains String username, String password, String confirmPassword
      * @return unique UserId
      * @throws RegistrationException if registration fails
      */
-    UserId register(RegistrationDto registrationDto) throws RegistrationException;
+    UserId register(RegistrationParametersDto registrationParametersDto) throws RegistrationException;
 
     /**
      * Logins registered user
@@ -26,21 +26,21 @@ public interface UserService {
      * @return access Token DTO
      * @throws AuthenticationException if authentication fails
      */
-    TokenDto login(LoginDto loginDto) throws AuthenticationException;
+    TokenEntityDto login(LoginParametersDto loginDto) throws AuthenticationException;
 
     /**
      * Provides access to registered user dto by user id
      * @param id - user id
      * @return user dto instance
      */
-    UserDto findRegisteredUserById(UserId id);
+    UserEntityDto findRegisteredUserById(UserId id);
 
     /**
      * Provides access to logged in user dto by token
      * @param token - access token DTO
      * @return user dto instance
      */
-    UserDto findLoggedInUserByToken(TokenDto token);
+    UserEntityDto findLoggedInUserByToken(TokenEntityDto token);
 
     /**
      * Removes registered user
@@ -52,5 +52,5 @@ public interface UserService {
      * Logs out logged in user
      * @param token - access token
      */
-    void logout(TokenDto token);
+    void logout(TokenEntityDto token);
 }

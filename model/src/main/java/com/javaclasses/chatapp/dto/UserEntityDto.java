@@ -1,41 +1,43 @@
 package com.javaclasses.chatapp.dto;
 
+import com.javaclasses.chatapp.tinytypes.UserId;
+
 
 /**
- * Contains data to login user
+ * User DTO
  */
-public class LoginDto {
+public class UserEntityDto {
 
+    private final UserId id;
     private final String username;
-    private final String password;
 
-
-    public LoginDto(String username, String password) {
+    public UserEntityDto(UserId id, String username) {
+        this.id = id;
         this.username = username;
-        this.password = password;
+    }
+
+    public UserId getId() {
+        return id;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LoginDto loginDto = (LoginDto) o;
+        UserEntityDto userEntityDto = (UserEntityDto) o;
 
-        return username.equals(loginDto.username);
+        return id.equals(userEntityDto.id);
 
     }
 
     @Override
     public int hashCode() {
-        return username.hashCode();
+        return id.hashCode();
     }
 }

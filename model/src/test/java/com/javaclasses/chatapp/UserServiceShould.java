@@ -1,10 +1,10 @@
 package com.javaclasses.chatapp;
 
 
-import com.javaclasses.chatapp.dto.LoginDto;
-import com.javaclasses.chatapp.dto.RegistrationDto;
-import com.javaclasses.chatapp.dto.TokenDto;
-import com.javaclasses.chatapp.dto.UserDto;
+import com.javaclasses.chatapp.dto.LoginParametersDto;
+import com.javaclasses.chatapp.dto.RegistrationParametersDto;
+import com.javaclasses.chatapp.dto.TokenEntityDto;
+import com.javaclasses.chatapp.dto.UserEntityDto;
 import com.javaclasses.chatapp.impl.UserServiceImpl;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
@@ -28,13 +28,13 @@ public class UserServiceShould {
 
     private UserId registerUser(String username, String password, String confirmPassword) throws RegistrationException {
 
-        final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
-        return userService.register(registrationDto);
+        final RegistrationParametersDto registrationParametersDto = new RegistrationParametersDto(username, password, confirmPassword);
+        return userService.register(registrationParametersDto);
     }
 
-    private TokenDto loginUser(String username, String password) throws AuthenticationException {
+    private TokenEntityDto loginUser(String username, String password) throws AuthenticationException {
 
-        final LoginDto loginDto = new LoginDto(username, password);
+        final LoginParametersDto loginDto = new LoginParametersDto(username, password);
         return userService.login(loginDto);
     }
 
@@ -46,8 +46,8 @@ public class UserServiceShould {
         }
     }
 
-    private void logoutUser(TokenDto tokenDto){
-        userService.logout(tokenDto);
+    private void logoutUser(TokenEntityDto tokenEntityDto){
+        userService.logout(tokenEntityDto);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class UserServiceShould {
             fail("Failed to register new user");
         }
 
-        final UserDto newUser = userService.findRegisteredUserById(userId);
+        final UserEntityDto newUser = userService.findRegisteredUserById(userId);
 
         assertEquals("New user was not registered", username, newUser.getUsername());
 
@@ -93,10 +93,10 @@ public class UserServiceShould {
 
         final String confirmPassword = password + "123";
 
-        final RegistrationDto registrationDto = new RegistrationDto(username, password, confirmPassword);
+        final RegistrationParametersDto registrationParametersDto = new RegistrationParametersDto(username, password, confirmPassword);
 
         try {
-            userService.register(registrationDto);
+            userService.register(registrationParametersDto);
             fail("Expected RegistrationException was not thrown");
         } catch (RegistrationException e) {
             assertEquals(PASSWORDS_DO_NOT_MATCH, e.getErrorType());
@@ -115,7 +115,7 @@ public class UserServiceShould {
             fail("New user was not registered");
         }
 
-        final UserDto newUser = userService.findRegisteredUserById(userId);
+        final UserEntityDto newUser = userService.findRegisteredUserById(userId);
 
         assertEquals("New user was not registered", username.trim(), newUser.getUsername());
 
@@ -171,14 +171,14 @@ public class UserServiceShould {
             fail("Failed to register new user");
         }
 
-        TokenDto token = null;
+        TokenEntityDto token = null;
         try {
             token = loginUser(username, password);
         } catch (AuthenticationException e) {
             fail("Registered user was not logged in");
         }
 
-        final UserDto loggedInUser = userService.findLoggedInUserByToken(token);
+        final UserEntityDto loggedInUser = userService.findLoggedInUserByToken(token);
 
         assertEquals("User was not logged in", username, loggedInUser.getUsername());
 
@@ -226,10 +226,10 @@ public class UserServiceShould {
         final int count = 100;
         final ExecutorService executor = Executors.newFixedThreadPool(count);
         final CountDownLatch startLatch = new CountDownLatch(count);
-        final List<Future<TokenDto>> results = new ArrayList<>();
+        final List<Future<TokenEntityDto>> results = new ArrayList<>();
         AtomicInteger someDifferenceInUsername = new AtomicInteger(0);
 
-        Callable<TokenDto> callable = () -> {
+        Callable<TokenEntityDto> callable = () -> {
 
             startLatch.countDown();
             startLatch.await();
@@ -240,24 +240,24 @@ public class UserServiceShould {
 
             final UserId userId = registerUser(username, password, password);
 
-            final TokenDto tokenDto = loginUser(username, password);
+            final TokenEntityDto tokenEntityDto = loginUser(username, password);
 
-            assertEquals("User ids after registration and login are not the same", userId, tokenDto.getUserId());
+            assertEquals("User ids after registration and login are not the same", userId, tokenEntityDto.getUserId());
 
 
-            return tokenDto;
+            return tokenEntityDto;
         };
 
         for (int i = 0; i < count; i++) {
 
-            Future<TokenDto> future = executor.submit(callable);
+            Future<TokenEntityDto> future = executor.submit(callable);
             results.add(future);
         }
 
         final Set<Long> userIds = new HashSet<>();
         final Set<UUID> tokens = new HashSet<>();
 
-        for (Future<TokenDto> future : results) {
+        for (Future<TokenEntityDto> future : results) {
             userIds.add(future.get().getUserId().getId());
             tokens.add(future.get().getTokenId().getId());
 
