@@ -9,17 +9,23 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 public class PostMessageDto {
 
     private final UserId userId;
+    private final String username;
     private final ChatId chatId;
     private final String message;
 
-    public PostMessageDto(UserId userId, ChatId chatId, String message) {
+    public PostMessageDto(UserId userId, String username, ChatId chatId, String message) {
         this.userId = userId;
+        this.username = username;
         this.chatId = chatId;
         this.message = message;
     }
 
     public UserId getUserId() {
         return userId;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public ChatId getChatId() {

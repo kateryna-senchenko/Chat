@@ -9,17 +9,23 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 public class Message {
 
     private final UserId author;
+    private final String authorName;
     private final ChatId chatId;
     private final String message;
 
-    public Message(UserId author, ChatId chatId, String message) {
+    public Message(UserId author, String authorName, ChatId chatId, String message) {
         this.author = author;
+        this.authorName = authorName;
         this.chatId = chatId;
         this.message = message;
     }
 
     public ChatId getChatId() {
         return chatId;
+    }
+
+    public String getAuthorName() {
+        return authorName;
     }
 
     public UserId getAuthor() {

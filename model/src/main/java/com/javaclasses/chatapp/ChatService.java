@@ -43,12 +43,18 @@ public interface ChatService {
     void postMessage(PostMessageDto postMessageDto) throws PostMessageException;
 
     /**
-     * Finds chat by id
+     * Provides access to chat by id
      * @param id - chat id
      * @return Chat DTO
      */
     ChatDto findChatById(ChatId id);
 
+    /**
+     * Provides access to chat by name
+     * @param chatName - chat name
+     * @return Chat DTO
+     */
+    ChatDto findChatByName(String chatName);
     /**
      * removes chad with specified id
      * @param chatId - id of the chat to be removed

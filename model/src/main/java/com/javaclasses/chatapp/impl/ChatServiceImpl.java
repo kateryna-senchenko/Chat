@@ -117,7 +117,7 @@ public class ChatServiceImpl implements ChatService {
             log.error("Failed to post message: User {} is not a member", postMessageDto.getUserId().getId());
             throw new PostMessageException(IS_NOT_A_MEMBER);
         }else{
-            Message message = new Message(postMessageDto.getUserId(), chat.getChatId(), postMessageDto.getMessage());
+            Message message = new Message(postMessageDto.getUserId(), postMessageDto.getUsername(), chat.getChatId(), postMessageDto.getMessage());
             List<Message> messages = chat.getMessages();
             messages.add(message);
             chat.setMessages(messages);
@@ -137,9 +137,22 @@ public class ChatServiceImpl implements ChatService {
         List<MessageDto> messageDtos = new ArrayList<>();
 
         for(Message message: messages){
-            messageDtos.add(new MessageDto(message.getAuthor(),message.getChatId(), message.getMessage()));
+            messageDtos.add(new MessageDto(message.getAuthorName(), message.getAuthor(),message.getChatId(), message.getMessage()));
         }
         return new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwner(), chat.getMembers(), messageDtos);
+    }
+
+    @Override
+    public ChatDto findChatByName(String chatName) {
+
+        final Collection<ChatDto> allChats = findAllChats();
+        for(ChatDto chat: allChats){
+            if(chat.getChatName().equals(chatName)){
+                return chat;
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -163,7 +176,7 @@ public class ChatServiceImpl implements ChatService {
             List<MessageDto> messageDtos = new ArrayList<>();
 
             for(Message message: messages){
-                messageDtos.add(new MessageDto(message.getAuthor(),message.getChatId(), message.getMessage()));
+                messageDtos.add(new MessageDto(message.getAuthorName(), message.getAuthor(), message.getChatId(), message.getMessage()));
             }
             chatDtos.add(new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwner(), chat.getMembers(), messageDtos));
         }
