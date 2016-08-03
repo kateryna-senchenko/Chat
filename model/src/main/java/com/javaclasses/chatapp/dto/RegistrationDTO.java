@@ -1,5 +1,6 @@
 package com.javaclasses.chatapp.dto;
 
+
 /**
  * Contains data to register a new user
  */

@@ -5,6 +5,7 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 
 import java.util.List;
 
+
 /**
  * Chat DTO
  */

@@ -2,6 +2,7 @@ package com.javaclasses.chatapp.dto;
 
 import com.javaclasses.chatapp.tinytypes.UserId;
 
+
 /**
  * User DTO
  */

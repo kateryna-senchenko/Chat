@@ -3,6 +3,7 @@ package com.javaclasses.chatapp.dto;
 import com.javaclasses.chatapp.tinytypes.ChatId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
+
 /**
  * Contains data necessary to join or leave chat
  */
