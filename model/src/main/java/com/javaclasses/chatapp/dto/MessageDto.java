@@ -1,31 +1,24 @@
 package com.javaclasses.chatapp.dto;
 
 import com.javaclasses.chatapp.tinytypes.ChatId;
-import com.javaclasses.chatapp.tinytypes.UserId;
 
 /**
  * Message DTO
  */
 public class MessageDto {
 
-    private final ChatId chatId;
-    private final UserId author;
     private final String authorName;
+    private final ChatId chatId;
     private final String message;
 
-    public MessageDto(String authorName, UserId author, ChatId chatId, String message) {
+    public MessageDto(String authorName, ChatId chatId, String message) {
         this.authorName = authorName;
-        this.author = author;
         this.chatId = chatId;
         this.message = message;
     }
 
     public String getAuthorName() {
         return authorName;
-    }
-
-    public UserId getAuthor() {
-        return author;
     }
 
     public ChatId getChatId() {

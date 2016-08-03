@@ -29,27 +29,27 @@ public interface UserService {
     TokenDto login(LoginDto loginDto) throws AuthenticationException;
 
     /**
-     * Gets registered user dto by user id
+     * Provides access to registered user dto by user id
      * @param id - user id
      * @return user dto instance
      */
     UserDto findRegisteredUserById(UserId id);
 
     /**
-     * Gets logged in user dto by token
+     * Provides access to logged in user dto by token
      * @param token - access token DTO
      * @return user dto instance
      */
     UserDto findLoggedInUserByToken(TokenDto token);
 
     /**
-     * removes registered user
+     * Removes registered user
      * @param id - id of the user to be removed
      */
     void deleteUser(UserId id) throws UserRemovalException;
 
     /**
-     * logout logged in user
+     * Logs out logged in user
      * @param token - access token
      */
     void logout(TokenDto token);

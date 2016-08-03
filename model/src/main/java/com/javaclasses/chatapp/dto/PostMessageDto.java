@@ -4,7 +4,7 @@ import com.javaclasses.chatapp.tinytypes.ChatId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 /**
- * DTO that is used while posting a message
+ * Contains necessary data to post a message
  */
 public class PostMessageDto {
 

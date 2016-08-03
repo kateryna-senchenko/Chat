@@ -1,7 +1,6 @@
 package com.javaclasses.chatapp.impl;
 
-import 
-        com.javaclasses.chatapp.*;
+import com.javaclasses.chatapp.*;
 import com.javaclasses.chatapp.dto.*;
 import com.javaclasses.chatapp.entities.Chat;
 import com.javaclasses.chatapp.entities.Message;
@@ -74,10 +73,10 @@ public class ChatServiceImpl implements ChatService {
         Chat chat = chatRepository.getItem(memberChatDto.getChatId());
         List<UserId> members = chat.getMembers();
 
-        if(members.contains(memberChatDto.getUserId())){
+        if (members.contains(memberChatDto.getUserId())) {
             log.error("Failed to join chat: User {} is already a member", memberChatDto.getUserId().getId());
             throw new MembershipException(ALREADY_A_MEMBER);
-        }else{
+        } else {
             members.add(memberChatDto.getUserId());
             chat.setMembers(members);
 
@@ -94,10 +93,10 @@ public class ChatServiceImpl implements ChatService {
         Chat chat = chatRepository.getItem(memberChatDto.getChatId());
         List<UserId> members = chat.getMembers();
 
-        if(!members.contains(memberChatDto.getUserId())){
+        if (!members.contains(memberChatDto.getUserId())) {
             log.error("Failed to leave chat: User {} is not a member", memberChatDto.getUserId().getId());
             throw new MembershipException(IS_NOT_A_MEMBER);
-        }else{
+        } else {
             members.remove(memberChatDto.getUserId());
             chat.setMembers(members);
 
@@ -113,11 +112,11 @@ public class ChatServiceImpl implements ChatService {
         Chat chat = chatRepository.getItem(postMessageDto.getChatId());
         List<UserId> members = chat.getMembers();
 
-        if(!members.contains(postMessageDto.getUserId())){
+        if (!members.contains(postMessageDto.getUserId())) {
             log.error("Failed to post message: User {} is not a member", postMessageDto.getUserId().getId());
             throw new PostMessageException(IS_NOT_A_MEMBER);
-        }else{
-            Message message = new Message(postMessageDto.getUserId(), postMessageDto.getUsername(), chat.getChatId(), postMessageDto.getMessage());
+        } else {
+            Message message = new Message(chat.getChatId(), postMessageDto.getUsername(), postMessageDto.getMessage());
             List<Message> messages = chat.getMessages();
             messages.add(message);
             chat.setMessages(messages);
@@ -136,18 +135,19 @@ public class ChatServiceImpl implements ChatService {
         List<Message> messages = chat.getMessages();
         List<MessageDto> messageDtos = new ArrayList<>();
 
-        for(Message message: messages){
-            messageDtos.add(new MessageDto(message.getAuthorName(), message.getAuthor(),message.getChatId(), message.getMessage()));
+        for (Message message : messages) {
+            messageDtos.add(new MessageDto(message.getAuthorName(), message.getChatId(), message.getMessage()));
         }
-        return new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwner(), chat.getMembers(), messageDtos);
+        return new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwnerId(), chat.getMembers(), messageDtos);
     }
 
     @Override
     public ChatDto findChatByName(String chatName) {
 
         final Collection<ChatDto> allChats = findAllChats();
-        for(ChatDto chat: allChats){
-            if(chat.getChatName().equals(chatName)){
+
+        for (ChatDto chat : allChats) {
+            if (chat.getChatName().equals(chatName)) {
                 return chat;
             }
         }
@@ -171,14 +171,14 @@ public class ChatServiceImpl implements ChatService {
         final Collection<Chat> chats = chatRepository.getAll();
         Collection<ChatDto> chatDtos = new ArrayList<>();
 
-        for(Chat chat: chats){
+        for (Chat chat : chats) {
             List<Message> messages = chat.getMessages();
             List<MessageDto> messageDtos = new ArrayList<>();
 
-            for(Message message: messages){
-                messageDtos.add(new MessageDto(message.getAuthorName(), message.getAuthor(), message.getChatId(), message.getMessage()));
+            for (Message message : messages) {
+                messageDtos.add(new MessageDto(message.getAuthorName(), message.getChatId(), message.getMessage()));
             }
-            chatDtos.add(new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwner(), chat.getMembers(), messageDtos));
+            chatDtos.add(new ChatDto(chat.getChatId(), chat.getChatName(), chat.getOwnerId(), chat.getMembers(), messageDtos));
         }
 
         return chatDtos;

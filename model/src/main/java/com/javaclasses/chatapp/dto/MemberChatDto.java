@@ -4,7 +4,7 @@ import com.javaclasses.chatapp.tinytypes.ChatId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 /**
- * DTO that is used while joining and leaving chat
+ * Contains data necessary to join or leave chat
  */
 public class MemberChatDto {
 

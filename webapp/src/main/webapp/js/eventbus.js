@@ -14,12 +14,8 @@ var EventBus = function () {
 
             var _currentCallback = function (index) {
 
-
-                //setTimeout(function () {
                 var _currentCbk = _specificSubscribers[index];
                 _currentCbk(evt);
-
-                // }, 0);
 
             };
 

@@ -21,11 +21,11 @@ public class HandlerProcessingResult {
         content.put(key, value);
     }
 
-    public int getResponseStatus(){
+    /*package*/ int getResponseStatus(){
         return responseStatus;
     }
 
-    public String getContent(){
+    /*package*/ String getContent(){
         return new JSONObject(content).toString();
     }
 }

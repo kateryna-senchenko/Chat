@@ -8,9 +8,7 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 public class User {
 
     private UserId id;
-
     private final String username;
-
     private final String password;
 
     public User(String username, String password) {

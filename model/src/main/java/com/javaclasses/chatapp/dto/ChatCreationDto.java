@@ -3,7 +3,7 @@ package com.javaclasses.chatapp.dto;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 /**
- * Chat DTO
+ * Contains data to create a new chat
  */
 public class ChatCreationDto {
 

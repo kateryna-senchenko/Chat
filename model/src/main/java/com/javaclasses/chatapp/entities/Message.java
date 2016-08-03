@@ -1,20 +1,18 @@
 package com.javaclasses.chatapp.entities;
 
 import com.javaclasses.chatapp.tinytypes.ChatId;
-import com.javaclasses.chatapp.tinytypes.UserId;
 
 /**
- * Object to hold message data
+ * Message entity
  */
 public class Message {
 
-    private final UserId author;
-    private final String authorName;
     private final ChatId chatId;
+    private final String authorName;
     private final String message;
 
-    public Message(UserId author, String authorName, ChatId chatId, String message) {
-        this.author = author;
+    public Message(ChatId chatId, String authorName, String message) {
+
         this.authorName = authorName;
         this.chatId = chatId;
         this.message = message;
@@ -28,10 +26,6 @@ public class Message {
         return authorName;
     }
 
-    public UserId getAuthor() {
-        return author;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -43,15 +37,16 @@ public class Message {
 
         Message message1 = (Message) o;
 
-        return chatId.equals(message1.chatId) && author.equals(message1.author) &&
-                (message != null ? message.equals(message1.message) : message1.message == null);
+        if (!authorName.equals(message1.authorName)) return false;
+        if (!chatId.equals(message1.chatId)) return false;
+        return message != null ? message.equals(message1.message) : message1.message == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = chatId.hashCode();
-        result = 31 * result + author.hashCode();
+        int result = authorName.hashCode();
+        result = 31 * result + chatId.hashCode();
         result = 31 * result + (message != null ? message.hashCode() : 0);
         return result;
     }

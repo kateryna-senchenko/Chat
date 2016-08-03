@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Abstract class of in memory repository
+ * Abstract class of the in memory repository
  */
 abstract class InMemoryRepository<TypeId, Type> implements Repository<TypeId, Type> {
 

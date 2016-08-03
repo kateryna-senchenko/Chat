@@ -352,7 +352,6 @@ var ChatRoom = function (chatRoomDivId, eventbus, events, userService, chatServi
 
     registrationComponent.init();
 
-
     eventbus.subscribe(events.ATTEMPT_TO_ADD_USER, userService.addUser);
     eventbus.subscribe(events.REGISTRATION_FAILED, registrationComponent.showRegistrationError);
     eventbus.subscribe(events.REGISTRATION_IS_SUCCESSFUL, registrationComponent.showSuccessfulRegistrationMessage);

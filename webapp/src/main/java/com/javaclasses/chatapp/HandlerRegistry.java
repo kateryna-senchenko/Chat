@@ -23,7 +23,7 @@ public class HandlerRegistry {
         registry.put(key, handler);
     }
 
-    public Handler getHandler(CompoundKey key) {
+    /*package*/ Handler getHandler(CompoundKey key) {
         return registry.get(key);
     }
 }

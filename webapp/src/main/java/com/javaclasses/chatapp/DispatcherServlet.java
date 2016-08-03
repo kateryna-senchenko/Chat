@@ -13,7 +13,6 @@ import java.io.IOException;
 
 public class DispatcherServlet extends HttpServlet {
 
-
     static {
         UserController.getInstance();
         ChatController.getInstance();

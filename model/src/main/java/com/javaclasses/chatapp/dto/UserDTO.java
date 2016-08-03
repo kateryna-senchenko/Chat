@@ -8,8 +8,7 @@ import com.javaclasses.chatapp.tinytypes.UserId;
 public class UserDto {
 
     private final UserId id;
-
-    private String username;
+    private final String username;
 
     public UserDto(UserId id, String username) {
         this.id = id;
@@ -24,9 +23,6 @@ public class UserDto {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     @Override
     public boolean equals(Object o) {

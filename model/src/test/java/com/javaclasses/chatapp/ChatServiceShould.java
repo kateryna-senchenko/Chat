@@ -19,6 +19,7 @@ public class ChatServiceShould {
     private final UserService userService = UserServiceImpl.getInstance();
     private final ChatService chatService = ChatServiceImpl.getInstance();
 
+    private final String username = "Scout";
     private final String chatName = "Protect the Mockingbirds";
     private final String message = "Hello there!";
 
@@ -28,8 +29,7 @@ public class ChatServiceShould {
     @Before
     public void registerAndLoginUser() {
 
-        final String username = "Scout";
-        final String password = "Finch";
+        String password = "Finch";
         final RegistrationDto registrationDto = new RegistrationDto(username, password, password);
 
         try {
@@ -80,8 +80,8 @@ public class ChatServiceShould {
         chatService.removeMember(memberChatDto);
     }
 
-    private void postMessage(UserId userId, ChatId chatId, String message) throws PostMessageException {
-        final PostMessageDto postMessageDto = new PostMessageDto(userId, chatId, message);
+    private void postMessage(UserId userId, String username, ChatId chatId, String message) throws PostMessageException {
+        final PostMessageDto postMessageDto = new PostMessageDto(userId, username, chatId, message);
         chatService.postMessage(postMessageDto);
     }
 
@@ -258,12 +258,12 @@ public class ChatServiceShould {
             fail("Failed to add member to chat");
         }
         try {
-            postMessage(userId, chatId, message);
+            postMessage(userId, username, chatId, message);
         } catch (PostMessageException e) {
             fail("Message was not posted");
         }
 
-        final MessageDto messageData = new MessageDto(userId, chatId, message);
+        final MessageDto messageData = new MessageDto(username, chatId, message);
         final List<MessageDto> messages = chatService.findChatById(chatId).getMessages();
 
         assertTrue("Message was not posted", messages.contains(messageData));
@@ -281,7 +281,7 @@ public class ChatServiceShould {
             fail("Failed to create new chat");
         }
         try {
-            postMessage(userId, chatId, message);
+            postMessage(userId, username, chatId, message);
             fail("Expected PostMessageException was not thrown");
         } catch (PostMessageException e) {
             assertEquals(IS_NOT_A_MEMBER, e.getErrorType());

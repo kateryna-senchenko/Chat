@@ -55,14 +55,15 @@ public interface ChatService {
      * @return Chat DTO
      */
     ChatDto findChatByName(String chatName);
+
     /**
-     * removes chad with specified id
+     * Removes chad with specified id
      * @param chatId - id of the chat to be removed
      */
     void deleteChat(ChatId chatId);
 
     /**
-     * provides access to collection of all chats
+     * Provides access to collection of all chats
      * @return collection of chat dto
      */
     Collection<ChatDto> findAllChats();

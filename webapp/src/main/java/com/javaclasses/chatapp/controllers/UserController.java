@@ -86,7 +86,7 @@ public class UserController {
             try {
                 TokenDto token = userService.login(loginDto);
                 handlerProcessingResult = new HandlerProcessingResult(HttpServletResponse.SC_OK);
-                handlerProcessingResult.setData(TOKEN_ID, String.valueOf(token.getToken().getId()));
+                handlerProcessingResult.setData(TOKEN_ID, String.valueOf(token.getTokenId().getId()));
                 handlerProcessingResult.setData(USER_ID, String.valueOf(token.getUserId().getId()));
                 handlerProcessingResult.setData(USERNAME, userService.findLoggedInUserByToken(token).getUsername());
 

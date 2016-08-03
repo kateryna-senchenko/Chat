@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static UserServiceImpl userService = new UserServiceImpl();
+
     private static Repository<UserId, User> userRepository;
     private static Repository<TokenId, Token> tokenRepository;
 
@@ -90,9 +91,7 @@ public class UserServiceImpl implements UserService {
     public TokenDto login(LoginDto loginDto) throws AuthenticationException {
 
         Collection<User> allUsers = userRepository.getAll();
-
         User userToLogin = null;
-
 
         for (User user : allUsers) {
 
@@ -112,26 +111,27 @@ public class UserServiceImpl implements UserService {
         Token newToken = new Token(userToLogin.getId());
 
         TokenId token = tokenRepository.add(newToken);
-        newToken.setToken(token);
+        newToken.setTokenId(token);
 
         if (log.isInfoEnabled()) {
             log.info("Logged in user {}", loginDto.getUsername());
         }
 
-        return new TokenDto(newToken.getToken(), newToken.getUserId());
+        return new TokenDto(newToken.getTokenId(), newToken.getUserId());
     }
 
     @Override
     public UserDto findRegisteredUserById(UserId id) {
 
         User user = userRepository.getItem(id);
+
         return new UserDto(user.getId(), user.getUsername());
     }
 
     @Override
     public UserDto findLoggedInUserByToken(TokenDto token) {
 
-        Token userToken = tokenRepository.getItem(token.getToken());
+        Token userToken = tokenRepository.getItem(token.getTokenId());
 
         return findRegisteredUserById(userToken.getUserId());
     }
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logout(TokenDto token) {
 
-        tokenRepository.remove(token.getToken());
+        tokenRepository.remove(token.getTokenId());
 
         if (log.isInfoEnabled()) {
             log.info("Logged out user {}", token.getUserId().getId());

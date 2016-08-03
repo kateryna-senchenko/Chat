@@ -4,23 +4,23 @@ import com.javaclasses.chatapp.tinytypes.TokenId;
 import com.javaclasses.chatapp.tinytypes.UserId;
 
 /**
- * Access token
+ * Access Token entity
  */
 public class Token {
 
-    private TokenId token;
+    private TokenId tokenId;
     private final UserId userId;
 
     public Token(UserId userId) {
         this.userId = userId;
     }
 
-    public TokenId getToken() {
-        return token;
+    public TokenId getTokenId() {
+        return tokenId;
     }
 
-    public void setToken(TokenId token) {
-        this.token = token;
+    public void setTokenId(TokenId tokenId) {
+        this.tokenId = tokenId;
     }
 
     public UserId getUserId() {
@@ -34,12 +34,12 @@ public class Token {
 
         Token token1 = (Token) o;
 
-        return token.equals(token1.token) && userId.equals(token1.userId);
+        return tokenId.equals(token1.tokenId) && userId.equals(token1.userId);
 
     }
 
     @Override
     public int hashCode() {
-        return token.hashCode();
+        return tokenId.hashCode();
     }
 }

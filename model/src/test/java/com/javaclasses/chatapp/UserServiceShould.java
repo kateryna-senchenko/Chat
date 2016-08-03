@@ -259,7 +259,7 @@ public class UserServiceShould {
 
         for (Future<TokenDto> future : results) {
             userIds.add(future.get().getUserId().getId());
-            tokens.add(future.get().getToken().getId());
+            tokens.add(future.get().getTokenId().getId());
 
             logoutUser((future.get()));
             deleteRegisteredUser(future.get().getUserId());

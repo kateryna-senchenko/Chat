@@ -9,16 +9,16 @@ import com.javaclasses.chatapp.tinytypes.UserId;
  */
 public class TokenDto {
 
-    private final TokenId token;
+    private final TokenId tokenId;
     private final UserId userId;
 
-    public TokenDto(TokenId token, UserId userId) {
-        this.token = token;
+    public TokenDto(TokenId tokenId, UserId userId) {
+        this.tokenId = tokenId;
         this.userId = userId;
     }
 
-    public TokenId getToken() {
-        return token;
+    public TokenId getTokenId() {
+        return tokenId;
     }
 
     public UserId getUserId() {
@@ -32,12 +32,12 @@ public class TokenDto {
 
         TokenDto token1 = (TokenDto) o;
 
-        return token.equals(token1.token) && userId.equals(token1.userId);
+        return tokenId.equals(token1.tokenId) && userId.equals(token1.userId);
 
     }
 
     @Override
     public int hashCode() {
-        return token.hashCode();
+        return tokenId.hashCode();
     }
 }

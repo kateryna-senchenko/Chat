@@ -13,14 +13,13 @@ public class Chat {
 
     private ChatId chatId;
     private final String chatName;
-    private final UserId owner;
+    private final UserId ownerId;
     private List<UserId> members = new ArrayList<>();
     private List<Message> messages = new ArrayList<>();
 
-    public Chat(UserId owner, String chatName) {
+    public Chat(UserId ownerId, String chatName) {
         this.chatName = chatName;
-        this.owner = owner;
-
+        this.ownerId = ownerId;
     }
 
     public ChatId getChatId() {
@@ -31,8 +30,8 @@ public class Chat {
         return chatName;
     }
 
-    public UserId getOwner() {
-        return owner;
+    public UserId getOwnerId() {
+        return ownerId;
     }
 
     public List<UserId> getMembers() {

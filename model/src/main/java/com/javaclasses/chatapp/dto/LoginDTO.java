@@ -1,7 +1,7 @@
 package com.javaclasses.chatapp.dto;
 
 /**
- * Login DTO
+ * Contains data to login user
  */
 public class LoginDto {
 
